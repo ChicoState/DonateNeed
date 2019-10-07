@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+
+{% load static %}
+
+{% block content %}
+
+<!-- Jumbotron Homepage -->
+<div id="top" class="jumbotron jumbotron-fluid jumboImg">
+  <div class="container">
+      <h1 class="display-3 text-center" style="color:white">Changing the World, a Step at a Time</h1>
+  </div>
+</div>
+
+{% for objects in listOfObjects %}
+  <!-- Card implementation
+    o.name
+    o.urlPicture
+    -->
+{% endfor %}
+<h2>Disaster Relief Agencies Near You</h2>
+    <div class="col-sm-12">
+    <div class="card-columns"> 
+      <div class="card">
+        <img class="card-img-top" src="/static/css/media/download.png" onerror="this.style.display='none'">
+        <div class="card-body">
+          <h5 class="card-title">American Red Cross North Eastern California Chapter</h5>
+          <p class="card-text">2125 East Onstott Road
+Yuba City, CA 95991</p>
+          <p class="card-text">(530) 673-1460</p>
+          <a href="http://www.redcross.org/NEC" class="card-link">http://www.redcross.org/NEC</a>
+          <a href="http://www.redcross.org/NEC" class="stretched-link"></a>
+        </div>
+      </div>
+      <div class="card">
+        <img class="card-img-top bg-dark" src="/static/css/media/Chico Church.png" alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title">Neighborhood Church of Chico</h5>
+          <p class="card-text">2801 Notre Dame Boulevard
+Chico, CA 95928</p>
+          <p class="card-text">(530) 343-6006</p>
+          <a href="http://www.ncchico.org/index.html" class="card-link">http://www.ncchico.org/index.html</a>
+          <a href="http://www.ncchico.org/index.html" class="stretched-link"></a>
+        </div>
+      </div>
+      <div class="card">
+        <img class="card-img-top bg-dark" src="/static/css/media/NVCSS.png" alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title">Northern Valley Catholic Social Service</h5>
+          <p class="card-text">2400 Washington Ave
+Redding, CA 96001-2832</p>
+          <p class="card-text">(530) 345-1600</p>
+          <a href="https://nvcss.org/programs/disasterrrelief/"class="card-link">https://nvcss.org/programs/disasterrrelief/</a>
+          <a href="https://nvcss.org/programs/disasterrrelief/" class="stretched-link"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+  
+{% endblock content %}
+
+
+
+<!-- this was austen's code:
+<div class = "container">
+  <div class = "row" id="profile">
+
+    {% for card in cards %}
+
+      <div class = "col-4">
+
+        <div class="card night mb-auto" style="width: 18rem;">
+
+          <img src="{% static card.picUrl %}" class="card-img-top p-2" alt="A picture">
+          <div class="card-body">
+
+            <h5 class="card-title">{{ card.name }}</h5>
+            <p class="card-text">{{ card.address }}</p>
+            <p class="card-text">{{ card.phone }}</p>
+            <a href="{{ card.url }}" class="btn btn-primary">Go To</a>
+            <a href ="{{ card.url }}" class="stretched-link"></a>
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+    </div>
+  </div> 
+  -->

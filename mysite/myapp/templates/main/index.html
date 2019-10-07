@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<!-- Jumbotron Homepage -->
+<div id="top" class="jumbotron jumbotron-fluid jumboImg"">
+  <div class="container slide-bottom" id="slogan">
+      <h1 class="display-3 text-center ml3" style="color:white">Changing the World, One Step at a Time</h1>
+  </div>
+
+  <a href="#profile" class="scroll-down">
+  	<div class="arrow bounce"></div>
+  </a>
+</div>
+
+<div id="profile">
+  <div class="container first-element">
+    <h2><div class="text-center">Causes to Donate to</div></h2>
+    <div class="row">
+      <div class = "col-6">
+        <a href="https://www.cnbc.com/2019/05/16/six-months-after-camp-fire-survivors-struggle-to-find-temporary-homes.html">
+        <h3>Six months after California’s Camp Fire, survivors still struggle to find temporary homes</h3>
+        <img src="static/media/fire.jpg" height="100">
+        <p>The blaze in Northern California’s Butte County killed 86 people, destroyed about 14,000 homes and left most of the town of Paradise in ruins. It ranks as the deadliest and most destructive fire in California history.</p>
+        <p>Read more</p>
+        </a>
+      </div>
+
+      <div class="col-6">
+        <br>
+        <h3>Agencies Contributing to this Cause:</h3>
+        <a href="https://www.redcross.org" class="btn mb-2 btn-outline-info">American Red Cross</a>
+        <a href="http://www.ncchico.org/" class="btn mb-2 btn-outline-info">Neighborhood Church of Chico</a>
+        <a href="https://www.redcross.org" class="btn mb-2 btn-outline-info">Northern Valley Catholic Social Service</a>      
+      </div>
+
+      <div class="col-6">
+        <a href="https://www.cnbc.com/2019/05/16/six-months-after-camp-fire-survivors-struggle-to-find-temporary-homes.html">
+        <h3>Hurricane Dorian Damage in Bahamas Explained</h3>
+        <p>Meteorologist Kait Parker says the damage in the Bahamas was caused by a combination of storm surge and winds.</p>
+        <p>Read more</p>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="text-center">
+    <a href="{% url 'trending' %}" class="btn mb-2 btn-outline-info">View More</a>
+    <br>
+    <br>
+    <br>
+    <br>
+  </div>
+  <div class="col-sm-12">
+    <h2><div class="text-center">Agencies Near You</div></h2>
+    <div class="card-columns p-2">
+
+      {% for card in cards %} 
+        <div class="card">
+          <img class="card-img-top p-2 night" src="{% static card.picUrl %}" onerror="this.style.display='none'">
+          <div class="text">
+            <h5>{{ card.name }}</h5>
+            <p>{{ card.address }}</p>
+            <p>{{ card.phone }}</p>
+            <div class="text-center">
+              <a href="{{ card.url }}" class="btn mb-2 btn-outline-info">Visit Website</a>
+            </div>
+            <a href ="{{ card.url }}" class="stretched-link"></a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="text-center">
+    <a href="{% url 'agencies' %}" class="btn mb-2 btn-outline-info">View More</a>
+  </div>
+</div>
+
+
+
+{% endblock content %}

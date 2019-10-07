@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<br>
+<br>
+<br>
+<h2>Disaster Relief Agencies Near You</h2>
+
+ <div class="col-sm-12">
+  <div class="card-columns p-2">
+    {% for card in cards %} 
+     <div class="card">
+      <img class="card-img-top p-2 night" src="{% static card.picUrl %}" onerror="this.style.display='none'">
+      <div class="text">
+       <h5>{{ card.name }}</h5>
+       <p>{{ card.address }}</p>
+       <p>{{ card.phone }}</p>
+       <div class="text-center">
+        <a href="{{ card.url }}" class="btn btn-info mb-2">Visit Website</a>
+       </div>
+       <a href ="{{ card.url }}" class="stretched-link"></a>
+        </div>
+      </div>
+  {% endfor %}
+  </div>
+ </div>
+
+
+
+{% endblock content %}
