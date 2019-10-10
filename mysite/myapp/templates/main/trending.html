@@ -6,30 +6,23 @@
 
 <div class="container first-element">
   <div class="row">
-    <div class = "col-6">
-      <a href="https://www.cnbc.com/2019/05/16/six-months-after-camp-fire-survivors-struggle-to-find-temporary-homes.html">
-      <h3>Six months after California’s Camp Fire, survivors still struggle to find temporary homes</h3>
-      <img src="static/media/fire.jpg" height="100">
-      <p>The blaze in Northern California’s Butte County killed 86 people, destroyed about 14,000 homes and left most of the town of Paradise in ruins. It ranks as the deadliest and most destructive fire in California history.</p>
-      <p>Read more</p>
-      </a>
-    </div>
-    
+    {% for article in articles %}
+      <div class = "col-6">
+        <a href={{ article.url }}>
+        <h3>{{ article.title }}</h3>
+        <img src={{ article.picUrl }} height="100">
+        <p>{{ article.summary }}</p>
+        <p>Read more</p>
+        </a>
+      </div>
     <div class="col-6">
       <br>
       <h3>Agencies Contributing to this Cause:</h3>
       <a href="https://www.redcross.org" class="btn mb-2 btn-outline-info">American Red Cross</a>
       <a href="http://www.ncchico.org/" class="btn mb-2 btn-outline-info">Neighborhood Church of Chico</a>
-      <a href="https://www.redcross.org" class="btn mb-2 btn-outline-info">Northern Valley Catholic Social Service</a>      
+      <a href="https://www.redcross.org" class="btn mb-2 btn-outline-info">Northern Valley Catholic Social Service</a>
     </div>
-
-    <div class="col-6">
-      <a href="https://www.cnbc.com/2019/05/16/six-months-after-camp-fire-survivors-struggle-to-find-temporary-homes.html">
-      <h3>Hurricane Dorian Damage in Bahamas Explained</h3>
-      <p>Meteorologist Kait Parker says the damage in the Bahamas was caused by a combination of storm surge and winds.</p>
-      <p>Read more</p>
-      </a>
-    </div>
+    {% endfor %}
   </div>
 </div>
 
