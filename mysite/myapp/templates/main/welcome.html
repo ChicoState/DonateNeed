@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container first-element">
+
+  <div class="row justify-content-md-center align-items-start">
+
+    <div class="col-4">
+      <head>
+        <meta charset="UTF-8">
+          <title>Title</title>
+      </head>
+      <body>
+        {% csrf_token %}
+        Welcome {{e}}
+      </body>
+</div>
+</div>
+</div>
+
+
+{% endblock content %}

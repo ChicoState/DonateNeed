@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container first-element">
+
+  <div class="row justify-content-md-center align-items-start">
+
+    <div class="col-4">
+      <head>
+        <meta charset="UTF-8">
+          <title>Sign in</title>
+      </head>
+      <body>
+        <form action="postsign" method="post">
+          {% csrf_token %}
+          Email :
+          <input type="email" name="email">
+          Password:
+          <input type="password" name="pass">
+          <input type="submit" value="SignIn">
+        </form>
+      </body>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
