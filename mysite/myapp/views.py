@@ -14,7 +14,6 @@ config = {
 }
 firebase = pyrebase.initialize_app(config)
 db=firebase.database()
-
 auth = firebase.auth()
 
 
@@ -95,9 +94,16 @@ def trending(request):
 def about(request):
    return render(request, 'main/about.html', context = {})
 
-
 def signIn(request):
     return render(request, "main/signIn.html")
 
 def postsign(request):
-    return render(request, "main/welcome.html")
+    email = request.POST.get('email')
+    passw = request.POST.get("pass")
+    try:
+        user = auth.sign_in_with_email_and_password(email,passw)
+    except:
+        message = "invalid credentials"
+        return render(request, "main/signIn.html", {"msg":message})
+    print(user)
+    return render(request, "main/welcome.html", {"e":email})
