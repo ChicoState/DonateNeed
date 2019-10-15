@@ -107,3 +107,13 @@ def postsign(request):
         return render(request, "main/signIn.html", {"msg":message})
     print(user)
     return render(request, "main/welcome.html", {"e":email})
+def SignUp(request):
+    return render(request, "main/SignUp.html")
+def postsignup(request):
+    email = request.POST.get('email')
+    passw = request.POST.get("pass")
+    try:
+        user = auth.create_user_with_email_and_password(email,passw)
+    except:
+        message = "bad signup"
+        return render(request, "main/welcome.html", {"e":email})
