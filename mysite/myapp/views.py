@@ -105,5 +105,26 @@ def postsign(request):
     except:
         message = "invalid credentials"
         return render(request, "main/signIn.html", {"msg":message})
-    print(user)
+    print(user['idToken'])
+    session_id=user['idToken']
+    #get.session['uid']=str(session_id)
     return render(request, "main/welcome.html", {"e":email})
+
+def logout(request):
+    auth.logout(request)
+    return render(request, 'signIn.html')
+
+def SignUp(request):
+    return render(request,"SignUp.html")
+
+def SignUp(request):
+    return render(request, "main/SignUp.html")
+
+def postsignup(request):
+    email = request.POST.get('email')
+    passw = request.POST.get("pass")
+    try:
+        user = auth.create_user_with_email_and_password(email,passw)
+    except:
+        message = "bad signup"
+        return render(request, "main/welcome.html", {"e":email})
