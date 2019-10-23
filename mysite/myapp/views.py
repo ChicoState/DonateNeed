@@ -121,10 +121,15 @@ def SignUp(request):
     return render(request, "main/SignUp.html")
 
 def postsignup(request):
+    name=request.POST.get('name')
     email = request.POST.get('email')
     passw = request.POST.get("pass")
     try:
         user = auth.create_user_with_email_and_password(email,passw)
     except:
         message = "bad signup"
-        return render(request, "main/welcome.html", {"e":email})
+        return render(request, "main/SignUp.html", {"msg":message})
+        uid = user['localId']
+    data = {"name":name, "status":"1"}
+    db.child("users").child(uid).child("details").set(data)
+    return render(request, "main/welcome.html", {"e":email})
