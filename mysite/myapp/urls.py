@@ -3,7 +3,6 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-  url(r'^admin/', admin.site.urls),
   url(r'^$', views.home, name='home'),
   url(r'^agencies$', views.agencies, name='agencies'),
   url(r'^trending$', views.trending, name='trending'),
@@ -11,6 +10,6 @@ urlpatterns = [
   url(r'^signIn$', views.signIn, name='signIn'),
   url(r'^postsign/', views.postsign, name='postsign'),
   url(r'^logout$', views.logout, name='logout'),
-  url(r'^SignUp$', views.SignUp, name='SignUp'),
+  url(r'^signUp$', views.signUp, name='signUp'),
   url(r'^postsignup/', views.postsignup, name='postsignup')
 ]
