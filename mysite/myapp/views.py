@@ -13,7 +13,7 @@ config = {
     'measurementId': "G-ZM4B6MFKWJ"
 }
 firebase = pyrebase.initialize_app(config)
-db=firebase.database()
+db = firebase.database()
 auth = firebase.auth()
 
 
@@ -114,11 +114,8 @@ def logout(request):
     auth.logout(request)
     return render(request, 'signIn.html')
 
-def SignUp(request):
-    return render(request,"SignUp.html")
-
-def SignUp(request):
-    return render(request, "main/SignUp.html")
+def signUp(request):
+   return render(request,"main/signUp.html")
 
 def postsignup(request):
     name=request.POST.get('name')
