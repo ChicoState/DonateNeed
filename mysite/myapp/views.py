@@ -117,6 +117,7 @@ def logout(request):
 def signUp(request):
    return render(request,"main/signUp.html")
 
+
 def postsignup(request):
     name=request.POST.get('name')
     email = request.POST.get('email')
@@ -125,7 +126,7 @@ def postsignup(request):
         user = auth.create_user_with_email_and_password(email,passw)
     except:
         message = "bad signup"
-        return render(request, "main/SignUp.html", {"msg":message})
+        return render(request, "main/welcome.html", {"msg":message})
         uid = user['localId']
     data = {"name":name, "status":"1"}
     db.child("users").child(uid).child("details").set(data)
