@@ -23,32 +23,32 @@ html {
   background-size: cover;
 }
 
-.jumbotron .overlay {
-  background-color: #000000;
-  position: absolute;
-  top: 0%;
-  bottom: 0%;
-  left: 0px;
-  right: 0px;
-  opacity: 0.75;
-  filter:alpha(opacity=75);
-  z-index: 2;
+.jumbotron .overlay { 
+  background-color: #000000; 
+  position: absolute; 
+  top: 0%; 
+  bottom: 0%; 
+  left: 0px; 
+  right: 0px; 
+  opacity: 0.75; 
+  filter:alpha(opacity=75); 
+  z-index: 2; 
 }
-.jumbotron .scroll-down {
-  height: 80px;
-  width: 110px;
-  display: block;
-  position: absolute;
-  bottom: 0px;
-  right: 45%;
-  background-color: transparent;
-  text-align: center;
+.jumbotron .scroll-down { 
+  height: 80px; 
+  width: 110px; 
+  display: block; 
+  position: absolute; 
+  bottom: 0px; 
+  right: 45%; 
+  background-color: transparent; 
+  text-align: center; 
   z-index: 6;}
-.jumbotron .container h1 {
-  padding-bottom: 20px;
-  order-bottom: 1px solid #FFFFFF;
-  border-bottom-color: rgba(255,255,255,0.35);
-  display: inline-block;
+.jumbotron .container h1 { 
+  padding-bottom: 20px; 
+  order-bottom: 1px solid #FFFFFF; 
+  border-bottom-color: rgba(255,255,255,0.35); 
+  display: inline-block; 
 }
 
 /*----------------------------------*/
@@ -175,13 +175,9 @@ html {
     width: 100%;
     color: #00acc1;
     bottom: 0;
-}
+} 
 
-.alignright {
-	float: right;
-}
-
-ul{
+ul{ 
   list-style-type:none
 }
 
@@ -190,9 +186,9 @@ a {
     text-decoration: none;
 }
 
-a:hover
+a:hover 
 {
-     color:#00A0C6;
-     text-decoration:none;
-     cursor:pointer;
+     color:#00A0C6; 
+     text-decoration:none; 
+     cursor:pointer;  
 }
