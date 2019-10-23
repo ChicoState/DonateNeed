@@ -1,5 +1,20 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
+import pyrebase
+
+config = {
+    'apiKey': "AIzaSyDGPibcqcm-BDI-yckPYFcXpPCFvhnPd3E",
+    'authDomain': "donate-need.firebaseapp.com",
+    'databaseURL': "https://donate-need.firebaseio.com",
+    'projectId': "donate-need",
+    'storageBucket': "donate-need.appspot.com",
+    'messagingSenderId': "72050043145",
+    'appId': "1:72050043145:web:28ef2b2e6ff1c08bdb4bd8",
+    'measurementId': "G-ZM4B6MFKWJ"
+}
+firebase = pyrebase.initialize_app(config)
+db=firebase.database()
+auth = firebase.auth()
 
 
 # Create your views here.
@@ -78,3 +93,38 @@ def trending(request):
 
 def about(request):
    return render(request, 'main/about.html', context = {})
+
+def signIn(request):
+    return render(request, "main/signIn.html")
+
+def postsign(request):
+    email = request.POST.get('email')
+    passw = request.POST.get("pass")
+    try:
+        user = auth.sign_in_with_email_and_password(email,passw)
+    except:
+        message = "invalid credentials"
+        return render(request, "main/signIn.html", {"msg":message})
+    print(user['idToken'])
+    session_id=user['idToken']
+    #get.session['uid']=str(session_id)
+    return render(request, "main/welcome.html", {"e":email})
+
+def logout(request):
+    auth.logout(request)
+    return render(request, 'signIn.html')
+
+def SignUp(request):
+    return render(request,"SignUp.html")
+
+def SignUp(request):
+    return render(request, "main/SignUp.html")
+
+def postsignup(request):
+    email = request.POST.get('email')
+    passw = request.POST.get("pass")
+    try:
+        user = auth.create_user_with_email_and_password(email,passw)
+    except:
+        message = "bad signup"
+        return render(request, "main/welcome.html", {"e":email})

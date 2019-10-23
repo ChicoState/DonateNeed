@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+{% if msg %}
+<script>
+    alert('{{msg}}')
+</script>
+{% endif %}
+<div class="container first-element">
+  <h3>Login</h3>
+  <div class="row justify-content-md-center align-items-start">
+      <head>
+        <meta charset="UTF-8">
+        <title>Sign</title>
+      </head>
+    <body>
+      <form action="/postsign/" method="post">
+        {% csrf_token %}
+        Email :
+        <input type="email" name="email">
+        Password:
+        <input type="password" name="pass">
+        <input type="submit" value="SignIn">
+      </form>
+    </body>
+  </div>
+</div>
+<br>
+
+{% endblock content %}
