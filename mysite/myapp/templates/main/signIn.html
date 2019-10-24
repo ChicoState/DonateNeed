@@ -9,14 +9,14 @@
 </script>
 {% endif %}
 <div class="container first-element">
+
   <h3>Login</h3>
   <div class="row justify-content-md-center align-items-start">
-      <head>
-        <meta charset="UTF-8">
-        <title>Sign</title>
-      </head>
+    
     <body>
-      <form action="/postsign/" method="post">
+
+      <form action="/postSignIn/" method="post">
+
         {% csrf_token %}
         Email :
         <input type="email" name="email">
