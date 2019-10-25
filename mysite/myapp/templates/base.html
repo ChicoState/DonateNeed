@@ -29,13 +29,16 @@
         <a class="nav-item nav-link text-info"  href="{% url 'trending' %}">Trending News</a>
         <a class="nav-item nav-link text-info"  href="{% url 'agencies' %}">Agencies</a>
         <a class="nav-item nav-link text-info"  href="{% url 'about' %}">About</a>
-        <div class="ml-auto">
+        <div class="ml-auto px-auto">
 
-          <form class="form-inline">
+          {% if not signedIn %}
+            <a class="btn btn-info" href="{% url 'signUp' %}" role="button">Sign Up</a>
+            <a class="btn btn-outline-info" href="{% url 'signIn' %}" role="button">Sign In</a>
+          {% endif %}
 
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
+          {% if signedIn %}
+          
+          {% endif %}
         </div>
       </div>
     </div>
