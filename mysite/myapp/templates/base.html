@@ -31,14 +31,11 @@
         <a class="nav-item nav-link text-info"  href="{% url 'about' %}">About</a>
         <div class="ml-auto px-auto">
 
-          {% if not signedIn %}
             <a class="btn btn-info" href="{% url 'signUp' %}" role="button">Sign Up</a>
             <a class="btn btn-outline-info" href="{% url 'signIn' %}" role="button">Sign In</a>
-          {% endif %}
 
-          {% if signedIn %}
-          
-          {% endif %}
+          {% csrf_token %}
+            <a class="btn btn-outline-info" href="{% url 'signIn' %}" role="button">Logout</a>
         </div>
       </div>
     </div>
