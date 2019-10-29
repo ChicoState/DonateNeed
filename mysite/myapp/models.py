@@ -8,7 +8,7 @@ class Agencies(models.Model):
   email = models.EmailField(max_length=50)
   address = models.CharField(max_length=100)
   url = models.URLField(max_length=100)
-  phone = models.PhoneNumberField()
+  phone = PhoneNumberField()
 
 class Account_Page(models.Model):
   #requests_fulfilled =

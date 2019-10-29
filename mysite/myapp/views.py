@@ -1,7 +1,9 @@
 from django.shortcuts import render
-from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
 # For Testing
 class Article:
@@ -86,16 +88,16 @@ def signIn(request):
     "title": title,
   }
 
-  return render(request, "main/signIn.html")
+  return render(request, "main/signIn.html", context = context)
 
 def postSignIn(request):
   signedIn = True
   title = "Welcome "
-  email = request.POST.get('email')
+  username = request.POST.get('username')
   passw = request.POST.get("pass")
 
   
-  user = authenticate(email=email, password=passw)
+  user = authenticate(request, username=username, password=passw)
 
   if user is None:
     title = "Invalid "
@@ -111,17 +113,18 @@ def postSignIn(request):
 
   context = {
     "title": title,
-    "e": email,
+    "e": username,
     "signedIn": signedIn,
   }
 
   #get.session['uid']=str(session_id)
-  return render(request, "main/welcome.html", context = context)
+  return HttpResponseRedirect("main/index.html")
 
 def logout(request):
 
-  auth.logout(request)
-  return render(request, 'signIn.html')
+  logout(request)
+  return HttpResponseRedirect("main/index.html")
+
 
 def signUp(request):
   title = "Sign Up "
