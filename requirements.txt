@@ -3,3 +3,4 @@ pytz==2019.2
 sqlparse==0.3.0
 pyrebase
 protobuf
+django-phone-field
