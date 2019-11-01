@@ -60,7 +60,7 @@ def agencies(request):
 
   return render(request, 'main/agencies.html', context=context)
 
-
+@login_required(login_url='/login/')
 def trending(request):
   title = "Trending News "
 
@@ -120,10 +120,10 @@ def postSignIn(request):
   #get.session['uid']=str(session_id)
   return HttpResponseRedirect("main/index.html")
 
-def logout(request):
+def logout_view(request):
 
   logout(request)
-  return HttpResponseRedirect("main/index.html")
+  return HttpResponseRedirect("/index/")
 
 
 def signUp(request):

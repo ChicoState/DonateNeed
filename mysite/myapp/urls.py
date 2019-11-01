@@ -8,9 +8,9 @@ urlpatterns = [
   url(r'^agencies$', views.agencies, name='agencies'),
   url(r'^trending$', views.trending, name='trending'),
   url(r'^about$', views.about, name='about'),
-  url(r'^signIn$', auth_views.LoginView.as_view()),
+  url('login/', auth_views.LoginView.as_view()),
   url(r'^postSignIn/', views.postSignIn, name='postsign'),
-  url(r'^logout$', views.logout, name='logout'),
+  url('logout/', views.logout_view, name='logout'),
   url(r'^signUp$', views.signUp, name='signUp'),
   url(r'^postsignup/', views.postsignup, name='postsignup')
 ]
