@@ -11,6 +11,6 @@ urlpatterns = [
   url('login/', auth_views.LoginView.as_view()),
   url(r'^postSignIn/', views.postSignIn, name='postsign'),
   url('logout/', views.logout_view, name='logout'),
-  url(r'^signUp$', views.signUp, name='signUp'),
+  url('signUp/', views.signUp, name='signUp'),
   url(r'^postsignup/', views.postsignup, name='postsignup')
 ]

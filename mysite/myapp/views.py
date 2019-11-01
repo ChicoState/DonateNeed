@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
 
 # For Testing
@@ -34,7 +35,6 @@ newArticle = [
 # End testing block
 
 
-
 # Create your views here.
 def home(request):
   title = "Home "
@@ -45,8 +45,9 @@ def home(request):
     "articles": newArticle,
     "ranger": range(0, 5),
   }
-  return render(request, 'main/index.html', context=context)
 
+  print("user: ", request.user)
+  return render(request, 'main/index.html', context=context)
 
 def agencies(request):
   title = "Agencies "
@@ -60,7 +61,7 @@ def agencies(request):
 
   return render(request, 'main/agencies.html', context=context)
 
-@login_required(login_url='/login/')
+
 def trending(request):
   title = "Trending News "
 
@@ -72,6 +73,7 @@ def trending(request):
 
   return render(request, 'main/trending.html', context=context)
 
+
 def about(request):
   title = "About Us "
 
@@ -81,6 +83,7 @@ def about(request):
 
   return render(request, 'main/about.html', context = context)
 
+
 def signIn(request):
   title = "Sign In "
 
@@ -89,6 +92,7 @@ def signIn(request):
   }
 
   return render(request, "main/signIn.html", context = context)
+
 
 def postSignIn(request):
   signedIn = True
@@ -111,6 +115,7 @@ def postSignIn(request):
 
     return render(request, "main/signIn.html", context = context)
 
+
   context = {
     "title": title,
     "e": username,
@@ -120,10 +125,11 @@ def postSignIn(request):
   #get.session['uid']=str(session_id)
   return HttpResponseRedirect("main/index.html")
 
+
 def logout_view(request):
 
   logout(request)
-  return HttpResponseRedirect("/index/")
+  return HttpResponseRedirect("/login/")
 
 
 def signUp(request):
