@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 from . import models
 
-# Add forms
+# Add your forms
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(
         label="Email",
@@ -22,6 +22,6 @@ class RegistrationForm(UserCreationForm):
         user = super(RegistrationForm, self).save(commit=False)
         user.email = self.cleaned_data["email"]
         if commit:
-            
+
             user.save()
         return user
