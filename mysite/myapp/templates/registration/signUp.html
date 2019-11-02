@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Registration{% endblock %}
+{% block content %}
+<div class="container first-element">
+
+  <div class="row justify-content-md-left align-items-start">
+    <h3>Registration</h3>
+  </div>
+
+  <form action="/signUp/" method="post">
+    {% csrf_token %}
+
+    {{ form.errors }}
+    <div class="row">
+
+      <p>Username: {{ form.username }}</p>
+    </div>
+    <div class="row">
+
+      <p>email: {{ form.email }}</p>
+    </div>
+    <div class="row">
+
+      <p>Password: {{ form.password1 }}</p>
+    </div>
+    <div class="row">
+
+      <p>Re-enter Password: {{ form.password2 }}</p>
+    </div>
+    <div class="row">
+      
+      <input type="submit" class="button expanded" value="Register" />
+    </div>
+  </form>
+</div>
+{% endblock %}

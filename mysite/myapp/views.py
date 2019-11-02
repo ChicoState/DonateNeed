@@ -1,10 +1,20 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
+
+from . import forms
+
+# Helper funstions
+def checkAuth(request):
+
+  if(request.user.is_authenticated):
+      return True
+  else:
+      return False
 
 # For Testing
 class Article:
@@ -44,9 +54,9 @@ def home(request):
     "cards": newCard,
     "articles": newArticle,
     "ranger": range(0, 5),
+    "is_user": checkAuth(request),
   }
 
-  print("user: ", request.user)
   return render(request, 'main/index.html', context=context)
 
 def agencies(request):
@@ -56,6 +66,7 @@ def agencies(request):
     "title": title,
     "cards": newCard,
     "ranger": range(0, 3),
+    "is_user": checkAuth(request),
   }
 
 
@@ -69,6 +80,7 @@ def trending(request):
     "title": title,
     "articles": newArticle,
     "ranger": range(0, 5),
+    "is_user": checkAuth(request),
   }
 
   return render(request, 'main/trending.html', context=context)
@@ -79,6 +91,7 @@ def about(request):
 
   context = {
     "title": title,
+    "is_user": checkAuth(request),
   }
 
   return render(request, 'main/about.html', context = context)
@@ -89,6 +102,7 @@ def signIn(request):
 
   context = {
     "title": title,
+    "is_user": checkAuth(request),
   }
 
   return render(request, "main/signIn.html", context = context)
@@ -97,11 +111,11 @@ def signIn(request):
 def postSignIn(request):
   signedIn = True
   title = "Welcome "
-  username = request.POST.get('username')
+  is_user = request.POST.get('is_user')
   passw = request.POST.get("pass")
 
   
-  user = authenticate(request, username=username, password=passw)
+  user = authenticate(request, is_user=is_user, password=passw)
 
   if user is None:
     title = "Invalid "
@@ -111,6 +125,7 @@ def postSignIn(request):
     context = {
       "title": title,
       "msg": message,
+      "is_user": checkAuth(request),
     }
 
     return render(request, "main/signIn.html", context = context)
@@ -118,8 +133,9 @@ def postSignIn(request):
 
   context = {
     "title": title,
-    "e": username,
+    "e": is_user,
     "signedIn": signedIn,
+    "is_user": checkAuth(request),
   }
 
   #get.session['uid']=str(session_id)
@@ -133,13 +149,26 @@ def logout_view(request):
 
 
 def signUp(request):
-  title = "Sign Up "
+  title = "registration"
+  
+  if request.method == "POST":
+
+    form_instance = forms.RegistrationForm(request.POST)
+    if form_instance.is_valid():
+
+      form_instance.save()
+      return HttpResponseRedirect("/login/")
+  else:
+
+    form_instance = forms.RegistrationForm()
 
   context = {
+    "form":form_instance,
     "title": title,
+    "is_user": checkAuth(request),
   }
 
-  return render(request,"main/signUp.html", context = context)
+  return render(request, "registration/signUp.html", context = context)
 
 
 def postsignup(request):
@@ -148,21 +177,12 @@ def postsignup(request):
   email = request.POST.get('email')
   passw = request.POST.get('pass')
 
-  #try:
-    # Something else
-  #except:
-  #  title = "Problem "
-  #  message = "bad signup"
-
-  #  context = {
-  #    "title": title,
-  #    "msg": message,
-  #  }
-  #  return render(request, "main/welcome.html", context = context)
-
   context = {
     "title": title,
     "e": email,
+    "is_user": checkAuth(request),
   }
   
   return render(request, "main/welcome.html", context = context)
+  
+  
