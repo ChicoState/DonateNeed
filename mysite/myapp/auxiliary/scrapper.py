@@ -1,6 +1,10 @@
 # import libraries
 import urllib.request
 from bs4 import BeautifulSoup
+import sys
+sys.path.append("../")
+
+import models
 
 
 class articleInfo:
