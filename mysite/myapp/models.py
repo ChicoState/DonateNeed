@@ -11,7 +11,7 @@ class Agencies(models.Model):
   phone = PhoneField()
 
 class News_Articles(models.Model):
-  #picture = models.ImageField(width_field=100)
+  picture = models.ImageField(width_field=100)
   url = models.URLField(max_length=100)
   description = models.CharField(max_length=1000)
 
@@ -29,7 +29,7 @@ class Request_In_Progress(models.Model):
 
 class Account_Page(models.Model):
   requests_fulfilled = models.ForeignKey(Request_Fulfilled, on_delete=models.CASCADE)
-  #picture = models.ImageField(width_field=100)
+  picture = models.ImageField(width_field=100)
 
 class Agencies_Page(models.Model):
   causes = models.TextField(max_length=150)
