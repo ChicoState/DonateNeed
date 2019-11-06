@@ -157,7 +157,7 @@ def signUp(request):
     if form_instance.is_valid():
 
       form_instance.save()
-      return HttpResponseRedirect("/login/")
+      return HttpResponseRedirect("/postSignIn/")
   else:
 
     form_instance = forms.RegistrationForm()
