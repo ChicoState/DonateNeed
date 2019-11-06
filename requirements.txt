@@ -5,3 +5,4 @@ pyrebase
 protobuf
 django-phone-field
 Pillow
+beautifulsoup

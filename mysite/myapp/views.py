@@ -87,6 +87,7 @@ def trending(request):
 
 
 def about(request):
+<<<<<<< HEAD
   title = "About Us "
 
   context = {
@@ -184,5 +185,3 @@ def postsignup(request):
   }
   
   return render(request, "main/welcome.html", context = context)
-  
-  
