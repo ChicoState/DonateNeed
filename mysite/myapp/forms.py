@@ -2,8 +2,12 @@ from django import forms
 from django.core.validators import validate_slug
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.forms import ModelForm
+from myapp.models import Agencies
+
 
 from . import models
+
 
 # Add your forms
 class RegistrationForm(UserCreationForm):
@@ -25,3 +29,10 @@ class RegistrationForm(UserCreationForm):
 
             user.save()
         return user
+
+
+#form to use for updating data in agencies class
+class AgencyForm(ModelForm):
+  class Meta:
+     model = Agencies
+     fields = '__all__'
