@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 from django.shortcuts import render
 from django.shortcuts import redirect
-=======
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
@@ -11,14 +9,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
 
 from . import forms
+from . import models
 
-# Helper funstions
-def checkAuth(request):
-
-  if(request.user.is_authenticated):
-      return True
-  else:
-      return False
 
 # For Testing
 class Article:
@@ -46,19 +38,29 @@ newArticle = [
   Article("https://www.cnbc.com/2019/05/16/six-months-after-camp-fire-survivors-struggle-to-find-temporary-homes.html", "Six months after California’s Camp Fire, survivors still struggle to find temporary homes", "static/media/fire.jpg", "The blaze in Northern California’s Butte County killed 86 people, destroyed about 14,000 homes and left most of the town of Paradise in ruins. It ranks as the deadliest and most destructive fire in California history."),
   Article("https://www.cnbc.com/2019/05/16/six-months-after-camp-fire-survivors-struggle-to-find-temporary-homes.html", "Hurricane Dorian Damage in Bahamas Explained", "static/media/fire.jpg", "Meteorologist Kait Parker says the damage in the Bahamas was caused by a combination of storm surge and winds.")
 ]
-# End testing block
->>>>>>> e6dafa98867f12c313db766a1aecd457c82d2b44
+# End testing block 
+
+
+
+# Helper funstions
+def checkAuth(request):
+
+  if(request.user.is_authenticated):
+      return True
+  else:
+      return False
 
 
 # Create your views here.
 def home(request):
   title = "Home "
+  articles = models.News_Articles.objects.all()[:3]
 
   context = {
     "title": title,
     "cards": newCard,
-    "articles": newArticle,
-    "ranger": range(0, 5),
+    "articles": articles,
+    "range": range(0, 5),
     "is_user": checkAuth(request),
   }
 
@@ -92,9 +94,6 @@ def trending(request):
 
 
 def about(request):
-<<<<<<< HEAD
-   return render(request, 'main/about.html', context = {})
-=======
   title = "About Us "
 
   context = {
@@ -192,6 +191,3 @@ def postsignup(request):
   }
   
   return render(request, "main/welcome.html", context = context)
-  
-  
->>>>>>> e6dafa98867f12c313db766a1aecd457c82d2b44

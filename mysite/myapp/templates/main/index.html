@@ -25,10 +25,10 @@
      {% for article in articles %}
       <div class = "col-6">
         <a href={{ article.url }}>
-        <h3>{{ article.title }}</h3>
-        <img src={{ article.picUrl }} height="100">
-        <p>{{ article.summary }}</p>
-        <p>Read more</p>
+          <h3>{{ article.title }}</h3>
+          <!-- <img src={{ article.picUrl }} height="100"> -->
+          <p>{{ article.description }}</p>
+          <p>Read more</p>
         </a>
       </div>
 

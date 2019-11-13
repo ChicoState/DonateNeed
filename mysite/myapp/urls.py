@@ -1,5 +1,7 @@
 from django.conf.urls import url
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from . import views
 
@@ -13,4 +15,4 @@ urlpatterns = [
   url(r'^logout$', views.logout_view, name='logout'),
   url(r'^signUp$', views.signUp, name='signUp'),
   url(r'^postsignup$', views.postsignup, name='postsignup')
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # remove for deploymennt
