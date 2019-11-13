@@ -212,7 +212,7 @@ def agencySignUp(request):
     form_instance = forms.AgencyForm(request.POST)
     if form_instance.is_valid():
       form_instance.save()
-      return HttpResponseRedirect("/index/")
+      return HttpResponseRedirect("/")
 
   else:
     form_instance = forms.AgencyForm()
