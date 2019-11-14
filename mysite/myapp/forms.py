@@ -34,5 +34,5 @@ class RegistrationForm(UserCreationForm):
 #form to use for updating data in agencies class
 class AgencyForm(ModelForm):
   class Meta:
-     model = Agencies
-     fields = '__all__'
+   model = Agencies
+   exclude = ['user']
