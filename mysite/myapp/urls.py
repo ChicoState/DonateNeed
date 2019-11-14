@@ -12,5 +12,6 @@ urlpatterns = [
   url(r'^postSignIn/', views.postSignIn, name='postsign'),
   url('logout/', views.logout_view, name='logout'),
   url('signUp/', views.signUp, name='signUp'),
-  url(r'^postsignup/', views.postsignup, name='postsignup')
+  url(r'^postsignup/', views.postsignup, name='postsignup'),
+  url(r'^profile/', views.profile, name='profile')
 ]

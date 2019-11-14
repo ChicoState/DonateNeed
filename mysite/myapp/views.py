@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
 
+from django.core import serializers
+
 from . import forms
 
 # Helper funstions
@@ -61,7 +63,7 @@ def home(request):
 
 def agencies(request):
   title = "Agencies "
-  
+
   context = {
     "title": title,
     "cards": newCard,
@@ -114,7 +116,7 @@ def postSignIn(request):
   is_user = request.POST.get('is_user')
   passw = request.POST.get("pass")
 
-  
+
   user = authenticate(request, is_user=is_user, password=passw)
 
   if user is None:
@@ -150,7 +152,7 @@ def logout_view(request):
 
 def signUp(request):
   title = "registration"
-  
+
   if request.method == "POST":
 
     form_instance = forms.RegistrationForm(request.POST)
@@ -170,7 +172,6 @@ def signUp(request):
 
   return render(request, "registration/signUp.html", context = context)
 
-
 def postsignup(request):
   title = "Welcome "
   name = request.POST.get('name')
@@ -182,7 +183,16 @@ def postsignup(request):
     "e": email,
     "is_user": checkAuth(request),
   }
-  
+
   return render(request, "main/welcome.html", context = context)
-  
-  
+
+def profile(request):
+   title = "Profile"
+   context = {
+     "title": title,
+     "is_user": checkAuth(request),
+     "user": request.user,
+     #Subject to have more things - Calvin
+   }
+
+   return render(request, 'main/profile.html', context=context)

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid profileCard first-element">
+  <div class="row">
+    <div class="card col-sm-3">
+      <div class="profileImage"></div>
+      <h1>{{ user.username }}</h1>
+      <p class="title">User Description</p>
+      <p>User Info</p>
+      <p><button class="profileCardContact">Contact</button></p>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+
+<script type="text/javascript" src="{% static "javascript/profile.js"}">
+
+</script>
+
+{% endblock %}
