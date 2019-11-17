@@ -31,8 +31,9 @@
         <a class="nav-item nav-link text-info"  href="{% url 'about' %}">About</a>
 
         <div class="ml-auto px-auto">
+
           {% if not is_user %}
-            <a class="btn btn-info" href="/signUp/" role="button">Sign Up</a>
+            <a class="btn btn-info" href="{% url 'signUp' %}" role="button">Sign Up</a>
             <a class="btn btn-outline-info" href="/login/" role="button">Sign In</a>
           {% endif %}
           {% if is_user %}
@@ -55,7 +56,12 @@
     <li><a href="{% url 'trending' %}"style="color:#FFFFFF;"><font size="-1">Trending News</font></a></li>
     <li><a href="{% url 'agencies' %}"style="color:#FFFFFF;"><font size="-1">Agencies Near You</font></a></li>
     <li><a href="{% url 'about' %}"style="color:#FFFFFF;"><font size="-1">About Us</font></a></li>
-    <li><a href="{% url 'signUp' %}"style="color:#FFFFFF;"><font size="-1">Sign Up </font></a></li>
+    {% if not is_user %}
+      <li><a href="{% url 'signUp' %}"style="color:#FFFFFF;"><font size="-1">Sign Up </font></a></li>
+    {% endif %}
+    {% if is_user %}
+      <li><a href="{% url 'agencySignUp' %}"style="color:#FFFFFF;"><font size="-1">Sign Up Your Agency</font></a></li>
+    {% endif %}
   </ul>
 </footer>
 

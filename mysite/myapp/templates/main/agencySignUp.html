@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Agency Registration{% endblock %}
+{% block content %}
+<div class="container first-element">
+
+  <div class="row justify-content-md-left align-items-start">
+    {% if not is_user %}
+      <h4>To register an agency you must be signed in</h4>
+      </div>
+      <a class="btn btn-info" href="/login/" role="button">Sign In Here</a>
+    {% endif %}
+    {% if is_user %}
+        <h3>Agency Registration</h3>
+      </div>
+
+      <form action="{% url 'agencySignUp' %}" method="post">
+        {% csrf_token %}
+
+        {{ form.errors }}
+        <div class="row">
+          <p>Email: {{ form.email }}</p>
+        </div>
+        <div class="row">
+
+          <p>Agency Name: {{ form.name }}</p>
+        </div>
+        <div class="row">
+
+          <p>Address: {{ form.address }}</p>
+        </div>
+        <div class="row">
+
+          <p>Website URL: {{ form.url }}</p>
+        </div>
+        <div class="row">
+
+          <p>Phone Number: {{ form.phone }}</p>
+        </div>
+        <div class="row">
+
+          <input type="submit" class="button expanded" value="Register" />
+        </div>
+      </form>
+
+    {% endif %}
+
+</div>
+{% endblock %}

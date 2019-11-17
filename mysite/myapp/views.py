@@ -9,6 +9,8 @@ from django.contrib.auth import logout
 from django.core import serializers
 
 from . import forms
+from myapp.forms import AgencyForm
+
 
 # Helper funstions
 def checkAuth(request):
@@ -71,8 +73,9 @@ def agencies(request):
     "is_user": checkAuth(request),
   }
 
-
   return render(request, 'main/agencies.html', context=context)
+
+
 
 
 def trending(request):
@@ -88,6 +91,8 @@ def trending(request):
   return render(request, 'main/trending.html', context=context)
 
 
+
+
 def about(request):
   title = "About Us "
 
@@ -97,6 +102,8 @@ def about(request):
   }
 
   return render(request, 'main/about.html', context = context)
+
+
 
 
 def signIn(request):
@@ -110,12 +117,13 @@ def signIn(request):
   return render(request, "main/signIn.html", context = context)
 
 
+
+
 def postSignIn(request):
   signedIn = True
   title = "Welcome "
   is_user = request.POST.get('is_user')
   passw = request.POST.get("pass")
-
 
   user = authenticate(request, is_user=is_user, password=passw)
 
@@ -132,7 +140,6 @@ def postSignIn(request):
 
     return render(request, "main/signIn.html", context = context)
 
-
   context = {
     "title": title,
     "e": is_user,
@@ -144,10 +151,14 @@ def postSignIn(request):
   return HttpResponseRedirect("main/index.html")
 
 
+
+
 def logout_view(request):
 
   logout(request)
   return HttpResponseRedirect("/login/")
+
+
 
 
 def signUp(request):
@@ -159,7 +170,7 @@ def signUp(request):
     if form_instance.is_valid():
 
       form_instance.save()
-      return HttpResponseRedirect("/login/")
+      return HttpResponseRedirect("/postSignIn/")
   else:
 
     form_instance = forms.RegistrationForm()
@@ -171,6 +182,9 @@ def signUp(request):
   }
 
   return render(request, "registration/signUp.html", context = context)
+
+
+
 
 def postsignup(request):
   title = "Welcome "
@@ -185,6 +199,38 @@ def postsignup(request):
   }
 
   return render(request, "main/welcome.html", context = context)
+
+
+
+
+def agencySignUp(request):
+  signedIn = True
+  is_user = request.POST.get('is_user')
+  passw = request.POST.get("pass")
+
+  user = authenticate(request, is_user=is_user, password=passw)
+
+  if request.method == "POST":
+    form_instance = forms.AgencyForm(request.POST)
+    if form_instance.is_valid():
+      Agencies = form_instance.save(commit=False)
+      Agencies.user = request.user
+      Agencies.save()
+      return HttpResponseRedirect("/")
+
+  else:
+    form_instance = forms.AgencyForm()
+
+  context = {
+    "form" : form_instance,
+    "e": is_user,
+    "signedIn": signedIn,
+    "is_user": checkAuth(request),
+  }
+  return render(request, 'main/agencySignUp.html', context=context)
+
+
+
 
 def profile(request):
    title = "Profile"

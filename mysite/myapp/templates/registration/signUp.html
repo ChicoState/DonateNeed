@@ -8,12 +8,13 @@
     <h3>Registration</h3>
   </div>
 
-  <form action="/signUp/" method="post">
+  <form action="{% url 'signUp' %}" method="post">
     {% csrf_token %}
 
     {{ form.errors }}
-    <div class="row">
 
+
+    <div class="row">
       <p>Username: {{ form.username }}</p>
     </div>
     <div class="row">
@@ -29,7 +30,7 @@
       <p>Re-enter Password: {{ form.password2 }}</p>
     </div>
     <div class="row">
-      
+
       <input type="submit" class="button expanded" value="Register" />
     </div>
   </form>

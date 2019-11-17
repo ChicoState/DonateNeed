@@ -5,7 +5,7 @@
 {% block content %}
 {% if msg %}
 <script>
-    alert('{{msg}}')
+    alert('{{ msg }}')
 </script>
 {% endif %}
 <div class="container first-element">
@@ -13,7 +13,7 @@
   <h3>Login</h3>
   <div class="row justify-content-md-center align-items-start">
 
-      <form action="/postSignIn/" method="post">
+      <form action="{% url 'postsignin' %}" method="post">
 
         {% csrf_token %}
         Username :
