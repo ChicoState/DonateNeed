@@ -13,5 +13,6 @@ urlpatterns = [
   url(r'^logout$', views.logout_view, name='logout'),
   url(r'^signUp$', views.signUp, name='signUp'),
   url(r'^postsignup$', views.postsignup, name='postsignup'),
-  url(r'^agencySignUp$', views.agencySignUp, name='agencySignUp')
+  url(r'^agencySignUp$', views.agencySignUp, name='agencySignUp'),
+  url(r'^profile/', views.profile, name='profile')
 ]

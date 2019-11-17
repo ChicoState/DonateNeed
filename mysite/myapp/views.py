@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
 
+from django.core import serializers
+
 from . import forms
 from myapp.forms import AgencyForm
 
@@ -123,6 +125,10 @@ def postSignIn(request):
   is_user = request.POST.get('is_user')
   passw = request.POST.get("pass")
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> profile
   user = authenticate(request, is_user=is_user, password=passw)
 
   if user is None:
@@ -180,9 +186,6 @@ def signUp(request):
   }
 
   return render(request, "registration/signUp.html", context = context)
-
-
-
 
 def postsignup(request):
   title = "Welcome "
