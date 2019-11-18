@@ -15,4 +15,8 @@ urlpatterns = [
   url(r'^logout$', views.logout_view, name='logout'),
   url(r'^signUp$', views.signUp, name='signUp'),
   url(r'^postsignup$', views.postsignup, name='postsignup')
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # remove for deploymennt
+]
+
+if settings.DEBUG:
+        urlpatterns += static(settings.MEDIA_URL,
+                              document_root=settings.MEDIA_ROOT)
