@@ -6,7 +6,11 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
 
+from django.core import serializers
+
 from . import forms
+from myapp.forms import AgencyForm
+
 
 # Helper funstions
 def checkAuth(request):
@@ -61,7 +65,7 @@ def home(request):
 
 def agencies(request):
   title = "Agencies "
-  
+
   context = {
     "title": title,
     "cards": newCard,
@@ -69,8 +73,9 @@ def agencies(request):
     "is_user": checkAuth(request),
   }
 
-
   return render(request, 'main/agencies.html', context=context)
+
+
 
 
 def trending(request):
@@ -86,8 +91,9 @@ def trending(request):
   return render(request, 'main/trending.html', context=context)
 
 
+
+
 def about(request):
-<<<<<<< HEAD
   title = "About Us "
 
   context = {
@@ -96,6 +102,8 @@ def about(request):
   }
 
   return render(request, 'main/about.html', context = context)
+
+
 
 
 def signIn(request):
@@ -109,13 +117,14 @@ def signIn(request):
   return render(request, "main/signIn.html", context = context)
 
 
+
+
 def postSignIn(request):
   signedIn = True
   title = "Welcome "
   is_user = request.POST.get('is_user')
   passw = request.POST.get("pass")
 
-  
   user = authenticate(request, is_user=is_user, password=passw)
 
   if user is None:
@@ -131,7 +140,6 @@ def postSignIn(request):
 
     return render(request, "main/signIn.html", context = context)
 
-
   context = {
     "title": title,
     "e": is_user,
@@ -143,15 +151,19 @@ def postSignIn(request):
   return HttpResponseRedirect("main/index.html")
 
 
+
+
 def logout_view(request):
 
   logout(request)
   return HttpResponseRedirect("/login/")
 
 
+
+
 def signUp(request):
   title = "registration"
-  
+
   if request.method == "POST":
 
     form_instance = forms.RegistrationForm(request.POST)
@@ -172,6 +184,8 @@ def signUp(request):
   return render(request, "registration/signUp.html", context = context)
 
 
+
+
 def postsignup(request):
   title = "Welcome "
   name = request.POST.get('name')
@@ -183,5 +197,48 @@ def postsignup(request):
     "e": email,
     "is_user": checkAuth(request),
   }
-  
+
   return render(request, "main/welcome.html", context = context)
+
+
+
+
+def agencySignUp(request):
+  signedIn = True
+  is_user = request.POST.get('is_user')
+  passw = request.POST.get("pass")
+
+  user = authenticate(request, is_user=is_user, password=passw)
+
+  if request.method == "POST":
+    form_instance = forms.AgencyForm(request.POST)
+    if form_instance.is_valid():
+      Agencies = form_instance.save(commit=False)
+      Agencies.user = request.user
+      Agencies.save()
+      return HttpResponseRedirect("/")
+
+  else:
+    form_instance = forms.AgencyForm()
+
+  context = {
+    "form" : form_instance,
+    "e": is_user,
+    "signedIn": signedIn,
+    "is_user": checkAuth(request),
+  }
+  return render(request, 'main/agencySignUp.html', context=context)
+
+
+
+
+def profile(request):
+   title = "Profile"
+   context = {
+     "title": title,
+     "is_user": checkAuth(request),
+     "user": request.user,
+     #Subject to have more things - Calvin
+   }
+
+   return render(request, 'main/profile.html', context=context)
