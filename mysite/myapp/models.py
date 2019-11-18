@@ -11,7 +11,7 @@ class Agencies(models.Model):
   phone = PhoneField()
 
 class News_Articles(models.Model):
-  picture = models.ImageField(upload_to='uploads/', width_field=100)
+  picture = models.URLField(max_length=100)
   url = models.URLField(max_length=100)
   title = models.CharField(max_length=100)
   description = models.CharField(max_length=1000)

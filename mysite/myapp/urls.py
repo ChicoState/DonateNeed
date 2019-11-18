@@ -16,7 +16,3 @@ urlpatterns = [
   url(r'^signUp$', views.signUp, name='signUp'),
   url(r'^postsignup$', views.postsignup, name='postsignup')
 ]
-
-if settings.DEBUG:
-        urlpatterns += static(settings.MEDIA_URL,
-                              document_root=settings.MEDIA_ROOT)

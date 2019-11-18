@@ -30,8 +30,7 @@ def getPicture(url):
   soup = BeautifulSoup(html, "html.parser")
   picture = soup.find("img", attrs={"class":"img-fluid"})
   if(picture):
-    actual_img = urllib.request.urlretrieve(picture['src'])
-    return actual_img[0]
+    return picture['src']
 
 
 while(1):
@@ -61,8 +60,7 @@ while(1):
     art = models.News_Articles(url=article.find('a').get('href'), title=article.find('a').get_text())
     art.description = getIntro(art.url)
 
-    new_pic = open(getPicture(art.url))
-    #art.picture = new_pic.read()
+    art.picture = getPicture(art.url)
     art.save()
 
     print("[", art.id, "]", art.title)
