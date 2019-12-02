@@ -8,6 +8,10 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="{% static "css/style.css" %}">
     {% block css %}
     {% endblock %}
@@ -37,12 +41,36 @@
             <a class="btn btn-outline-info" href="/login/" role="button">Sign In</a>
           {% endif %}
           {% if is_user %}
-            <a href="{% url 'profile' %}">
+
+          <div class="dropdown">
+            <button class="btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               <img src="/static/media/defaultProfilePic.jpg" alt="Avatar" class="avatar">
-            </a>
+            </button>
+
+            <div class="dropdown-menu">
+              <div class="dropdown-container">
+                Signed in as<br>
+                <strong>{{ user.username  }}</strong>
+              </div>
+
+              <div class="dropdown-divider"></div>
+
+              <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+              <a class="dropdown-item" href="#">Organizations</a>
+              <a class="dropdown-item" href="#">Info</a>
+              <a class="dropdown-item" href="#">Austin's Accents</a>
+
+              <div class="dropdown-divider"></div>
+
+              <div class="dropdown-footer">
+                <i class="glyphicon glyphicon-cog">Settings</i>
+              </div>
+            </div>
+
             <a class="btn btn-outline-info" href="/logout/" role="button">Logout</a>
           {% endif %}
         </div>
+
       </div>
     </div>
   </nav>
