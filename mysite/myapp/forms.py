@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from myapp.models import Agencies
+from myapp.models import Profile
 
 
 from . import models
@@ -30,6 +31,11 @@ class RegistrationForm(UserCreationForm):
             user.save()
         return user
 
+
+class ProfileForm(ModelForm):
+    class Meta:
+        model = Profile
+        fields=("bio", "picture")
 
 #form to use for updating data in agencies class
 class AgencyForm(ModelForm):

@@ -10,6 +10,7 @@ from django.core import serializers
 
 from . import forms
 from myapp.forms import AgencyForm
+from myapp.forms import ProfileForm
 
 
 # Helper funstions
@@ -166,17 +167,21 @@ def signUp(request):
 
   if request.method == "POST":
 
-    form_instance = forms.RegistrationForm(request.POST)
-    if form_instance.is_valid():
+    form_instance = forms.RegistrationForm()
+    profile_form = forms.ProfileForm()
+    if form_instance.is_valid() and profile_form.is_valid():
 
       form_instance.save()
+      profile_form.save()
       return HttpResponseRedirect("/postSignIn/")
   else:
 
     form_instance = forms.RegistrationForm()
+    profile_form = forms.ProfileForm()
 
   context = {
     "form":form_instance,
+    "profile":profile_form,
     "title": title,
     "is_user": checkAuth(request),
   }
