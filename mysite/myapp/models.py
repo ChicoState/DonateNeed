@@ -11,16 +11,18 @@ from django.dispatch import receiver
 class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   bio = models.TextField(max_length=500, blank=True)
-  picture = models.ImageField(default="media/defaultProfilePic.jpg")
+  #picture = models.ImageField(width_field=100, default="media/defaultProfilePic.jpg")
 
-@receiver(post_save, sender=User)
+#@receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
 
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+post_save.connect(create_user_profile, sender=User)
+
+# @receiver(post_save, sender=User)
+# def save_user_profile(sender, instance, **kwargs):
+#     instance.profile.save()
 
 
 class Agencies(models.Model):
@@ -30,7 +32,7 @@ class Agencies(models.Model):
   url = models.URLField(max_length=100)
   phone = PhoneField()
   # user = models.ManyToManyField(Profile)
-  user = models.ForeignKey(Profile, on_delete = models.SET_NULL, blank=True, null=True)
+  #user = models.ForeignKey(Profile, on_delete = models.SET_NULL, blank=True, null=True)
 
 
 class News_Articles(models.Model):
