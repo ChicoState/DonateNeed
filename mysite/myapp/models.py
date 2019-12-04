@@ -9,9 +9,9 @@ from django.dispatch import receiver
 
 # Create your models here.
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.TextField(max_length=500, blank=True)
-    picture = models.ImageField(width_field=100, default="media/defaultProfilePic.jpg")
+  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  bio = models.TextField(max_length=500, blank=True)
+  picture = models.ImageField(default="media/defaultProfilePic.jpg")
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

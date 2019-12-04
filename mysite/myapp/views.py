@@ -167,11 +167,13 @@ def signUp(request):
 
   if request.method == "POST":
 
-    form_instance = forms.RegistrationForm()
-    profile_form = forms.ProfileForm()
+    form_instance = forms.RegistrationForm(request.POST)
+    profile_form = forms.ProfileForm(request.POST)
     if form_instance.is_valid() and profile_form.is_valid():
 
       form_instance.save()
+
+      profile_form.user = form_instance.user_id
       profile_form.save()
       return HttpResponseRedirect("/postSignIn/")
   else:
@@ -216,6 +218,7 @@ def agencySignUp(request):
   user = authenticate(request, is_user=is_user, password=passw)
 
   if request.method == "POST":
+
     form_instance = forms.AgencyForm(request.POST)
     if form_instance.is_valid():
       Agencies = form_instance.save(commit=False)
