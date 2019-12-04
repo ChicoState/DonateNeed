@@ -60,6 +60,7 @@
       <li><a href="{% url 'signUp' %}"style="color:#FFFFFF;"><font size="-1">Sign Up </font></a></li>
     {% endif %}
     {% if is_user %}
+      <li><a href="{% url 'createProfile' %}"style="color:#FFFFFF;"><font size="-1">Create Your Profile</font></a></li>    
       <li><a href="{% url 'agencySignUp' %}"style="color:#FFFFFF;"><font size="-1">Sign Up Your Agency</font></a></li>
     {% endif %}
   </ul>

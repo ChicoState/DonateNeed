@@ -167,25 +167,21 @@ def signUp(request):
 
   if request.method == "POST":
 
-    form_instance = forms.RegistrationForm()
-    profile_form = forms.ProfileForm()
-    if form_instance.is_valid() and profile_form.is_valid():
-
+    form_instance = forms.RegistrationForm(request.POST)
+    if form_instance.is_valid():
       form_instance.save()
-      profile_form.save()
-      return HttpResponseRedirect("/postSignIn/")
+      # context = {
+      #   "is_user": checkAuth(request),
+      # }
+    return HttpResponseRedirect("/")
   else:
-
     form_instance = forms.RegistrationForm()
-    profile_form = forms.ProfileForm()
 
   context = {
     "form":form_instance,
-    "profile":profile_form,
     "title": title,
     "is_user": checkAuth(request),
   }
-
   return render(request, "registration/signUp.html", context = context)
 
 
@@ -247,3 +243,37 @@ def profile(request):
    }
 
    return render(request, 'main/profile.html', context=context)
+
+
+
+def createProfile(request):
+  title = "Create Profile"
+  signedIn = True
+  is_user = request.POST.get('is_user')
+  passw = request.POST.get("pass")
+
+  user = authenticate(request, is_user=is_user, password=passw)
+
+  # try:
+  #     profile = request.user.Profile
+  # except:
+  #     profile = Profile(user=request.user)
+
+  if request.method == "POST":
+
+    form_instance = forms.ProfileForm(request.POST)
+    if form_instance.is_valid():
+        # Profile = form_instance.save(commit=False)
+        # Profile.user = request.user
+        form_instance.save()
+        return HttpResponseRedirect("/")
+  else:
+    form_instance = forms.ProfileForm()
+
+  context = {
+    "form":form_instance,
+    "title": title,
+    "is_user": checkAuth(request),
+  }
+
+  return render(request, "main/createProfile.html", context = context)
