@@ -3,10 +3,10 @@ from django.test import SimpleTestCase
 from django.test import TestCase
 from django.urls import reverse
 from myapp.views import *
-#from myapp.models import Agencies
-#from .forms import *
+from myapp.models import Agencies
+from myapp.forms import RegistrationForm
 
-class sanity_test(SimpleTestCase):
+class view_test(SimpleTestCase):
     def test_Sanity(self):
         self.assertEqual(True,True)
     def test_url(self):
@@ -24,3 +24,22 @@ class sanity_test(SimpleTestCase):
     def test_not_on_home_page(self):
         response=self.client.get('/')
         self.assertNotContains(response, 'i should not exist')
+
+class model_test(TestCase):
+    def setUp(self):
+        Agencies.objects.create(name = 'fred', email = 'test@gmail.com')
+    def test_model_name(self):
+        test = Agencies.objects.get(id=1)
+        expected = f'{test.name}'
+        self.assertEquals(expected,'fred')
+        self.assertEquals(True,True)
+    def test_model_email(self):
+        test = Agencies.objects.get(id=1)
+        expected = f'{test.email}'
+        self.assertEquals(expected,'test@gmail.com')
+
+class form_test(TestCase):
+    def test_form(self):
+        form = RegistrationForm()
+        self.assertEquals(form.fields['password1'].label, 'Password' )
+        self.assertEquals(True,True)
