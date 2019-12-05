@@ -15,4 +15,5 @@ urlpatterns = [
   url(r'^logout$', views.logout_view, name='logout'),
   url(r'^signUp$', views.signUp, name='signUp'),
   url(r'^postsignup$', views.postsignup, name='postsignup')
+  url(r'^donation$', views.donation, name='donation')
 ]
