@@ -5,10 +5,12 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
+from django.urls import reverse
 
 from django.core import serializers
 
 from . import forms
+from . import models
 from myapp.forms import AgencyForm
 
 
@@ -238,7 +240,50 @@ def profile(request):
      "title": title,
      "is_user": checkAuth(request),
      "user": request.user,
-     #Subject to have more things - Calvin
    }
 
    return render(request, 'main/profile.html', context=context)
+
+
+
+
+def organization(request):
+  title = "Your Organizations "
+
+  context = {
+    "title": title,
+    # "articles": newArticle,
+    # "ranger": range(0, 5),
+    "is_user": checkAuth(request),
+  }
+
+  return render(request, 'main/organization.html', context=context)
+
+
+# SETTINGS
+def editProfile(request):
+
+    signedIn = True
+    is_user = request.POST.get('is_user')
+    passw = request.POST.get("pass")
+
+    user = authenticate(request, is_user=is_user, password=passw)
+
+    if request.method == 'POST':
+        form = forms.EditProfileForm(request.POST)
+
+        if form.is_valid():
+            user_info = models.Profile.objects.get(user=request.user.id)
+
+
+
+            user.save()
+            return HttpResponseRedirect('%s'%(reverse('profile')))
+
+    form = forms.EditProfileForm()
+
+    context = {
+        "form": form
+    }
+
+    return render(request, "main/editProfile.html", context)
