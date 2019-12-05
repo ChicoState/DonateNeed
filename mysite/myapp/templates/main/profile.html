@@ -10,7 +10,8 @@
       <div class="profileImage"></div>
       <img src="/static/media/defaultProfilePic.jpg" alt="Avatar" style="width:100%">
       <h1>{{ user.username }}</h1>
-      <p class="title">User Description</p>
+      <p class="title">{{ user.profile.bio }}</p>
+      <p class="title">{{ user.profile.agencies }}</p>
       <p>User Info</p>
       <p><button class="profileCardContact">Contact</button></p>
     </div>

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -11,6 +11,7 @@ from django.core import serializers
 from . import forms
 from myapp.forms import AgencyForm
 from myapp.forms import ProfileForm
+from myapp.models import Profile
 
 
 # Helper funstions
@@ -155,7 +156,6 @@ def postSignIn(request):
 
 
 def logout_view(request):
-
   logout(request)
   return HttpResponseRedirect("/login/")
 
@@ -163,26 +163,21 @@ def logout_view(request):
 
 
 def signUp(request):
-  title = "registration"
+    title = "registration"
+    if request.method == "POST":
 
-  if request.method == "POST":
-
-    form_instance = forms.RegistrationForm(request.POST)
-    if form_instance.is_valid():
-      form_instance.save()
-      # context = {
-      #   "is_user": checkAuth(request),
-      # }
-    return HttpResponseRedirect("/")
-  else:
+        form_instance = forms.RegistrationForm(request.POST)
+        if form_instance.is_valid():
+          form_instance.save()
+          return HttpResponseRedirect("/")
     form_instance = forms.RegistrationForm()
 
-  context = {
-    "form":form_instance,
-    "title": title,
-    "is_user": checkAuth(request),
-  }
-  return render(request, "registration/signUp.html", context = context)
+    context = {
+        "form":form_instance,
+        "title": title,
+        "is_user": checkAuth(request),
+    }
+    return render(request, "registration/signUp.html", context = context)
 
 
 
@@ -211,19 +206,22 @@ def agencySignUp(request):
 
   user = authenticate(request, is_user=is_user, password=passw)
 
+  instance = get_object_or_404(Profile, user=request.user)
+
   if request.method == "POST":
-    form_instance = forms.AgencyForm(request.POST)
+    form_instance = forms.AgencyForm(request.POST, instance=instance)
     if form_instance.is_valid():
-      Agencies = form_instance.save(commit=False)
-      Agencies.user = request.user
-      Agencies.save()
-      return HttpResponseRedirect("/")
+        instance = form_instance.save(commit=False)
+        instance.user = request.user
+        instance.save()
+        return HttpResponseRedirect("/")
 
   else:
     form_instance = forms.AgencyForm()
 
   context = {
     "form" : form_instance,
+    "instance": instance,
     "e": is_user,
     "signedIn": signedIn,
     "is_user": checkAuth(request),
@@ -254,24 +252,21 @@ def createProfile(request):
 
   user = authenticate(request, is_user=is_user, password=passw)
 
-  # try:
-  #     profile = request.user.Profile
-  # except:
-  #     profile = Profile(user=request.user)
-
+  instance = get_object_or_404(Profile, user=request.user)
   if request.method == "POST":
 
-    form_instance = forms.ProfileForm(request.POST)
+    form_instance = forms.ProfileForm(request.POST, instance=instance)
     if form_instance.is_valid():
-        # Profile = form_instance.save(commit=False)
-        # Profile.user = request.user
-        form_instance.save()
-        return HttpResponseRedirect("/")
+        instance = form_instance.save(commit=False)
+        instance.user = request.user
+        instance.save()
+        return render(request, "main/Profile.html")
   else:
     form_instance = forms.ProfileForm()
 
   context = {
     "form":form_instance,
+    "instance": instance,
     "title": title,
     "is_user": checkAuth(request),
   }

@@ -35,8 +35,8 @@ class RegistrationForm(UserCreationForm):
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
-        #exclude = ['user']
-        fields="__all__" #, "picture")
+        exclude = ['user']
+        #fields="__all__" #, "picture")
 
 #form to use for updating data in agencies class
 class AgencyForm(ModelForm):
