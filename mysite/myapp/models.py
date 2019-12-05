@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.contrib.auth.models import User
 from phone_field import PhoneField
 from django.conf import settings
-# from django.db.models.signals import post_save
+from django.db.models.signals import post_save
 # from django.dispatch import receiver
 
 # Create your models here.
@@ -45,3 +45,16 @@ class Cause(models.Model):
   title = models.CharField(max_length=100)
   location = models.CharField(max_length=100)
   news_articles = models.ForeignKey(News_Articles, on_delete=models.CASCADE, blank=True, null=True)
+
+class Profile(models.Model):
+  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  bio = models.TextField(max_length=500, blank=True)
+  agencies = models.ForeignKey(Agencies, on_delete=models.SET_NULL, blank=True, null=True)
+  #picture = models.ImageField(width_field=100, default="media/defaultProfilePic.jpg")
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+post_save.connect(create_user_profile, sender=User)
