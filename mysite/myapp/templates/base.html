@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Donate Need</title>
+    <title>Donate Need {{ title }}</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -29,13 +29,16 @@
         <a class="nav-item nav-link text-info"  href="{% url 'trending' %}">Trending News</a>
         <a class="nav-item nav-link text-info"  href="{% url 'agencies' %}">Agencies</a>
         <a class="nav-item nav-link text-info"  href="{% url 'about' %}">About</a>
-        <div class="ml-auto">
 
-          <form class="form-inline">
-
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
+        <div class="ml-auto px-auto">
+          
+          {% if not is_user %}
+            <a class="btn btn-info" href="{% url 'signUp' %}" role="button">Sign Up</a>
+            <a class="btn btn-outline-info" href="/login/" role="button">Sign In</a>
+          {% endif %}
+          {% if is_user %}
+            <a class="btn btn-outline-info" href="{% url 'logout' %}" role="button">Logout</a>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -50,6 +53,7 @@
     <li><a href="{% url 'trending' %}"style="color:#FFFFFF;"><font size="-1">Trending News</font></a></li>
     <li><a href="{% url 'agencies' %}"style="color:#FFFFFF;"><font size="-1">Agencies Near You</font></a></li>
     <li><a href="{% url 'about' %}"style="color:#FFFFFF;"><font size="-1">About Us</font></a></li>
+    <li><a href="{% url 'signUp' %}"style="color:#FFFFFF;"><font size="-1">Sign Up </font></a></li>
   </ul>
 </footer>
 <!--
