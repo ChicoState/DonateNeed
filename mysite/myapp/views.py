@@ -1,3 +1,5 @@
+from django.shortcuts import render
+from django.shortcuts import redirect
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
@@ -11,23 +13,10 @@ from django.core import serializers
 from . import forms
 from myapp.forms import AgencyForm
 
+from . import models
 
-# Helper funstions
-def checkAuth(request):
-
-  if(request.user.is_authenticated):
-      return True
-  else:
-      return False
 
 # For Testing
-class Article:
-  def __init__(self, url, title, picUrl, summary):
-    self.url = url
-    self.title = title
-    self.picUrl = picUrl
-    self.summary = summary
-
 class Card:
   def __init__(self, name, url, picUrl, address, phone):
     self.name = name
@@ -41,27 +30,34 @@ newCard = [
     Card("Neighborhood Church of Chico", "http://www.ncchico.org/", "media/NC.jpg", "2801 Notre Dame Boulevard Chico, CA 95928", "(530) 343-6006"),
     Card("Northern Valley Catholic Social Service", "https://www.redcross.org", "media/NVCSS.png", "2400 Washington Ave Redding, CA 96001-2832", "(530) 345-1600")
   ]
+# End testing block 
 
-newArticle = [
-  Article("https://www.cnbc.com/2019/05/16/six-months-after-camp-fire-survivors-struggle-to-find-temporary-homes.html", "Six months after California’s Camp Fire, survivors still struggle to find temporary homes", "static/media/fire.jpg", "The blaze in Northern California’s Butte County killed 86 people, destroyed about 14,000 homes and left most of the town of Paradise in ruins. It ranks as the deadliest and most destructive fire in California history."),
-  Article("https://www.cnbc.com/2019/05/16/six-months-after-camp-fire-survivors-struggle-to-find-temporary-homes.html", "Hurricane Dorian Damage in Bahamas Explained", "static/media/fire.jpg", "Meteorologist Kait Parker says the damage in the Bahamas was caused by a combination of storm surge and winds.")
-]
-# End testing block
+
+
+# Helper funstions
+def checkAuth(request):
+
+  if(request.user.is_authenticated):
+      return True
+  else:
+      return False
 
 
 # Create your views here.
 def home(request):
   title = "Home "
+  articles = models.News_Articles.objects.all()[:3]
 
   context = {
     "title": title,
     "cards": newCard,
-    "articles": newArticle,
-    "ranger": range(0, 5),
+    "articles": articles,
+    "range": range(0, 5),
     "is_user": checkAuth(request),
   }
 
   return render(request, 'main/index.html', context=context)
+
 
 def agencies(request):
   title = "Agencies "

@@ -17,9 +17,11 @@ class Agencies(models.Model):
 
 
 class News_Articles(models.Model):
-  picture = models.ImageField(width_field=100, default="media/redCross.jpg")
+  picture = models.URLField(max_length=100)
   url = models.URLField(max_length=100)
+  title = models.CharField(max_length=100)
   description = models.CharField(max_length=1000)
+
 
 class Request_Fulfilled(models.Model):
   fulFilledAmount = models.DecimalField(max_digits=10, decimal_places=2)
