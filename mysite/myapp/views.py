@@ -180,3 +180,9 @@ def postsignup(request):
   }
   
   return render(request, "main/welcome.html", context = context)
+
+
+
+
+def donation(request):
+  return render(request, 'main/donation.html')

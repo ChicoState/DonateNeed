@@ -56,19 +56,6 @@
     <li><a href="{% url 'signUp' %}"style="color:#FFFFFF;"><font size="-1">Sign Up </font></a></li>
   </ul>
 </footer>
-<!--
-<div class="container">
-  <div class="row footer align-items-end">
-    <div class="col">
-      <ul>
-        <li><a href="{% url 'trending' %}"style="color:#FFFFFF;"><font size="-1">Trending News</font></a></li>
-        <li><a href="{% url 'agencies' %}"style="color:#FFFFFF;"><font size="-1">Agencies Near You</font></a></li>
-        <li><a href="{% url 'about' %}"style="color:#FFFFFF;"><font size="-1">About Us</font></a></li>
-      </ul>
-    </div>
-  </div>
-</div>
--->
 
 </body>
 
@@ -78,4 +65,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <!-- development version, includes helpful console warnings -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+{% block scripts %}
+{% endblock %}
 </html>
