@@ -9,9 +9,11 @@ from django.contrib.auth import logout
 from django.core import serializers
 
 from . import forms
+from myapp.models import Agencies
 from myapp.forms import AgencyForm
 from myapp.forms import ProfileForm
 from myapp.models import Profile
+from . import models
 
 
 # Helper funstions
@@ -206,10 +208,9 @@ def agencySignUp(request):
 
   user = authenticate(request, is_user=is_user, password=passw)
 
-  instance = get_object_or_404(Profile, user=request.user)
 
   if request.method == "POST":
-    form_instance = forms.AgencyForm(request.POST, instance=instance)
+    form_instance = forms.AgencyForm(request.POST)
     if form_instance.is_valid():
         instance = form_instance.save(commit=False)
         instance.user = request.user
@@ -221,7 +222,6 @@ def agencySignUp(request):
 
   context = {
     "form" : form_instance,
-    "instance": instance,
     "e": is_user,
     "signedIn": signedIn,
     "is_user": checkAuth(request),
@@ -252,7 +252,7 @@ def createProfile(request):
 
   user = authenticate(request, is_user=is_user, password=passw)
 
-  instance = get_object_or_404(Profile, user=request.user)
+  instance  = get_object_or_404(Profile, user=request.user)
   if request.method == "POST":
 
     form_instance = forms.ProfileForm(request.POST, instance=instance)
@@ -260,15 +260,14 @@ def createProfile(request):
         instance = form_instance.save(commit=False)
         instance.user = request.user
         instance.save()
-        return render(request, "main/Profile.html")
+        return HttpResponseRedirect("/profile/")
   else:
     form_instance = forms.ProfileForm()
 
-  context = {
-    "form":form_instance,
-    "instance": instance,
-    "title": title,
-    "is_user": checkAuth(request),
-  }
+    context = {
+        "form":form_instance,
+        "title": title,
+        "is_user": checkAuth(request),
+    }
 
-  return render(request, "main/createProfile.html", context = context)
+    return render(request, "main/createProfile.html", context = context)

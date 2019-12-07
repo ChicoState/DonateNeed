@@ -43,3 +43,10 @@ class AgencyForm(ModelForm):
   class Meta:
    model = Agencies
    exclude = ['user']
+
+
+
+class SetAgencyChoiceForm(ModelForm):
+  class Meta:
+   model = Profile
+   exclude = ['user']
