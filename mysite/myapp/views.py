@@ -1,6 +1,4 @@
-from django.shortcuts import render
-from django.shortcuts import redirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -12,29 +10,14 @@ from django.core import serializers
 
 from . import forms
 from myapp.forms import AgencyForm
-
+from myapp.forms import ProfileForm
+from myapp.models import Profile
 from . import models
 
 
-# For Testing
-class Card:
-  def __init__(self, name, url, picUrl, address, phone):
-    self.name = name
-    self.url = url
-    self.picUrl = picUrl
-    self.address = address
-    self.phone = phone
-
-newCard = [
-    Card("Red Cross", "https://www.redcross.org", "media/redCross.jpg", "2125 East Onstott Road Yuba City, CA 95991","(530) 673-1460"),
-    Card("Neighborhood Church of Chico", "http://www.ncchico.org/", "media/NC.jpg", "2801 Notre Dame Boulevard Chico, CA 95928", "(530) 343-6006"),
-    Card("Northern Valley Catholic Social Service", "https://www.redcross.org", "media/NVCSS.png", "2400 Washington Ave Redding, CA 96001-2832", "(530) 345-1600")
-  ]
-# End testing block 
 
 
-
-# Helper funstions
+# Helper functions
 def checkAuth(request):
 
   if(request.user.is_authenticated):
@@ -47,28 +30,31 @@ def checkAuth(request):
 def home(request):
   title = "Home "
   articles = models.News_Articles.objects.all()[:3]
-
+  Agenciess = models.Agencies.objects.all()
   context = {
+    "user" : request.user,
     "title": title,
-    "cards": newCard,
     "articles": articles,
-    "range": range(0, 5),
+    "agencies": Agenciess,
+    "ranger": range(0, 5),
     "is_user": checkAuth(request),
   }
-
   return render(request, 'main/index.html', context=context)
+
+
 
 
 def agencies(request):
   title = "Agencies "
+  Agenciess = models.Agencies.objects.all()
 
   context = {
     "title": title,
-    "cards": newCard,
+    "agencies": Agenciess,
+    #"cards": newCard,
     "ranger": range(0, 3),
     "is_user": checkAuth(request),
   }
-
   return render(request, 'main/agencies.html', context=context)
 
 
@@ -83,7 +69,6 @@ def trending(request):
     "ranger": range(0, 5),
     "is_user": checkAuth(request),
   }
-
   return render(request, 'main/trending.html', context=context)
 
 
@@ -96,7 +81,6 @@ def about(request):
     "title": title,
     "is_user": checkAuth(request),
   }
-
   return render(request, 'main/about.html', context = context)
 
 
@@ -133,7 +117,6 @@ def postSignIn(request):
       "msg": message,
       "is_user": checkAuth(request),
     }
-
     return render(request, "main/signIn.html", context = context)
 
   context = {
@@ -142,7 +125,6 @@ def postSignIn(request):
     "signedIn": signedIn,
     "is_user": checkAuth(request),
   }
-
   #get.session['uid']=str(session_id)
   return HttpResponseRedirect("main/index.html")
 
@@ -150,7 +132,6 @@ def postSignIn(request):
 
 
 def logout_view(request):
-
   logout(request)
   return HttpResponseRedirect("/login/")
 
@@ -158,26 +139,21 @@ def logout_view(request):
 
 
 def signUp(request):
-  title = "registration"
+    title = "registration"
+    if request.method == "POST":
 
-  if request.method == "POST":
-
-    form_instance = forms.RegistrationForm(request.POST)
-    if form_instance.is_valid():
-
-      form_instance.save()
-      return HttpResponseRedirect("/postSignIn/")
-  else:
-
+        form_instance = forms.RegistrationForm(request.POST)
+        if form_instance.is_valid():
+          form_instance.save()
+          return HttpResponseRedirect("/")
     form_instance = forms.RegistrationForm()
 
-  context = {
-    "form":form_instance,
-    "title": title,
-    "is_user": checkAuth(request),
-  }
-
-  return render(request, "registration/signUp.html", context = context)
+    context = {
+        "form":form_instance,
+        "title": title,
+        "is_user": checkAuth(request),
+    }
+    return render(request, "registration/signUp.html", context = context)
 
 
 
@@ -193,8 +169,28 @@ def postsignup(request):
     "e": email,
     "is_user": checkAuth(request),
   }
-
   return render(request, "main/welcome.html", context = context)
+
+
+
+
+def agencyProfile(request):
+   title = "Agency Profile"
+   if checkAuth(request) == False:
+       return HttpResponseRedirect("/")
+   instance  = get_object_or_404(Profile, user=request.user)
+   if instance.agencies is None:
+       is_agency = False
+   else:
+       is_agency = True
+   context = {
+     "title": title,
+     "is_user": checkAuth(request),
+     "user": request.user,
+     "is_agency": is_agency,
+     #Subject to have more things - Calvin
+   }
+   return render(request, 'main/agencyProfile.html', context=context)
 
 
 
@@ -206,13 +202,14 @@ def agencySignUp(request):
 
   user = authenticate(request, is_user=is_user, password=passw)
 
+
   if request.method == "POST":
     form_instance = forms.AgencyForm(request.POST)
     if form_instance.is_valid():
-      Agencies = form_instance.save(commit=False)
-      Agencies.user = request.user
-      Agencies.save()
-      return HttpResponseRedirect("/")
+        instance = form_instance.save(commit=False)
+        instance.user = request.user
+        instance.save()
+        return HttpResponseRedirect("/")
 
   else:
     form_instance = forms.AgencyForm()
@@ -236,5 +233,36 @@ def profile(request):
      "user": request.user,
      #Subject to have more things - Calvin
    }
-
    return render(request, 'main/profile.html', context=context)
+
+
+
+
+def createProfile(request):
+  title = "Create Profile"
+  signedIn = True
+  is_user = request.POST.get('is_user')
+  passw = request.POST.get("pass")
+  if checkAuth(request) == False:
+     return HttpResponseRedirect("/")
+
+  user = authenticate(request, is_user=is_user, password=passw)
+
+  instance  = get_object_or_404(Profile, user=request.user)
+  if request.method == "POST":
+
+    form_instance = forms.ProfileForm(request.POST, request.FILES, instance=instance)
+    if form_instance.is_valid():
+        instance = form_instance.save(commit=False)
+        instance.user = request.user
+        instance.save()
+        return HttpResponseRedirect("/profile/")
+  else:
+    form_instance = forms.ProfileForm()
+
+    context = {
+        "form":form_instance,
+        "title": title,
+        "is_user": checkAuth(request),
+    }
+    return render(request, "main/createProfile.html", context = context)

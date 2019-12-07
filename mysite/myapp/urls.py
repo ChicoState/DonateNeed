@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
@@ -16,5 +18,7 @@ urlpatterns = [
   url(r'^signUp$', views.signUp, name='signUp'),
   url(r'^postsignup$', views.postsignup, name='postsignup'),
   url(r'^agencySignUp/', views.agencySignUp, name='agencySignUp'),
-  url(r'^profile/', views.profile, name='profile')
-]
+  url(r'^profile/', views.profile, name='profile'),
+  url(r'^createProfile/', views.createProfile, name='createProfile'),
+  url(r'^agencyProfile/', views.agencyProfile, name='agencyProfile')
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
