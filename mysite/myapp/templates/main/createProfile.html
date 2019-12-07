@@ -7,15 +7,16 @@
   <div class="row justify-content-md-left align-items-start">
     <h3>Profile Creator</h3>
   </div>
-
-  <form action="{% url 'createProfile' %}" method="post">
+  <form action="{% url 'createProfile' %}" enctype="multipart/form-data" method="post">
     {% csrf_token %}
 
     {{ form.errors }}
 
       <div class="row">
-        <p>Bio: {{ form.bio }}</p>
+        {{ form.as_p }}
+        <!-- <p>Bio: {{ form.bio }}</p>
         <p>Agency: {{ form.agencies }}</p>
+        <img src = "{{ form.picture.url }}" width = "100"> -->
       </div>
 
       <input type="submit" class="button expanded" value="Create Profile" />

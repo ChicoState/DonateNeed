@@ -17,7 +17,14 @@
       <form action="{% url 'agencySignUp' %}" method="post">
         {% csrf_token %}
 
-        {{ form.errors }}
+        {{form.errors}}
+        
+        <div class="row">
+          {{ form.as_p }}
+        </div>
+
+
+        <!-- {{ form.errors }}
         <div class="row">
           <p>Email: {{ form.email }}</p>
         </div>
@@ -37,12 +44,12 @@
 
           <p>Phone Number: {{ form.phone }}</p>
         </div>
-        <div class="row">
+        <div class="row"> -->
 
           <input type="submit" class="button expanded" value="Register" />
-        </div>
-      </form>
 
+      </form>
+        </div>
     {% endif %}
 
 </div>

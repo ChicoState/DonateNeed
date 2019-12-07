@@ -8,13 +8,14 @@
   <div class="row">
     <div class="card col-sm-3">
       <div class="profileImage"></div>
-      <img src="/static/media/defaultProfilePic.jpg" alt="Avatar" style="width:100%">
+      <img src="{{ user.profile.picture.url }}" style="width:100%">
       <h1>{{ user.username }}</h1>
       <p class="title">{{ user.profile.bio }}</p>
       <p class="title">{{ user.profile.agencies.name }}</p>
       <p><button class="profileCardContact">Contact</button></p>
     </div>
   </div>
+    <a href="{% url 'agencyProfile' %}" class="btn mb-2 btn-outline-info">View Agency Profile</a>
 </div>
 
 {% endblock content %}

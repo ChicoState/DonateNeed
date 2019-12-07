@@ -15,6 +15,7 @@ class Agencies(models.Model):
   address = models.CharField(max_length=100)
   url = models.URLField(max_length=100)
   phone = PhoneField()
+  picture = models.ImageField(upload_to='media/', default="defaultProfilePic.jpg", null=True, blank=True)
   def __str__(self):
       return self.name
 
@@ -23,7 +24,9 @@ class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   bio = models.TextField(max_length=500, blank=True)
   agencies = models.ForeignKey(Agencies, on_delete=models.SET_NULL, blank=True, null=True)
-  #picture = models.ImageField(width_field=100, upload_to='media/', default="media/defaultProfilePic.jpg")
+  picture = models.ImageField(upload_to='media/', default="defaultProfilePic.jpg", null=True, blank=True)
+  def __str__(self):
+    return self.user.username
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -31,10 +34,6 @@ def create_user_profile(sender, instance, created, **kwargs):
         Profile.objects.create(user=instance)
 
 post_save.connect(create_user_profile, sender=User)
-
-# @receiver(post_save, sender=User)
-# def save_user_profile(sender, instance, **kwargs):
-#     instance.profile.save()
 
 
 

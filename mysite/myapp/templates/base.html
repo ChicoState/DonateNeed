@@ -44,7 +44,7 @@
 
           <div class="dropdown">
             <button class="btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              <img src="/static/media/defaultProfilePic.jpg" alt="Avatar" class="avatar">
+              <img src="{{ user.profile.picture.url }}", class="avatar">
             </button>
 
             <div class="dropdown-menu">
@@ -56,7 +56,7 @@
               <div class="dropdown-divider"></div>
 
               <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
-              <a class="dropdown-item" href="#">Organizations</a>
+              <a class="dropdown-item" href="{% url 'agencyProfile' %}">Your Organization</a>
               <a class="dropdown-item" href="{% url 'createProfile' %}">Upload Your Info</a>
               <a class="dropdown-item" href="{% url 'agencySignUp' %}">Create Organization</a>
 
