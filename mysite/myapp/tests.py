@@ -3,7 +3,7 @@ from django.test import SimpleTestCase
 from django.test import TestCase
 from django.urls import reverse
 from myapp.views import *
-from myapp.models import Agencies
+from myapp.models import *
 from myapp.forms import RegistrationForm
 
 class view_test(SimpleTestCase):
@@ -27,19 +27,32 @@ class view_test(SimpleTestCase):
 
 class model_test(TestCase):
     def setUp(self):
-        Agencies.objects.create(name = 'fred', email = 'test@gmail.com')
-    def test_model_name(self):
+        usher = User.objects.create(username = 'george')
+        Agencies.objects.create(name = 'fred', email = 'test@gmail.com',address = '123 main st', url= 'google.com', phone = 5051234567, user =usher )
+        #News_Articles.objects.create(url = 'bing.com', description = 'Austin')
+
+    def test_model_Agencies(self):
         test = Agencies.objects.get(id=1)
         expected = f'{test.name}'
         self.assertEquals(expected,'fred')
+        eml = test.email
+        self.assertEquals(eml,'test@gmail.com')
+        ddrss = test.address
+        self.assertEquals(ddrss,'123 main st')
+        rl = test.url
+        self.assertEquals(rl,'google.com')
+        usr = test.user.username
+        self.assertEquals(usr, 'george')
         self.assertEquals(True,True)
-    def test_model_email(self):
-        test = Agencies.objects.get(id=1)
-        expected = f'{test.email}'
-        self.assertEquals(expected,'test@gmail.com')
+
+   # def test_model_News_Articles(self):
+       # test = News_Articles.objects.get(id=1)
+       # pic = test.picture
+       # self.assertEquals(pic,'media/redCross.jpg')
 
 class form_test(TestCase):
     def test_form(self):
         form = RegistrationForm()
         self.assertEquals(form.fields['password1'].label, 'Password' )
         self.assertEquals(True,True)
+
