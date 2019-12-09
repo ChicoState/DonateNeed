@@ -146,7 +146,8 @@ def signUp(request):
         if form_instance.is_valid():
           form_instance.save()
           return HttpResponseRedirect("/")
-    form_instance = forms.RegistrationForm()
+    else:
+        form_instance = forms.RegistrationForm()
 
     context = {
         "form":form_instance,
@@ -204,7 +205,7 @@ def agencySignUp(request):
 
 
   if request.method == "POST":
-    form_instance = forms.AgencyForm(request.POST)
+    form_instance = forms.AgencyForm(request.POST, request.FILES)
     if form_instance.is_valid():
         instance = form_instance.save(commit=False)
         instance.user = request.user

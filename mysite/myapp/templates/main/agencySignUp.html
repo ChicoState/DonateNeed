@@ -17,6 +17,9 @@
       <form action="{% url 'agencySignUp' %}" method="post">
         {% csrf_token %}
         {{ form.errors }}
+        <!-- <div class="row">
+          {{ form.as_p }}
+        </div> -->
         <div class="row">
           <p>Email: {{ form.email }}</p>
         </div>
