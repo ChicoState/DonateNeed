@@ -49,33 +49,32 @@ var add_show_donations = new Vue
 
         created: function()
         {
-            
+            this.fetchDonations();
         },
         methods:
         {
             makeRequest: function(event)
             {
                 this.donation_size = this.donation_size + 1;
-                this.updateDonation();
                 console.log("donation list size: " + this.donation_size);
             },
-            updateDonation: function(event)
+            submitDonations: function({commit}, payload) 
             {
-                var slider = document.getElementById("myRange");
-                var output = document.getElementById("demo");
-                output.innerHTML = slider.value + " / " + slider.max;
-                console.log("Value of Slider: " + slider.value);
+                console.log("Sending over data.");
+
+                axios
+                  .post('/fetch_donation/', payload)
+                  .then(response => {this.donations = response.data.donations}); 
+            },
+            fetchDonations: function()
+            {
+                axios
+                    .get('/fetch_donation/')
+                    .then(response => (this.donations = response.data.donations));
+
+                console.log(this.donations);
             }
-        }
+        }   
     }
 )
-
-
-var slider = document.getElementById("myRange");
-var output = document.getElementById("demo");
-output.innerHTML = slider.value;
-
-slider.oninput = function() {
-  output.innerHTML = this.value;
-}
 

@@ -1,7 +1,5 @@
-from django.shortcuts import render
-from django.shortcuts import redirect
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
@@ -183,6 +181,44 @@ def postsignup(request):
 
 
 
-
+@csrf_exempt
 def donation(request):
-  return render(request, 'main/donation.html')
+
+  form_instance = forms.RegisterDonation()
+  context = {
+      "title":"Suggestion Form",
+      "form":form_instance
+  }
+  return render(request, "main/donation.html", context=context)
+
+
+@csrf_exempt
+def fetch_donation(request):
+
+  if request.method == "POST":
+    if request.user.is_authenticated:
+      form_instance = forms.RegisterDonation(request.POST)
+      if form_instance.is_valid():
+        new_sugge = form_instance.save(request=request)
+
+        donations = models.Donation.objects.all()
+        donation_list = {"donations":[]}
+        
+        for donation in donations:
+            
+            donation_list["donations"] += [{
+                "item":donation.item,
+                "amount":donation.amount
+                }]
+  elif request.method == "GET":
+    donations = models.Donation.objects.all()
+    donation_list = {"donations":[]}
+      
+    for donation in donations:
+        
+      donation_list["donations"] += [{
+        "item":donation.item,
+        "amount":donation.amount
+        }]
+
+  return JsonResponse(donation_list)

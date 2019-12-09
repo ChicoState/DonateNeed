@@ -25,3 +25,18 @@ class RegistrationForm(UserCreationForm):
 
             user.save()
         return user
+
+class RegisterDonation(forms.Form):
+    
+    item = forms.CharField(max_length=300)
+    amount = forms.IntegerField()
+
+    def save(self, request, commit=True):
+
+        new_sugg = models.Donation(
+            item=self.cleaned_data["item"],
+            amount=self.cleaned_data["amount"]
+        )
+        if commit:
+            new_sugg.save()
+        return new_sugg

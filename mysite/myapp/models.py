@@ -41,3 +41,8 @@ class Cause(models.Model):
   title = models.CharField(max_length=100)
   location = models.CharField(max_length=100)
   news_articles = models.ForeignKey(News_Articles, on_delete=models.CASCADE)
+
+class Donation(models.Model):
+
+  item = models.CharField(max_length=300)
+  amount = models.IntegerField()

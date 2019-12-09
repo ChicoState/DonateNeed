@@ -8,7 +8,7 @@
     <div class="row bg-danger">
         <div class="col-4">
             <p>
-                This is the cause you are donating too.
+                This is the cause you are donating to.
             </p>
         </div>
     </div>
@@ -17,10 +17,14 @@
         
             <div id="add-show-donations" class="col-8 bg-primary">
                 <div v-for="one in donation_size">
-                        <input type="text"> <p><span id="demo">0</span></p>
-                        <div v-on:click="updateDonation" class="slidecontainer">
-                            <input type="range" min="0" max="100" value="0" class="slider" id="myRange">
-                        </div>
+                    <p>
+                        <form @submit="submitDonations($data)" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                
+                        Item: {{ form.item }} Amount: {{ form.amount}}
+                        <input type="submit" class="button expanded" value="sumbit" />
+                        </form>
+                    </p>
                 </div>
                 <button v-on:click="makeRequest">+</button>
             </div>
@@ -31,5 +35,6 @@
 
 
 {% block scripts %}
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="{% static "js/myVue.js" %}"></script>
 {% endblock %}
