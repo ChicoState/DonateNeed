@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid profileCard first-element">
+  <div class="row">
+  {% if is_user %}
+  {% if is_agency %}
+    <div class="card col-sm-3">
+      <div class="profileImage"></div>
+      <img src="{{ user.profile.agencies.picture.url }}" style="width:100%">
+      <h1>{{ user.profile.agencies.name }}</h1>
+      <p class="title">{{ user.profile.agencies.email }}</p>
+      <p class="title">{{ user.profile.agencies.address }}</p>
+      <p class="title">{{ user.profile.agencies.phone }}</p>
+      <p><a href="{{ user.profile.agencies.url}}" class="profileCardContact">Visit Agency Website</a></p>
+    </div>
+  {% endif %}
+  {% if not is_agency %}
+    <a href="{% url 'agencySignUp' %}" class="btn mb-2 btn-outline-info">Register Your Organization Here. Then add them to your page.</a>
+  {% endif %}
+  {% endif %}
+  {% if not is_user %}
+  <a href="{% url 'login' %}" class="btn mb-2 btn-outline-info">Log In Here to be able to View Your Organization</a>
+  {% endif %}
+  </div>
+
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+
+<script type="text/javascript" src="{% static "javascript/profile.js"}">
+
+</script>
+
+{% endblock %}
