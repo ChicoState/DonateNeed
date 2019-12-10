@@ -52,7 +52,7 @@ class ProfileForm(ModelForm):
 class AgencyForm(ModelForm):
   class Meta:
    model = Agencies
-   exclude = ['user']
+   exclude = ['user', 'username']
 
   def clean(self):
      cleaned_data = super().clean()
