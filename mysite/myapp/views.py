@@ -296,11 +296,11 @@ def createProfile(request):
     instance  = get_object_or_404(Profile, user=request.user)
     if request.method == "POST":
         form_instance = forms.ProfileForm(request.POST, request.FILES, instance=instance)
-    if form_instance.is_valid():
-        instance = form_instance.save(commit=False)
-        instance.user = request.user
-        instance.save()
-        return HttpResponseRedirect("/profile/")
+        if form_instance.is_valid():
+            instance = form_instance.save(commit=False)
+            instance.user = request.user
+            instance.save()
+            return HttpResponseRedirect("/profile/")
     else:
         form_instance = forms.ProfileForm()
     context = {
