@@ -4,39 +4,19 @@
 
 {% block content %}
 
-
 <div class="container-fluid profileCard first-element">
   <div class="row">
-    {% if is_user %}
-    {% if is_an_account %}
     <div class="card col-sm-3">
       <div class="profileImage"></div>
       <img src="{{ user.profile.picture.url }}" style="width:100%">
-      <h1>{{ user_info.username }}</h1>
-      <p class="title">{{ user_info.email }}</p>
-      <p class="title">{{ user_info.profile.bio }}</p>
-      <p class="title">{{ user_info.profile.agencies.name }}</p>
-      <p><a href="{{ user_info.email }}" class="profileCardContact">Contact</a></p>
+      <h1>{{ user.username }}</h1>
+      <p class="title">{{ user.profile.bio }}</p>
+      <p class="title">{{ user.profile.agencies.name }}</p>
+      <p><button class="profileCardContact">Contact</button></p>
     </div>
-
-    {% if not is_personal_profile %}
-      <a href="{% url 'agencyProfile' %}" class="btn mb-2 btn-outline-info">View This User's Agency Page</a>
-    {% elif is_personal_profile %}
-      <a href="{% url 'agencyProfile' %}" class="btn mb-2 btn-outline-info">View Your Agency's Page</a>
-    {% endif %}
-    {% endif %}
-
-    {% if not is_an_account %}
-      <a href="{% url '' %}" class="btn mb-2 btn-outline-info">This user does not exist. Return to the home page.</a>
-    {% endif %}
-    {% endif %}
-
-    {% if not is_user %}
-      <a href="{% url 'login' %}" class="btn mb-2 btn-outline-info">Log In Here to be able to View This User</a>
-    {% endif %}
   </div>
+    <a href="{% url 'agencyProfile' %}" class="btn mb-2 btn-outline-info">View Agency Profile</a>
 </div>
-
 
 {% endblock content %}
 

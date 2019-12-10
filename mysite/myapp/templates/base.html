@@ -54,8 +54,9 @@
               </div>
 
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="/profile/{{ user.username }}">Profile</a>
-              <a class="dropdown-item" href="/agencyProfile/{{ user.profile.agencies.username }}">Your Organization</a>
+
+              <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+              <a class="dropdown-item" href="{% url 'agencyProfile' %}">Your Organization</a>
               <a class="dropdown-item" href="{% url 'createProfile' %}">Upload Your Info</a>
               <a class="dropdown-item" href="{% url 'agencySignUp' %}">Create Organization</a>
 
