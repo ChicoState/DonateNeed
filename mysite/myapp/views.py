@@ -174,6 +174,44 @@ def postsignup(request):
 
 
 
+def agencyProfile(request, uname=None):
+    title = "Agency Profile"
+    print(uname)
+    if checkAuth(request) == False:
+        return HttpResponseRedirect("/")
+
+    try:
+        agency = models.Agencies.objects.get(username=uname)
+        print(agency)
+        instance  = models.Profile.objects.get(user=request.user)
+        if instance.agencies == agency:
+            is_personal_agency = True
+        else:
+            is_personal_agency = False
+        is_agency = True
+        context = {
+            "title": title,
+            "is_user": checkAuth(request),
+            "user": request.user,
+            "username": uname,
+            "is_agency":is_agency,
+            "agency": agency,
+            "is_personal_agency": is_personal_agency
+        }
+        return render(request, 'main/agencyProfile.html', context=context)
+
+    except models.Agencies.DoesNotExist:
+        is_agency = False
+        is_personal_agency = False
+    context = {
+        "title": title,
+        "is_user": checkAuth(request),
+        "user": request.user,
+        "is_agency": is_agency,
+        "is_personal_agency": is_personal_agency,
+        "username": uname,
+    }
+    return render(request, 'main/agencyProfile.html', context=context)
 
 def agencyProfile(request):
    title = "Agency Profile"
@@ -248,22 +286,20 @@ def createProfile(request):
      return HttpResponseRedirect("/")
 
   user = authenticate(request, is_user=is_user, password=passw)
-
   instance  = get_object_or_404(Profile, user=request.user)
   if request.method == "POST":
-
     form_instance = forms.ProfileForm(request.POST, request.FILES, instance=instance)
     if form_instance.is_valid():
-        instance = form_instance.save(commit=False)
-        instance.user = request.user
-        instance.save()
-        return HttpResponseRedirect("/profile/")
+      instance = form_instance.save(commit=False)
+      instance.user = request.user
+      username = instance.user.username
+      instance.save()
+      return redirect('profile', username=username)
   else:
     form_instance = forms.ProfileForm()
-
-    context = {
-        "form":form_instance,
-        "title": title,
-        "is_user": checkAuth(request),
-    }
-    return render(request, "main/createProfile.html", context = context)
+  context = {
+    "form":form_instance,
+    "title": title,
+    "is_user": checkAuth(request),
+  }
+  return render(request, "main/createProfile.html", context = context)
