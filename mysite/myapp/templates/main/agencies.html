@@ -9,28 +9,29 @@
 </form> -->
 
 <div class="container first-element">
-<h2>Disaster Relief Agencies Near You</h2>
-
- <div class="col-sm-12">
-  <div class="card-columns p-2">
-    {% for agency in agencies %}
-     <div class="card">
-      <img class="card-img-top p-2 night" src="{{ agency.picture.url }}" onerror="this.style.display='none'">
-      <div class="text">
-       <h5>{{ agency.name }}</h5>
-       <p>{{ agency.address }}</p>
-       <p>{{ agency.phone }}</p>
-       <div class="text-center">
-        <a href="{{ agency.url }}" class="btn btn-info mb-2">Visit Website</a>
-       </div>
-       <a href ="{{ agency.url }}" class="stretched-link"></a>
+<br>
+  <h2>Disaster Relief Agencies Near You</h2>
+  <div class="col-sm-12">
+    <div class="card-columns p-2">
+      {% for agency in agencies %}
+      <div class="card">
+        <img class="card-img-top p-2 night" src="{{ agency.picture.url }}" onerror="this.style.display='none'">
+        <div class="text">
+          <h5>{{ agency.name }}</h5>
+          <p>{{ agency.address }}</p>
+          <p>{{ agency.phone }}</p>
+          <div class="text-center">
+            <a href="{{ agency.url }}" class="btn btn-info mb-2">Visit Website</a>
+          </div>
+          {% if is_user %}
+            <a href="/agencyProfile/{{ agency.username }}" class="stretched-link"></a>
+          {% endif %}
         </div>
       </div>
-  {% endfor %}
+      {% endfor %}
+    </div>
   </div>
- </div>
 </div>
-
 
 
 {% endblock content %}

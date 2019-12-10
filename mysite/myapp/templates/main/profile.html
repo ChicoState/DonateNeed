@@ -4,8 +4,11 @@
 
 {% block content %}
 
+
 <div class="container-fluid profileCard first-element">
   <div class="row">
+    {% if is_user %}
+    {% if is_an_account %}
     <div class="card col-sm-3">
       <div class="profileImage"></div>
       <img src="{{ user_info.profile.picture.url }}" style="width:100%">
@@ -32,8 +35,8 @@
       <a href="{% url 'login' %}" class="btn mb-2 btn-outline-info">Log In Here to be able to View This User</a>
     {% endif %}
   </div>
-
 </div>
+
 
 {% endblock content %}
 
