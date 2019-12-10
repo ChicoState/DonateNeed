@@ -11,7 +11,7 @@
     {% if is_an_account %}
     <div class="card col-sm-3">
       <div class="profileImage"></div>
-      <img src="{{ user.profile.picture.url }}" style="width:100%">
+      <img src="{{ user_info.profile.picture.url }}" style="width:100%">
       <h1>{{ user_info.username }}</h1>
       <p class="title">{{ user_info.email }}</p>
       <p class="title">{{ user_info.profile.bio }}</p>
@@ -20,9 +20,9 @@
     </div>
 
     {% if not is_personal_profile %}
-      <a href="{% url 'agencyProfile' %}" class="btn mb-2 btn-outline-info">View This User's Agency Page</a>
+      <a href="/agencyProfile/{{ user_info.profile.agencies.username }}" class="btn mb-2 btn-outline-info">View This User's Agency Page</a>
     {% elif is_personal_profile %}
-      <a href="{% url 'agencyProfile' %}" class="btn mb-2 btn-outline-info">View Your Agency's Page</a>
+      <a href="/agencyProfile/{{ user_info.profile.agencies.username }}" class="btn mb-2 btn-outline-info">View Your Agency's Page</a>
     {% endif %}
     {% endif %}
 

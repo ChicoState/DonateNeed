@@ -174,14 +174,14 @@ def signUp(request):
 
 
 
-def agencyProfile(request, username=None):
+def agencyProfile(request, uname=None):
     title = "Agency Profile"
-    print(username)
+    print(uname)
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
 
     try:
-        agency = models.Agencies.objects.get(username=username)
+        agency = models.Agencies.objects.get(username=uname)
         print(agency)
         instance  = models.Profile.objects.get(user=request.user)
         if instance.agencies == agency:
@@ -193,7 +193,7 @@ def agencyProfile(request, username=None):
             "title": title,
             "is_user": checkAuth(request),
             "user": request.user,
-            "username": username,
+            "username": uname,
             "is_agency":is_agency,
             "agency": agency,
             "is_personal_agency": is_personal_agency
@@ -209,7 +209,7 @@ def agencyProfile(request, username=None):
         "user": request.user,
         "is_agency": is_agency,
         "is_personal_agency": is_personal_agency,
-        "username": username,
+        "username": uname,
     }
     return render(request, 'main/agencyProfile.html', context=context)
 
@@ -296,11 +296,12 @@ def createProfile(request):
     instance  = get_object_or_404(Profile, user=request.user)
     if request.method == "POST":
         form_instance = forms.ProfileForm(request.POST, request.FILES, instance=instance)
-    if form_instance.is_valid():
-        instance = form_instance.save(commit=False)
-        instance.user = request.user
-        instance.save()
-        return HttpResponseRedirect("/profile/")
+        if form_instance.is_valid():
+            instance = form_instance.save(commit=False)
+            instance.user = request.user
+            username = instance.user.username
+            instance.save()
+            return redirect('profile', username=username)
     else:
         form_instance = forms.ProfileForm()
     context = {

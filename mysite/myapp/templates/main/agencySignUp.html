@@ -3,24 +3,24 @@
 {% block title %}Agency Registration{% endblock %}
 {% block content %}
 <div class="container first-element">
-
+  <br>
   <div class="row justify-content-md-left align-items-start">
     {% if not is_user %}
       <h4>To register an agency you must be signed in</h4>
-      </div>
+
       <a class="btn btn-info" href="/login/" role="button">Sign In Here</a>
     {% endif %}
     {% if is_user %}
         <h3>Agency Registration</h3>
       </div>
 
-      <form action="{% url 'agencySignUp' %}" method="post">
+      <form action="{% url 'agencySignUp' %}" enctype="multipart/form-data" method="post">
         {% csrf_token %}
         {{ form.errors }}
-        <!-- <div class="row">
-          {{ form.as_p }}
-        </div> -->
         <div class="row">
+          {{ form.as_p }}
+        </div>
+        <!-- <div class="row">
           <p>Email: {{ form.email }}</p>
         </div>
         <div class="row">
@@ -38,7 +38,7 @@
         <div class="row">
 
           <p>Phone Number: {{ form.phone }}</p>
-        </div>
+        </div> -->
         <div class="row">
 
           <input type="submit" class="button expanded" value="Register" />
@@ -46,6 +46,6 @@
       </form>
         </div>
     {% endif %}
-
+<br>
 </div>
 {% endblock %}

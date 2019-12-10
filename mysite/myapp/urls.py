@@ -21,5 +21,5 @@ urlpatterns = [
   url(r'^agencySignUp/', views.agencySignUp, name='agencySignUp'),
   url(r'^profile/(?P<username>.+)/', views.profile, name='profile'),
   url(r'^createProfile/', views.createProfile, name='createProfile'),
-  url(r'^agencyProfile/(?P<username>.+)', views.agencyProfile, name='agencyProfile'),
+  url(r'^agencyProfile/(?P<uname>.+)', views.agencyProfile, name='agencyProfile'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
