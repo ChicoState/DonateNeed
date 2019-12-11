@@ -9,6 +9,8 @@ from django.contrib.auth import logout
 from . import forms
 from . import models
 
+import json
+
 
 # For Testing
 class Card:
@@ -196,29 +198,33 @@ def donation(request):
 def fetch_donation(request):
 
   if request.method == "POST":
-    if request.user.is_authenticated:
-      form_instance = forms.RegisterDonation(request.POST)
-      if form_instance.is_valid():
-        new_sugge = form_instance.save(request=request)
 
-        donations = models.Donation.objects.all()
-        donation_list = {"donations":[]}
-        
-        for donation in donations:
-            
-            donation_list["donations"] += [{
-                "item":donation.item,
-                "amount":donation.amount
-                }]
-  elif request.method == "GET":
-    donations = models.Donation.objects.all()
-    donation_list = {"donations":[]}
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    content = body['add_donations']
+    
+    for sub in content:
+      print(sub['item'])
+
+    form_instance = forms.RegisterDonation()
+    # form_instance.item = content[0]['item']
+    # form_instance.amount_total[0]['amount']
+    
+    if form_instance.is_valid():
+      new_sugge = form_instance.save(request=request)
+
+      print("Saved")
+
+  donations = models.Donation.objects.all()
+  donation_list = {"donations":[]}
+    
+  for donation in donations:
       
-    for donation in donations:
-        
-      donation_list["donations"] += [{
-        "item":donation.item,
-        "amount":donation.amount
-        }]
+    donation_list["donations"] += [{
+      "item":donation.item,
+      "amount":donation.amount
+      }]
+
+  print(donation_list)
 
   return JsonResponse(donation_list)

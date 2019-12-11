@@ -43,34 +43,46 @@ var add_show_donations = new Vue
         delimiters: ['[[', ']]'],
         data:
         {
-            donations: [],
+            donations: {},
+            add_donations: [],
             donation_size: 0
         },
 
         created: function()
         {
-            this.fetchDonations();
+            //this.fetchDonations();
         },
         methods:
         {
             makeRequest: function(event)
             {
-                this.donation_size = this.donation_size + 1;
+                this.add_donations.push({item: "", amount: null})
                 console.log("donation list size: " + this.donation_size);
             },
-            submitDonations: function({commit}, payload) 
+            submitDonations: function(payload) 
             {
-                console.log("Sending over data.");
+                
 
-                axios
-                  .post('/fetch_donation/', payload)
-                  .then(response => {this.donations = response.data.donations}); 
+                const config = {
+                    headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                };
+
+                axios({
+                    method: 'post',
+                    url: '/fetch_donation/',
+                    data: payload,
+                    config: config
+                  })
+                  .then(response => (this.donations = response.data))
             },
             fetchDonations: function()
             {
                 axios
-                    .get('/fetch_donation/')
-                    .then(response => (this.donations = response.data.donations));
+                    .get('/fetch_donation')
+                    .then(response => {this.donations = response.data.donations;
+                        });
 
                 console.log(this.donations);
             }

@@ -28,8 +28,9 @@ class RegistrationForm(UserCreationForm):
 
 class RegisterDonation(forms.Form):
     
-    item = forms.CharField(max_length=300)
-    amount = forms.IntegerField()
+    class Meta:
+        model = models.Request_In_Progress
+        fields = ("item", "amount_total")
 
     def save(self, request, commit=True):
 

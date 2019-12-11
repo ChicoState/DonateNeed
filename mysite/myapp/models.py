@@ -23,10 +23,11 @@ class Request_Fulfilled(models.Model):
   promisedArrival = models.DateField(auto_now=False)
 
 class Request_In_Progress(models.Model):
+  item = models.CharField(max_length=250)
   amount_total = models.DecimalField(max_digits=10, decimal_places=2)
-  amount_fulfilled = models.DecimalField(max_digits=10, decimal_places=2)
+  amount_fulfilled = models.DecimalField(max_digits=10, decimal_places=2, default=0)
   is_complete = models.BooleanField(default=False)
-  date_requested = models.DateField(auto_now=False)
+  date_requested = models.DateField(auto_now=False, auto_now_add=True)
   request_fulfillment = models.ForeignKey(Request_Fulfilled, on_delete=models.CASCADE)
 
 class Account_Page(models.Model):
