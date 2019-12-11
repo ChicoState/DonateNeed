@@ -276,18 +276,19 @@ def profile(request, username=None):
         }
         return render(request, 'main/profile.html', context=context)
     except models.User.DoesNotExist:
-        is_an_account = False
-    is_personal_profile = False
-    context = {
-        "title": title,
-        "is_user": checkAuth(request),
-        "user": request.user,
-        "username": username,
-        "is_an_account":is_an_account,
-        "is_personal_profile": is_personal_profile,
-        "has_agency": has_agency,
-    }
-    return render(request, 'main/profile.html', context=context)
+        return HttpResponseRedirect("/")
+    #     is_an_account = False
+    # is_personal_profile = False
+    # context = {
+    #     "title": title,
+    #     "is_user": checkAuth(request),
+    #     "user": request.user,
+    #     "username": username,
+    #     "is_an_account":is_an_account,
+    #     "is_personal_profile": is_personal_profile,
+    #     "has_agency": has_agency,
+    # }
+    # return render(request, 'main/profile.html', context=context)
 
 
 

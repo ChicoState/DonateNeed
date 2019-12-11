@@ -18,14 +18,22 @@
       <p class="title">{{ user_info.profile.agencies.name }}</p>
       <p><a href="{{ user_info.email }}" class="profileCardContact">Contact</a></p>
     </div>
+  </div>
+  </div>
+<br>
+<div class="row justify-content-md-center align-items-start">
 
+  <div class="col-4">
     {% if not is_personal_profile %}
-      <a href="/agencyProfile/{{ user_info.profile.agencies.username }}" class="btn mb-2 btn-outline-info">View This User's Agency Page</a>
+      <h3>View Their Agency Page:</h3>
+      <a href="/agencyProfile/{{ user_info.profile.agencies.username }}" class="btn mb-2 btn-outline-info">{{ user_info.profile.agencies.name }}</a>
     {% elif is_personal_profile %} <!-- end of not personal profile, beginning of if true-->
     {% if has_agency %}
-      <a href="/agencyProfile/{{ user_info.profile.agencies.username }}" class="btn mb-2 btn-outline-info">View Your Agency's Page</a>
+      <h3>View Your Agency's Page:</h3>
+      <a href="/agencyProfile/{{ user_info.profile.agencies.username }}" class="btn mb-2 btn-outline-info">{{ user_info.profile.agencies.name }}</a>
     {% elif not has_agency %} <!-- end of agency, now no agency  -->
-      <a href="{% url 'addAgency' %}" class="btn mb-2 btn-outline-info">Don't have an agency? Associate yourself with one here.</a>
+      <h3>Don't have an agency? Associate yourself with one here:</h3>
+      <a href="{% url 'addAgency' %}" class="btn mb-2 btn-outline-info">Add Agency</a>
     {% endif %} <!-- end of has_agency -->
     {% endif %} <!-- end of if is_personal_profile -->
 

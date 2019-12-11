@@ -8,6 +8,7 @@
   <div class="row">
     {% if not is_agency %}
       <a href="{% url 'agencySignUp' %}" class="btn mb-2 btn-outline-info">This organization does not exist yet. Register your organization here. Then add them to your page.</a>
+    </div>
     {% endif %}
   {% if is_agency %}
     <div class="card col-sm-3">
