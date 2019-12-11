@@ -204,16 +204,13 @@ def fetch_donation(request):
     content = body['add_donations']
     
     for sub in content:
-      print(sub['item'])
 
-    form_instance = forms.RegisterDonation()
-    # form_instance.item = content[0]['item']
-    # form_instance.amount_total[0]['amount']
-    
-    if form_instance.is_valid():
-      new_sugge = form_instance.save(request=request)
-
-      print("Saved")
+      form_instance = forms.RegisterDonation()
+      form_instance.item = sub['item']
+      form_instance.amount = sub['amount']
+      
+      new_sugge = form_instance.save()
+      print(form_instance.item + " " + form_instance.amount)
 
   donations = models.Donation.objects.all()
   donation_list = {"donations":[]}
