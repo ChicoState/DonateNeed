@@ -4,7 +4,7 @@ import django
 from django.core.files import File
 os.environ["DJANGO_SETTINGS_MODULE"] = 'mysite.settings'
 django.setup()
-from myapp import models 
+from myapp import models
 
 import urllib.request
 import time
@@ -30,7 +30,10 @@ def getPicture(url):
   soup = BeautifulSoup(html, "html.parser")
   picture = soup.find("img", attrs={"class":"img-fluid"})
   if(picture):
-    return picture['src']
+      if(picture['src'] == 'https://ftp2.actionnewsnow.com/Watches%20and%20Warnings.jpg'):
+          # picture['src'] = 'https://www.realmilkpaint.com/wp-content/uploads/SoftWhite_Edited_2018.jpg'
+          return None
+      return picture['src']
 
 
 while(1):
@@ -69,5 +72,3 @@ while(1):
 
   print("Resting")
   time.sleep(60)
-
-

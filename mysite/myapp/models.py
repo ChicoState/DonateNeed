@@ -30,11 +30,11 @@ class Agencies(models.Model):
   name = models.CharField(max_length=100)
   email = models.EmailField(max_length=50)
   address = models.CharField(max_length=100)
-  url = models.URLField(max_length=100)
+  url = models.URLField(max_length=200)
   phone = PhoneField()
   username = models.CharField(max_length=100, null=True)
   picture = models.ImageField(upload_to='media/', default="defaultProfilePic.jpg", null=True, blank=True)
-  causes = models.ManyToManyField(Cause, null=True, blank=True)
+  causes = models.ManyToManyField(Cause, blank=True)
   def __str__(self):
       return self.name
 

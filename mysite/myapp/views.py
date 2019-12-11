@@ -28,7 +28,8 @@ def checkAuth(request):
 # Create your views here.
 def home(request):
     title = "Home "
-    articles = models.News_Articles.objects.all()[:4]
+    articles = models.News_Articles.objects.all().order_by('-picture')
+    articles = articles[:4]
     Agenciess = models.Agencies.objects.all()[:6]
     context = {
         "user" : request.user,
@@ -60,7 +61,8 @@ def agencies(request):
 
 def trending(request):
     title = "Trending News "
-    articles = models.News_Articles.objects.all()[:40]
+    articles = models.News_Articles.objects.all().order_by('-picture')
+    # articles = articles[:10]
 
     context = {
         "title": title,
@@ -149,7 +151,8 @@ def signUp(request):
                 "user":user,
                 "is_user": checkAuth(request),
             }
-            return render(request, "main/signIn.html", context = context)
+            # return render(request, "main/signIn.html", context = context)
+            return HttpResponseRedirect("/")
 
     else:
         form_instance = forms.RegistrationForm()

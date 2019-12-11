@@ -200,10 +200,11 @@ a:hover
 /*--------------------*/
 .avatar {
   vertical-align: middle;
+  margin: auto;
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  margin-right: 10px;
+  /* margin-right: 10px; */
 }
 
 /*--------------------*/
