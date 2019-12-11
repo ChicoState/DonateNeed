@@ -1,6 +1,11 @@
 from django.conf.urls import url
+from django.urls import path
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
@@ -12,7 +17,13 @@ urlpatterns = [
   url(r'^postSignIn/', views.postSignIn, name='postsignin'),
   url('logout/', views.logout_view, name='logout'),
   url(r'^signUp$', views.signUp, name='signUp'),
-  url(r'^postsignup$', views.postsignup, name='postsignup'),
+  # url(r'^postsignup$', views.postsignup, name='postsignup'),
   url(r'^agencySignUp/', views.agencySignUp, name='agencySignUp'),
-  url(r'^profile/', views.profile, name='profile')
-]
+  url(r'^profile/(?P<username>.+)/', views.profile, name='profile'),
+  url(r'^createProfile/', views.createProfile, name='createProfile'),
+  url(r'^agencyProfile/(?P<uname>.+)', views.agencyProfile, name='agencyProfile'),
+  url(r'^createCause/', views.createCause, name='createCause'),
+  url(r'^addAgency/', views.addAgency, name='addAgency'),
+  url(r'^pledgeSupport/', views.pledgeSupport, name='pledgeSupport'),
+  url(r'^cause/(?P<username>.+)', views.causePage, name='causePage'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

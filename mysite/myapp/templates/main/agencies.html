@@ -4,33 +4,34 @@
 
 {% block content %}
 <!-- <form class="form-inline first-element">
-   <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"> 
+   <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 </form> -->
-<br>
-<br>
-<br>
-<h2>Disaster Relief Agencies Near You</h2>
 
- <div class="col-sm-12">
-  <div class="card-columns p-2">
-    {% for card in cards %} 
-     <div class="card">
-      <img class="card-img-top p-2 night" src="{% static card.picUrl %}" onerror="this.style.display='none'">
-      <div class="text">
-       <h5>{{ card.name }}</h5>
-       <p>{{ card.address }}</p>
-       <p>{{ card.phone }}</p>
-       <div class="text-center">
-        <a href="{{ card.url }}" class="btn btn-info mb-2">Visit Website</a>
-       </div>
-       <a href ="{{ card.url }}" class="stretched-link"></a>
+<div class="container first-element">
+<br>
+  <h2>Disaster Relief Agencies Near You</h2>
+  <div class="col-sm-12">
+    <div class="card-columns p-2">
+      {% for agency in agencies %}
+      <div class="card">
+        <img class="card-img-top p-2 night" src="{{ agency.picture.url }}" onerror="this.style.display='none'">
+        <div class="text">
+          <h5>{{ agency.name }}</h5>
+          <p>{{ agency.address }}</p>
+          <p>{{ agency.phone }}</p>
+          <div class="text-center">
+            <a href="{{ agency.url }}" class="btn btn-info mb-2">Visit Website</a>
+          </div>
+          {% if is_user %}
+            <a href="/agencyProfile/{{ agency.username }}" class="stretched-link"></a>
+          {% endif %}
         </div>
       </div>
-  {% endfor %}
+      {% endfor %}
+    </div>
   </div>
- </div>
-
+</div>
 
 
 {% endblock content %}

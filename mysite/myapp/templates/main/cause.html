@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+
+<div class="container-fluid profileCard first-element">
+  <br>
+  <div class="row">
+    {% if is_user %}
+    {% if is_cause %}
+    <div class="card col-sm-3">
+      <div class="profileImage"></div>
+      <h1>{{ cause_info.title }}</h1>
+      <p class="title">{{ cause_info.location }}</p>
+      <p><a href="{{ cause_info.title }}" class="profileCardContact">Contact</a></p>
+    </div>
+
+
+
+    {% elif not is_cause %}  <!-- end of if account, beginning of not account  -->
+      <a href="{% url '' %}" class="btn mb-2 btn-outline-info">This cause does not exist. Return to the home page.</a>
+    {% endif %}  <!-- end of if not account -->
+
+
+    {% endif %}  <!-- end of if user, beginning of not user  -->
+
+  </div>
+  <br>
+</div>
+
+
+{% endblock content %}
+
+{% block scripts %}
+
+<script type="text/javascript" src="{% static "javascript/profile.js"}">
+
+</script>
+
+{% endblock %}
