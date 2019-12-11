@@ -182,8 +182,9 @@ def agencyProfile(request, uname=None):
 
     try:
         agency = models.Agencies.objects.get(username=uname)
-        print(agency)
         instance  = models.Profile.objects.get(user=request.user)
+        causes = agency.causes
+
         if instance.agencies == agency:
             is_personal_agency = True
         else:
@@ -196,6 +197,7 @@ def agencyProfile(request, uname=None):
             "username": uname,
             "is_agency":is_agency,
             "agency": agency,
+             "causes": causes,
             "is_personal_agency": is_personal_agency
         }
         return render(request, 'main/agencyProfile.html', context=context)
@@ -247,14 +249,16 @@ def agencySignUp(request):
 
 
 def profile(request, username=None):
-    print(username)
     title = "Profile"
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
+    has_agency = False
     try:
         user_info = models.User.objects.get(username=username)
         if user_info == request.user:
             is_personal_profile = True
+            if request.user.profile.agencies is not None:
+                has_agency = True
         else:
            is_personal_profile = False
 
@@ -266,6 +270,7 @@ def profile(request, username=None):
             "username": username,
             "is_an_account":is_an_account,
             "user_info": user_info,
+            "has_agency": has_agency,
             "is_personal_profile": is_personal_profile,
         }
         return render(request, 'main/profile.html', context=context)
@@ -279,6 +284,7 @@ def profile(request, username=None):
         "username": username,
         "is_an_account":is_an_account,
         "is_personal_profile": is_personal_profile,
+        "has_agency": has_agency,
     }
     return render(request, 'main/profile.html', context=context)
 
@@ -310,3 +316,126 @@ def createProfile(request):
         "is_user": checkAuth(request),
     }
     return render(request, "main/createProfile.html", context = context)
+
+
+
+def createCause(request):
+    title = "Create Cause"
+    signedIn = True
+    is_user = request.POST.get('is_user')
+    passw = request.POST.get("pass")
+    if checkAuth(request) == False:
+        return HttpResponseRedirect("/")
+
+    if request.method == "POST":
+        form_instance = forms.CauseForm(request.POST)
+        if form_instance.is_valid():
+            instance = form_instance.save(commit=False)
+            title = instance.title
+            instance.username = re.sub(r"\s+", "", title)
+            instance.save()
+            return HttpResponseRedirect("/")
+    else:
+        form_instance = forms.CauseForm()
+    context = {
+        "form" : form_instance,
+        "e": is_user,
+        "signedIn": signedIn,
+        "is_user": checkAuth(request),
+    }
+    return render(request, 'main/createCause.html', context=context)
+
+
+
+
+def pledgeSupport(request):
+    title = "Pledge Support to a Cause"
+    signedIn = True
+    is_user = request.POST.get('is_user')
+    passw = request.POST.get("pass")
+    if checkAuth(request) == False:
+        return HttpResponseRedirect("/")
+
+    instance  = models.Profile.objects.get(user=request.user)
+    if instance.agencies is None:
+        return HttpResponseRedirect("/")
+    agency_name = instance.agencies.name
+    agency = instance
+    if agency is None:
+        is_agency = False
+    else:
+        is_agency = True
+
+    if request.method == "POST":
+        form_instance = forms.PledgeSupportForm(request.POST)
+        if form_instance.is_valid():
+            id = request.POST.get('causes')
+            agency = models.Agencies.objects.get(name = agency_name)
+            agency.causes.add(id)
+            return HttpResponseRedirect("/")
+    else:
+        form_instance = forms.PledgeSupportForm()
+    context = {
+        "form" : form_instance,
+        "e": is_user,
+        "signedIn": signedIn,
+        "is_agency": is_agency,
+        "is_user": checkAuth(request),
+    }
+    return render(request, 'main/pledgeSupport.html', context=context)
+
+
+
+
+def addAgency(request):
+    title = "Pledge Support to a Cause"
+    signedIn = True
+    is_user = request.POST.get('is_user')
+    passw = request.POST.get("pass")
+    if checkAuth(request) == False:
+        return HttpResponseRedirect("/")
+
+    instance  = models.Profile.objects.get(user=request.user)
+
+
+    if request.method == "POST":
+        form_instance = forms.AddAgencyForm(request.POST, instance=instance)
+        if form_instance.is_valid():
+            instance = form_instance.save(commit=False)
+            instance.user = request.user
+            username = instance.user.username
+            instance.save()
+            return redirect('profile', username=username)
+    else:
+        form_instance = forms.AddAgencyForm()
+    context = {
+        "form" : form_instance,
+        "e": is_user,
+        "signedIn": signedIn,
+        "instance": instance,
+        "is_user": checkAuth(request),
+    }
+    return render(request, 'main/addAgency.html', context=context)
+
+
+
+def causePage(request, username=None):
+    title = "Cause"
+    if checkAuth(request) == False:
+        return HttpResponseRedirect("/")
+    cause_info = username
+    try:
+        cause_info = models.Cause.objects.get(username=username)
+        is_cause = True
+
+    except models.Cause.DoesNotExist:
+        is_cause = False
+    context = {
+        "title": title,
+        "is_user": checkAuth(request),
+        "user": request.user,
+        "username": username,
+        "is_cause": is_cause,
+        "cause_info": cause_info,
+    }
+    return render(request, 'main/cause.html', context=context)

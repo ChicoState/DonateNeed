@@ -17,34 +17,18 @@
       <form action="{% url 'agencySignUp' %}" enctype="multipart/form-data" method="post">
         {% csrf_token %}
         {{ form.errors }}
+
+        {% for field in form %}
         <div class="row">
-          {{ form.as_p }}
+          <p>{{ field.label }}: {{ field }}</p>
         </div>
-        <!-- <div class="row">
-          <p>Email: {{ form.email }}</p>
-        </div>
-        <div class="row">
+        {% endfor %}
 
-          <p>Agency Name: {{ form.name }}</p>
-        </div>
-        <div class="row">
-
-          <p>Address: {{ form.address }}</p>
-        </div>
-        <div class="row">
-
-          <p>Website URL: {{ form.url }}</p>
-        </div>
-        <div class="row">
-
-          <p>Phone Number: {{ form.phone }}</p>
-        </div> -->
-        <div class="row">
-
-          <input type="submit" class="button expanded" value="Register" />
-
+      <div class="row">
+        <input type="submit" class="button expanded" value="Register" />
+      </div>
       </form>
-        </div>
+
     {% endif %}
 <br>
 </div>

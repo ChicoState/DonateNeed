@@ -11,14 +11,17 @@ from django.dispatch import receiver
 class Cause(models.Model):
   title = models.CharField(max_length=100)
   location = models.CharField(max_length=100)
+  username = models.CharField(max_length=100, null=True)
+  def __str__(self):
+    return self.title
 
 
 class News_Articles(models.Model):
-  picture = models.URLField(max_length=100)
+  picture = models.URLField(max_length=100, null=True)
   url = models.URLField(max_length=100)
-  title = models.CharField(max_length=100)
-  description = models.CharField(max_length=1000)
-  cause = models.ForeignKey(Cause, on_delete=models.SET_NULL, blank=True, null=True)
+  title = models.CharField(max_length=100, null=True)
+  description = models.CharField(max_length=1000, null=True)
+  # cause = models.ManyToManyField(Cause, on_delete=models.SET_NULL, blank=True, null=True)
 
 
 
@@ -31,6 +34,7 @@ class Agencies(models.Model):
   phone = PhoneField()
   username = models.CharField(max_length=100, null=True)
   picture = models.ImageField(upload_to='media/', default="defaultProfilePic.jpg", null=True, blank=True)
+  causes = models.ManyToManyField(Cause, null=True, blank=True)
   def __str__(self):
       return self.name
 
@@ -55,9 +59,9 @@ post_save.connect(create_user_profile, sender=User)
 
 
 
-class Agencies_Page(models.Model):
-  causes = models.ManyToManyField(Cause)
-  agency = models.ForeignKey(Agencies, on_delete=models.CASCADE, null=True, blank=True, unique=True)
+# class Agencies_Page(models.Model):
+#   # causes = models.ManyToManyField(Cause)
+#   agency = models.ForeignKey(Agencies, on_delete=models.CASCADE, null=True, blank=True, unique=True)
 
 
 

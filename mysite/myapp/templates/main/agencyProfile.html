@@ -6,6 +6,9 @@
 
 <div class="container-fluid profileCard first-element">
   <div class="row">
+    {% if not is_agency %}
+      <a href="{% url 'agencySignUp' %}" class="btn mb-2 btn-outline-info">This organization does not exist yet. Register your organization here. Then add them to your page.</a>
+    {% endif %}
   {% if is_agency %}
     <div class="card col-sm-3">
       <div class="profileImage"></div>
@@ -15,14 +18,25 @@
       <p class="title">{{ agency.address }}</p>
       <p class="title">{{ agency.phone }}</p>
       <p><a href="{{ agency.url}}" class="profileCardContact">Visit Agency Website</a></p>
-    </div>
-  {% endif %}
 
-  {% if not is_agency %}
-    <a href="{% url 'agencySignUp' %}" class="btn mb-2 btn-outline-info">This organization does not exist yet. Register your organization here. Then add them to your page.</a>
-  {% endif %}
-  
+    </div>
+
+
+
   </div>
+</div>
+<div class="row justify-content-md-center align-items-start">
+
+  <div class="col-4">
+
+<h3>Causes we support:</h3>
+  {% if agency.causes is not None %}
+    {% for cause in agency.causes.all %}
+    <a href="/cause/{{ cause.username }}" class ="btn mb-2 btn-outline-info">{{cause.title}}</a>
+    {% endfor %}
+  {% endif %}
+{% endif %}
+
 </div>
 
 

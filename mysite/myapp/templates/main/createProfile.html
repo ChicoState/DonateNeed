@@ -12,14 +12,14 @@
 
     {{ form.errors }}
 
-      <div class="row">
-        {{ form.as_p }}
-        <!-- <p>Bio: {{ form.bio }}</p>
-        <p>Agency: {{ form.agencies }}</p>
-        <img src = "{{ form.picture.url }}" width = "100"> -->
-      </div>
-
+    {% for field in form %}
+    <div class="row">
+      <p>{{ field.label }}: {{ field }}</p>
+    </div>
+    {% endfor %}
+    <div class="row">
       <input type="submit" class="button expanded" value="Create Profile" />
+    </div>
   </form>
   <br>
 </div>
