@@ -29,7 +29,7 @@ def checkAuth(request):
 def home(request):
     title = "Home "
     articles = models.News_Articles.objects.all()[:4]
-    Agenciess = models.Agencies.objects.all()
+    Agenciess = models.Agencies.objects.all()[:6]
     context = {
         "user" : request.user,
         "title": title,
@@ -144,7 +144,12 @@ def signUp(request):
         form_instance = forms.RegistrationForm(request.POST)
         if form_instance.is_valid():
             form_instance.save()
-            return HttpResponseRedirect("/")
+            user = request.user
+            context = {
+                "user":user,
+                "is_user": checkAuth(request),
+            }
+            return render(request, "main/signIn.html", context = context)
 
     else:
         form_instance = forms.RegistrationForm()
@@ -235,7 +240,7 @@ def agencySignUp(request):
             name = instance.name
             instance.username = re.sub(r"\s+", "", name)
             instance.save()
-            return HttpResponseRedirect("/")
+            return redirect("/")
     else:
         form_instance = forms.AgencyForm()
     context = {
