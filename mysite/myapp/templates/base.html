@@ -57,9 +57,11 @@
               <a class="dropdown-item" href="/profile/{{ user.username }}">Profile</a>
               {% if user.profile.agencies.username is not None %}
               <a class="dropdown-item" href="/agencyProfile/{{ user.profile.agencies.username }}">Your Organization</a>
+              {% elif user.profile.agencies.username is None %}
+              <a class="dropdown-item" href="{% url 'addAgency' %}">Add Existing Agency</a>
               {% endif %}
               <a class="dropdown-item" href="{% url 'createProfile' %}">Upload Your Info</a>
-              <a class="dropdown-item" href="{% url 'agencySignUp' %}">Create Organization</a>
+              <a class="dropdown-item" href="{% url 'agencySignUp' %}">Create Agency</a>
 
               <div class="dropdown-divider"></div>
 
