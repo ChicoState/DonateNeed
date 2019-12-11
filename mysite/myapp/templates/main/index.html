@@ -8,7 +8,7 @@
 <div id="top" class="jumbotron jumbotron-fluid jumboImg">
   <div class="container slide-bottom" id="slogan">
 
-      <h1 class="display-3 text-center ml3" style="color:white">Changing the World, one Step at a Time</h1>
+      <h1 class="display-3 text-center ml3" style="color:white">Changing the World, one Donation at a Time</h1>
   </div>
 
   <a href="#profile" class="scroll-down">
@@ -16,7 +16,6 @@
   	<div class="arrow bounce"></div>
   </a>
 </div>
-
 
 <div id="profile">
   <div class="container first-element">
@@ -26,19 +25,19 @@
       <div class = "col-6">
         <a href={{ article.url }}>
           <h3>{{ article.title }}</h3>
-          <img src={{ article.picture }}>
+          <img src={{ article.picture }} style="width:100%">
           <p>{{ article.description }}</p>
           <p>Read more</p>
         </a>
       </div>
 
-      <div class="col-6">
+      <!-- <div class="col-6">
         <br>
-        <h3>Agencies Contributing to this Cause:</h3>
+        <h3>More about this event and agency supporters:</h3>
         <a href="https://www.redcross.org" class="btn mb-2 btn-outline-info">American Red Cross</a>
         <a href="http://www.ncchico.org/" class="btn mb-2 btn-outline-info">Neighborhood Church of Chico</a>
         <a href="https://www.redcross.org" class="btn mb-2 btn-outline-info">Northern Valley Catholic Social Service</a>
-      </div>
+      </div> -->
     {% endfor %}
 
     </div>
@@ -64,7 +63,7 @@
             <div class="text-center">
               <a href="{{ agency.url }}" class="btn mb-2 btn-outline-info">Visit Website</a>
             </div>
-            <a href ="{{ agency.url }}" class="stretched-link"></a>
+            <a href ="/agencyProfile/{{ agency.username }}" class="stretched-link"></a>
           </div>
         </div>
       {% endfor %}

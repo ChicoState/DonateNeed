@@ -4,20 +4,55 @@
 
 {% block content %}
 
+
 <div class="container-fluid profileCard first-element">
   <div class="row">
+    {% if is_user %}
+    {% if is_an_account %}
     <div class="card col-sm-3">
       <div class="profileImage"></div>
-      <img src="{{ user.profile.picture.url }}" style="width:100%">
-      <h1>{{ user.username }}</h1>
-      <p class="title">{{ user.profile.bio }}</p>
-      <p class="title">{{ user.profile.agencies.name }}</p>
-      <p><button class="profileCardContact">Contact</button></p>
+      <img src="{{ user_info.profile.picture.url }}" style="width:100%">
+      <h1>{{ user_info.username }}</h1>
+      <p class="title">{{ user_info.email }}</p>
+      <p class="title">{{ user_info.profile.bio }}</p>
+      <p class="title">{{ user_info.profile.agencies.name }}</p>
+      <p><a href="{{ user_info.email }}" class="profileCardContact">Contact</a></p>
     </div>
   </div>
+<<<<<<< HEAD
     <a href="{% url 'agencyProfile' %}" class="btn mb-2 btn-outline-info">View Agency Profile</a>
 
+=======
+  </div>
+<br>
+<div class="row justify-content-md-center align-items-start">
+
+  <div class="col-4">
+    {% if not is_personal_profile %}
+      <h3>View Their Agency Page:</h3>
+      <a href="/agencyProfile/{{ user_info.profile.agencies.username }}" class="btn mb-2 btn-outline-info">{{ user_info.profile.agencies.name }}</a>
+    {% elif is_personal_profile %} <!-- end of not personal profile, beginning of if true-->
+    {% if has_agency %}
+      <h3>View Your Agency's Page:</h3>
+      <a href="/agencyProfile/{{ user_info.profile.agencies.username }}" class="btn mb-2 btn-outline-info">{{ user_info.profile.agencies.name }}</a>
+    {% elif not has_agency %} <!-- end of agency, now no agency  -->
+      <h3>Don't have an agency? Associate yourself with one here:</h3>
+      <a href="{% url 'addAgency' %}" class="btn mb-2 btn-outline-info">Add Agency</a>
+    {% endif %} <!-- end of has_agency -->
+    {% endif %} <!-- end of if is_personal_profile -->
+
+    {% elif not is_an_account %}  <!-- end of if account, beginning of not account  -->
+      <a href="{% url '' %}" class="btn mb-2 btn-outline-info">This user does not exist. Return to the home page.</a>
+    {% endif %}  <!-- end of if not account -->
+
+
+    {% elif not is_user %}  <!-- end of if user, beginning of not user  -->
+      <a href="{% url 'login' %}" class="btn mb-2 btn-outline-info">Log In Here to be able to View This User</a>
+    {% endif %}  <!-- end of if not user  -->
+  </div>
+>>>>>>> f909c2ac28cd0c08e138299c3892083536b41e11
 </div>
+
 
 {% endblock content %}
 
