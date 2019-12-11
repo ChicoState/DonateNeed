@@ -28,7 +28,7 @@ def checkAuth(request):
 # Create your views here.
 def home(request):
     title = "Home "
-    articles = models.News_Articles.objects.all()[:3]
+    articles = models.News_Articles.objects.all()[:4]
     Agenciess = models.Agencies.objects.all()
     context = {
         "user" : request.user,
@@ -60,10 +60,11 @@ def agencies(request):
 
 def trending(request):
     title = "Trending News "
+    articles = models.News_Articles.objects.all()[:40]
 
     context = {
         "title": title,
-        "articles": newArticle,
+        "articles": articles,
         "ranger": range(0, 5),
         "is_user": checkAuth(request),
     }
