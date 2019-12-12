@@ -27,8 +27,8 @@ class Request_In_Progress(models.Model):
   amount_total = models.DecimalField(max_digits=10, decimal_places=2)
   amount_fulfilled = models.DecimalField(max_digits=10, decimal_places=2, default=0)
   is_complete = models.BooleanField(default=False)
-  date_requested = models.DateField(auto_now=False, auto_now_add=True, time)
-  request_fulfillment = models.ForeignKey(Request_Fulfilled, on_delete=models.CASCADE)
+  date_requested = models.DateField(auto_now=False, auto_now_add=True)
+#request_fulfillment = models.ForeignKey(Request_Fulfilled, on_delete=models.CASCADE, default=None)
 
 class Account_Page(models.Model):
   requests_fulfilled = models.ForeignKey(Request_Fulfilled, on_delete=models.CASCADE)

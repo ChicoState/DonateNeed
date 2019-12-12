@@ -30,13 +30,12 @@ class RegisterDonation(forms.Form):
     
     class Meta:
         model = models.Request_In_Progress
-        fields = ("item", "amount_total")
+        fields = ["item", "amount_total"]
 
-    def save(self, request, commit=True):
-
-        new_sugg = models.Donation(
+    def save(self, commit=True):
+        new_sugg = models.Request_In_Progress(
             item=self.cleaned_data["item"],
-            amount=self.cleaned_data["amount"]
+            amount_total=self.cleaned_data["amount_total"]
         )
         if commit:
             new_sugg.save()

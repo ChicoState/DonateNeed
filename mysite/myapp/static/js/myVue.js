@@ -50,41 +50,33 @@ var add_show_donations = new Vue
 
         created: function()
         {
-            //this.fetchDonations();
+            this.fetchDonations();
         },
         methods:
         {
             makeRequest: function(event)
             {
                 this.add_donations.push({item: "", amount: null})
-                console.log("donation list size: " + this.donation_size);
             },
             submitDonations: function(payload) 
             {
-                
-
-                const config = {
-                    headers: {
-                      'Content-Type': 'application/x-www-form-urlencoded'
-                    }
-                };
 
                 axios({
                     method: 'post',
                     url: '/fetch_donation/',
-                    data: payload,
-                    config: config
+                    data: payload
                   })
-                  .then(response => (this.donations = response.data))
+                  .then(response => {this.donations = response.data;
+                                    console.log("In view: \n");
+                                    console.log(this.donations);});
             },
             fetchDonations: function()
             {
                 axios
-                    .get('/fetch_donation')
-                    .then(response => {this.donations = response.data.donations;
-                        });
+                    .get('/fetch_donation/')
+                    .then(response => {this.donations = response.data.donations;});
 
-                console.log(this.donations);
+                console.log("In view: " + this.donations);
             }
         }   
     }
