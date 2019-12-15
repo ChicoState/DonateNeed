@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+
+<div class="container-fluid profileCard first-element">
+  <div class="row">
+    {% if is_user %}
+    {% if is_an_account %}
+    <div class="card col-4">
+      <div class="profileImage"></div>
+      <img src="{{ user_info.profile.picture.url }}" style="width:100%">
+      <h1>{{user_info.first_name}} {{ user_info.last_name}}</h1>
+      <h3>{{ user_info.username }}</h3>
+      <p class="title">{{ user_info.email }}</p>
+      <p class="title">{{ user_info.profile.bio }}</p>
+      <p class="title">{{ user_info.profile.agencies.name }}</p>
+      <p><a href="{{ user_info.email }}" class="profileCardContact">Contact</a></p>
+    </div>
+  <!-- </div> -->
+  <!-- </div> -->
+<br>
+<!-- <div class="row justify-content-md-center align-items-start"> -->
+
+  <div class="col-5">
+    <br>
+    {% if not is_personal_profile %}
+      <h3>View Their Agency Page:</h3>
+      <a href="/agencyProfile/{{ user_info.profile.agencies.username }}" class="btn mb-2 btn-outline-info">{{ user_info.profile.agencies.name }}</a>
+    {% elif is_personal_profile %} <!-- end of not personal profile, beginning of if true-->
+    {% if has_agency %}
+      <h3>View Your Agency's Page:</h3>
+      <a href="/agencyProfile/{{ user_info.profile.agencies.username }}" class="btn mb-2 btn-outline-info">{{ user_info.profile.agencies.name }}</a>
+    {% elif not has_agency %} <!-- end of agency, now no agency  -->
+      <h3>Don't have an agency?</h3>
+      <a href="{% url 'addAgency' %}" class="btn mb-2 btn-outline-info">Add Existing Agency to Profile</a>
+      <h4>Or create yours here:</h4>
+      <a href="{% url 'agencySignUp' %}" class="btn mb-2 btn-outline-info">Upload Your Agency's Info</a>
+    {% endif %} <!-- end of has_agency -->
+    {% endif %} <!-- end of if is_personal_profile -->
+
+    {% elif not is_an_account %}  <!-- end of if account, beginning of not account  -->
+      <a href="{% url '' %}" class="btn mb-2 btn-outline-info">This user does not exist. Return to the home page.</a>
+    {% endif %}  <!-- end of if not account -->
+
+
+    {% elif not is_user %}  <!-- end of if user, beginning of not user  -->
+      <a href="{% url 'login' %}" class="btn mb-2 btn-outline-info">Log In Here to be able to View This User</a>
+    {% endif %}  <!-- end of if not user  -->
+  </div>
+</div>
+</div>
+
+
+{% endblock content %}
+
+{% block scripts %}
+
+<script type="text/javascript" src="{% static "javascript/profile.js"}">
+
+</script>
+
+{% endblock %}

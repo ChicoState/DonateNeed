@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Agency Registration{% endblock %}
+{% block content %}
+<div class="container first-element">
+  <br>
+  <div class="row justify-content-md-left align-items-start">
+    {% if not is_user %}
+      <h4>To register an agency you must be signed in</h4>
+
+      <a class="btn btn-info" href="/login/" role="button">Sign In Here</a>
+    {% endif %}
+    {% if is_user %}
+        <h3>Agency Registration</h3>
+      </div>
+
+      <form action="{% url 'agencySignUp' %}" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        {{ form.errors }}
+
+        {% for field in form %}
+        <div class="row">
+          <p>{{ field.label }}: {{ field }}</p>
+        </div>
+        {% endfor %}
+
+      <div class="row">
+        <input type="submit" class="button expanded" value="Register" />
+      </div>
+      </form>
+
+    {% endif %}
+<br>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Registration{% endblock %}
+{% block content %}
+<div class="container first-element">
+  <br>
+  <div class="row justify-content-md-left align-items-start">
+    <h3>Profile Creator</h3>
+  </div>
+  <form action="{% url 'createProfile' %}" enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+
+    {{ form.errors }}
+
+    {% for field in form %}
+    <div class="row">
+      <p>{{ field.label }}: {{ field }}</p>
+    </div>
+    {% endfor %}
+    <div class="row">
+      <input type="submit" class="button expanded" value="Create Profile" />
+    </div>
+  </form>
+  <br>
+</div>
+{% endblock %}

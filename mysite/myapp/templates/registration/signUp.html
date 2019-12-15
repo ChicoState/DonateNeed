@@ -12,8 +12,16 @@
     {% csrf_token %}
 
     {{ form.errors }}
-    <div class="row">
 
+    <div class="row">
+      <p>First Name: {{ form.first_name }}</p>
+    </div>
+
+    <div class="row">
+      <p>Last Name: {{ form.last_name }}</p>
+    </div>
+
+    <div class="row">
       <p>Username: {{ form.username }}</p>
     </div>
     <div class="row">
@@ -29,9 +37,10 @@
       <p>Re-enter Password: {{ form.password2 }}</p>
     </div>
     <div class="row">
-      
+
       <input type="submit" class="button expanded" value="Register" />
     </div>
   </form>
+  <br>
 </div>
 {% endblock %}
