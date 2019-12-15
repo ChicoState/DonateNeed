@@ -43,7 +43,7 @@ var add_show_donations = new Vue
         delimiters: ['[[', ']]'],
         data:
         {
-            donations: {},
+            donations: [],
             add_donations: [],
             donation_size: 0
         },
@@ -76,7 +76,37 @@ var add_show_donations = new Vue
                     .get('/fetch_donation/')
                     .then(response => {this.donations = response.data.donations;});
 
-                console.log("In view: " + this.donations);
+                console.log(this.donations);
+            }
+        }   
+    }
+)
+
+
+
+var add_show_donations = new Vue
+(
+    {
+        el: "#show-cause",
+        delimiters: ['[[', ']]'],
+        data:
+        {
+            causes: []
+        },
+
+        created: function()
+        {
+            this.fetchDonations();
+        },
+        methods:
+        {
+            fetchCauses: function()
+            {
+                axios
+                    .get('/fetch_cause/')
+                    .then(response => {this.donations = response.data.donations;});
+
+                console.log(this.donations);
             }
         }   
     }
