@@ -12,7 +12,7 @@ class Cause(models.Model):
   title = models.CharField(max_length=100)
   location = models.CharField(max_length=100)
   username = models.CharField(max_length=100, null=True)
-  requests_in_progress = models.ManyToManyField(models.Request_In_Progress)
+  # requests_in_progress = models.ManyToManyField(models.Request_In_Progress)
   def __str__(self):
     return self.title
 
