@@ -451,6 +451,25 @@ def fetch_donation(request):
   return JsonResponse(donation_list)
 
 
+
+@csrf_exempt
+def fetch_donation(request):
+
+  causes = models.Cause.objects.all
+  cause_list = {"causes":[]}
+    
+  for cause in causes:
+      
+    cause_list["causes"] += [{
+      "title":cause.item,
+      "id":cause.id
+      }]
+
+  #print(donation_list)
+
+  return JsonResponse(donation_list)
+
+
 def addAgency(request):
     title = "Pledge Support to a Cause"
     signedIn = True

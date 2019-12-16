@@ -12,6 +12,7 @@ class Cause(models.Model):
   title = models.CharField(max_length=100)
   location = models.CharField(max_length=100)
   username = models.CharField(max_length=100, null=True)
+  requests_in_progress = models.ManyToManyField(models.Request_In_Progress)
   def __str__(self):
     return self.title
 
@@ -45,7 +46,6 @@ class Profile(models.Model):
   bio = models.TextField(max_length=500, blank=True)
   agencies = models.ForeignKey(Agencies, on_delete=models.SET_NULL, blank=True, null=True)
   picture = models.ImageField(upload_to='media/', default="defaultProfilePic.jpg", null=True, blank=True)
-
   def __str__(self):
     return self.user.username
 
