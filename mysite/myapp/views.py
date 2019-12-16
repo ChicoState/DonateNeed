@@ -428,9 +428,7 @@ def fetch_donation(request):
             new_donation.save()
 
         for sub in updates:
-            print("old value")
             next_item = models.Request_In_Progress.objects.get(id=sub['id'])
-            print(next_item.item)
             next_item.item = sub['item']
             next_item.amount_total = sub['amount']
             next_item.save()
