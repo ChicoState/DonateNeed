@@ -27,4 +27,4 @@ urlpatterns = [
   url(r'^addAgency/', views.addAgency, name='addAgency'),
   url(r'^pledgeSupport/', views.pledgeSupport, name='pledgeSupport'),
   url(r'^cause/(?P<username>.+)', views.causePage, name='causePage'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
