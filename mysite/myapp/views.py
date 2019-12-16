@@ -412,62 +412,42 @@ def donation(request):
 @csrf_exempt
 def fetch_donation(request):
 
-  if request.method == "POST":
+    if request.method == "POST":
 
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
-    additions = body['add_donations']
-    updates = body['donations']
-    
-    for sub in additions:
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        additions = body['add_donations']
+        updates = body['donations']
         
-        new_donation = models.Request_In_Progress()
-        new_donation.item = sub['item']
-        new_donation.amount_total = sub['amount']
+        for sub in additions:
+            
+            new_donation = models.Request_In_Progress()
+            new_donation.item = sub['item']
+            new_donation.amount_total = sub['amount']
 
-        new_donation.save()
+            new_donation.save()
 
-    for sub in updates:
-        print("old value")
-        next_item = models.Request_In_Progress.objects.get(id=sub['id'])
-        print(next_item.item)
-        next_item.item = sub['item']
-        next_item.amount_total = sub['amount']
-        next_item.save()
+        for sub in updates:
+            print("old value")
+            next_item = models.Request_In_Progress.objects.get(id=sub['id'])
+            print(next_item.item)
+            next_item.item = sub['item']
+            next_item.amount_total = sub['amount']
+            next_item.save()
 
-  donations = models.Request_In_Progress.objects.all()
-  donation_list = {"donations":[]}
-    
-  for donation in donations:
-      
-    donation_list["donations"] += [{
-      "item":donation.item,
-      "amount":donation.amount_total,
-      "id":donation.id
-      }]
+    donations = models.Request_In_Progress.objects.all()
+    donation_list = {"donations":[]}
 
-  #print(donation_list)
+    for donation in donations:
+        donation_list["donations"] += [{
+        "item":donation.item,
+        "amount":donation.amount_total,
+        "id":donation.id
+        }]
 
-  return JsonResponse(donation_list)
+    print(donation_list)
 
-
-
-@csrf_exempt
-def fetch_donation(request):
-
-  causes = models.Cause.objects.all
-  cause_list = {"causes":[]}
-    
-  for cause in causes:
-      
-    cause_list["causes"] += [{
-      "title":cause.item,
-      "id":cause.id
-      }]
-
-  #print(donation_list)
-
-  return JsonResponse(donation_list)
+    return JsonResponse(donation_list)
 
 
 def addAgency(request):

@@ -74,7 +74,8 @@ var add_show_donations = new Vue
             {
                 axios
                     .get('/fetch_donation/')
-                    .then(response => {this.donations = response.data.donations;});
+                    .then(response => {this.donations = response.data.donations;
+                    console.log(response.data.donations);});
 
                 console.log(this.donations);
             }

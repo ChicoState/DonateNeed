@@ -5,41 +5,41 @@
 {% block content %}
 
 <div class="container first-element">
-    <div id="show-cause">
-        <div class="row bg-danger">
-            <div class="col-4">
-                <p>
-                    This is the cause you are donating to.
-                </p>
-            </div>
+    <div class="row bg-danger">
+        <div class="col-4">
+            <p>
+                This is the cause you are donating to.
+            </p>
         </div>
+    </div>
 
-        <div class="row justify-content-end">
-            
-                <div id="add-show-donations" class="col-8 bg-primary">
-                    <div v-for="(next, index) in donations">
-                        <p>
-                            <form @submit="submitDonations($data)" method="post">
-                                {% csrf_token %}
-                                {{ form.errors }}
-                                
-                                <input v-model="next.item" type="text"> <input v-model="next.amount" type="number">
-                            </form>
-                        </p>
-                    </div>
-                    <div v-for="(next, index) in add_donations">
-                        <p>
-                            <form @submit="submitDonations($data)" method="post">
-                                {% csrf_token %}
-                                {{ form.errors }}
-                                
-                                <input v-model="next.item" type="text"> <input v-model="next.amount" type="number">
-                            </form>
-                        </p>
-                    </div>
-                    <button v-on:click="makeRequest">+</button> <input type="submit" class="button expanded" value="sumbit" />
+    <div class="row justify-content-end">
+        
+            <div id="add-show-donations" class="col-8 bg-primary">
+                <div v-for="(next, index) in donations">
+                    <p>
+                        <form @submit="submitDonations($data)" method="post">
+                            {% csrf_token %}
+                            {{ form.errors }}
+                            
+                            <input v-model="next.item" type="text"> <input v-model="next.amount" type="number">
+                            <input type="submit" class="button expanded" value="sumbit" />
+                        </form>
+                    </p>
                 </div>
-        </div>
+                <div v-for="(next, index) in add_donations">
+                    <p>
+                        <form @submit="submitDonations($data)" method="post">
+                            {% csrf_token %}
+                            {{ form.errors }}
+                            
+                            <input v-model="next.item" type="text"> <input v-model="next.amount" type="number">
+                            <input type="submit" class="button expanded" value="sumbit" />
+                        </form>
+                    </p>
+                </div>
+                <button v-on:click="makeRequest">+</button>
+            </div>
     </div>
 </div>
 
