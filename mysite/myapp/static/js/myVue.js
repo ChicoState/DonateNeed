@@ -84,31 +84,31 @@ var add_show_donations = new Vue
 
 
 
-var add_show_donations = new Vue
-(
-    {
-        el: "#show-cause",
-        delimiters: ['[[', ']]'],
-        data:
-        {
-            causes: []
-        },
+// var add_show_donations = new Vue
+// (
+//     {
+//         el: "#show-cause",
+//         delimiters: ['[[', ']]'],
+//         data:
+//         {
+//             causes: []
+//         },
 
-        created: function()
-        {
-            this.fetchDonations();
-        },
-        methods:
-        {
-            fetchCauses: function()
-            {
-                axios
-                    .get('/fetch_cause/')
-                    .then(response => {this.donations = response.data.donations;});
+//         created: function()
+//         {
+//             this.fetchDonations();
+//         },
+//         methods:
+//         {
+//             fetchCauses: function()
+//             {
+//                 axios
+//                     .get('/fetch_cause/')
+//                     .then(response => {this.donations = response.data.donations;});
 
-                console.log(this.donations);
-            }
-        }   
-    }
-)
+//                 console.log(this.donations);
+//             }
+//         }   
+//     }
+// )
 
