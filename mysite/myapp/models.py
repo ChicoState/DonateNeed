@@ -67,7 +67,7 @@ post_save.connect(create_user_profile, sender=User)
 
 
 class Request_In_Progress(models.Model):
-  item = models.CharField(max_length=250)
+  item = models.CharField(max_length=250, null=True)
   amount_total = models.DecimalField(max_digits=10, decimal_places=2)
   amount_fulfilled = models.DecimalField(max_digits=10, decimal_places=2, default=0)
   is_complete = models.BooleanField(default=False)
