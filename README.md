@@ -1,4 +1,4 @@
 # DonateNeed
 
-## By Madeline Hoshko
-### Github Username: mhoshko
+### By: Madeline Hoshko
+##### Github Username: mhoshko
