@@ -5,7 +5,7 @@
 {% block content %}
 
 <div class="container first-element">
-    <div class="row bg-danger">
+    <div class="row bg-dark">
         <div class="col-4">
             <p>
                 This is the cause you are donating to.
@@ -14,14 +14,14 @@
     </div>
 
     <div class="row justify-content-end">
-        
-            <div id="add-show-donations" class="col-8 bg-primary">
+
+            <div id="add-show-donations" class="col-8 bg-info">
                 <form @submit="submitDonations($data)" method="post">
                     <div v-for="(next, index) in donations">
                         <p>
                                 {% csrf_token %}
                                 {{ form.errors }}
-                                
+
                                 <input v-model="next.item" type="text"> <input v-model="next.amount" type="number">
                         </p>
                     </div>
@@ -29,13 +29,13 @@
                         <p>
                                 {% csrf_token %}
                                 {{ form.errors }}
-                                
+
                                 <input v-model="next.item" type="text"> <input v-model="next.amount" type="number">
                         </p>
                     </div>
                     <input type="submit" class="button expanded" value="submit" />
                 </form>
-                <button v-on:click="makeRequest">+</button> 
+                <button v-on:click="makeRequest">+</button>
             </div>
     </div>
 </div>

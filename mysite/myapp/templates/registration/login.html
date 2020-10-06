@@ -9,7 +9,7 @@
         <form action="/login/" method="post">
 
             {% csrf_token %}
-            
+
             {{ form.errors }}
             <label>{{ form.username.label_tag }}</label>
             {{ form.username }}
@@ -20,5 +20,7 @@
             <input type="hidden" name="next" value="/" />
         </form>
   </div>
+  <br>
+
 </div>
 {% endblock %}

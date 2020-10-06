@@ -18,11 +18,30 @@
         {% csrf_token %}
         {{ form.errors }}
 
-        {% for field in form %}
         <div class="row">
-          <p>{{ field.label }}: {{ field }}</p>
+          <p>Name: {{ form.name }}</p>
         </div>
-        {% endfor %}
+        <div class="row">
+          <p>Email: {{ form.email }}</p>
+        </div>
+        <div class="row">
+          <p>Address: {{ form.address }}</p>
+        </div>
+        <div class="row">
+          <p>URL: {{ form.url }}</p>
+        </div>
+        <div class="row">
+          <p>Phone: {{ form.phone }}</p>
+        </div>
+        <div class="row">
+          <p>Picture: {{ form.picture }}</p>
+        </div>
+
+
+
+
+
+
 
       <div class="row">
         <input type="submit" class="button expanded" value="Register" />

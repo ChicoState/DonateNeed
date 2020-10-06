@@ -5,15 +5,15 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
-import re
+import re, string
 
 from django.core import serializers
 
 from . import forms
-from myapp.forms import AgencyForm
-from myapp.forms import ProfileForm
-from myapp.models import Profile
+from myapp.forms import AgencyForm, ProfileForm
+from myapp.models import Profile, Cause, News_Articles, Agencies
 from . import models
+
 
 import json
 
@@ -196,7 +196,8 @@ def agencyProfile(request, uname=None):
         instance  = models.Profile.objects.get(user=request.user)
         causes = agency.causes
 
-        if instance.agencies == agency:
+        if  request.user in agency.admin_users.all():
+        #if instance.agencies == agency:
             is_personal_agency = True
         else:
             is_personal_agency = False
@@ -239,13 +240,17 @@ def agencySignUp(request):
 
     if request.method == "POST":
         form_instance = forms.AgencyForm(request.POST, request.FILES)
+
         if form_instance.is_valid():
-            instance = form_instance.save(commit=False)
+            instance = form_instance.save(commit = False)
             instance.user = request.user
-            name = instance.name
-            instance.username = re.sub(r"\s+", "", name)
+
+            name = string.capwords(instance.name)
+            uname = re.sub(r"\s+", "", name)
+            instance.username = uname
             instance.save()
-            return redirect("/")
+            instance.admin_users.add(request.user)
+            return redirect("main/agencySignUp.html")
     else:
         form_instance = forms.AgencyForm()
     context = {
@@ -345,6 +350,7 @@ def createCause(request):
             instance = form_instance.save(commit=False)
             title = instance.title
             instance.username = re.sub(r"\s+", "", title)
+            print(instance.username)
             instance.save()
             return HttpResponseRedirect("/")
     else:
@@ -359,39 +365,36 @@ def createCause(request):
 
 
 
-
-def pledgeSupport(request):
-    title = "Pledge Support to a Cause"
-    signedIn = True
-    is_user = request.POST.get('is_user')
-    passw = request.POST.get("pass")
+def pledgeSupport(request,  username=None):
+    agency = Agencies.objects.get(username=username)
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
 
-    instance  = models.Profile.objects.get(user=request.user)
-    if instance.agencies is None:
+    if request.user not in agency.admin_users.all():
         return HttpResponseRedirect("/")
-    agency_name = instance.agencies.name
-    agency = instance
-    if agency is None:
-        is_agency = False
-    else:
-        is_agency = True
+
 
     if request.method == "POST":
-        form_instance = forms.PledgeSupportForm(request.POST)
+        form_instance = forms.PledgeSupportForm(request.POST, instance=agency)
         if form_instance.is_valid():
-            id = request.POST.get('causes')
-            agency = models.Agencies.objects.get(name = agency_name)
-            agency.causes.add(id)
-            return HttpResponseRedirect("/")
+            ids = request.POST.get('causes')
+            for id in ids:
+                agency.causes.add(id)
+            causes = agency.causes.all()
+            context = {
+                "username": username,
+                "is_agency": True,
+                "user": request.user,
+                "agency": agency,
+                "causes": causes,
+                "is_personal_agency": True
+            }
+            return render(request, 'main/agencyProfile.html', context=context)
     else:
         form_instance = forms.PledgeSupportForm()
     context = {
         "form" : form_instance,
-        "e": is_user,
-        "signedIn": signedIn,
-        "is_agency": is_agency,
+        "username": username,
         "is_user": checkAuth(request),
     }
     return render(request, 'main/pledgeSupport.html', context=context)
@@ -402,6 +405,7 @@ def pledgeSupport(request):
 def donation(request):
 
   form_instance = forms.RegisterDonation()
+
   context = {
       "title":"Suggestion Form",
       "form":form_instance
@@ -418,12 +422,13 @@ def fetch_donation(request):
         body = json.loads(body_unicode)
         additions = body['add_donations']
         updates = body['donations']
-        
+
         for sub in additions:
-            
+
             new_donation = models.Request_In_Progress()
             new_donation.item = sub['item']
             new_donation.amount_total = sub['amount']
+            new_donation.agency = request.user.profile.agencies
 
             new_donation.save()
 
@@ -431,6 +436,7 @@ def fetch_donation(request):
             next_item = models.Request_In_Progress.objects.get(id=sub['id'])
             next_item.item = sub['item']
             next_item.amount_total = sub['amount']
+
             next_item.save()
 
     donations = models.Request_In_Progress.objects.all()
@@ -448,55 +454,66 @@ def fetch_donation(request):
     return JsonResponse(donation_list)
 
 
-def addAgency(request):
-    title = "Pledge Support to a Cause"
-    signedIn = True
-    is_user = request.POST.get('is_user')
-    passw = request.POST.get("pass")
+def addAgency(request, username=None):
+    agency = Agencies.objects.get(username=username)
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
 
-    instance  = models.Profile.objects.get(user=request.user)
-
-
     if request.method == "POST":
-        form_instance = forms.AddAgencyForm(request.POST, instance=instance)
+        form_instance = forms.AddAgencyForm(request.POST, instance=agency)
         if form_instance.is_valid():
-            instance = form_instance.save(commit=False)
-            instance.user = request.user
-            username = instance.user.username
-            instance.save()
-            return redirect('profile', username=username)
+            f_instance = form_instance.save(commit=False)
+            users = form_instance.cleaned_data['admin_users']
+            for user in users:
+                agency.admin_users.add(user)
+            agency.save()
+            return redirect('/')
     else:
         form_instance = forms.AddAgencyForm()
     context = {
         "form" : form_instance,
-        "e": is_user,
-        "signedIn": signedIn,
-        "instance": instance,
+        "instance": agency,
+        "username": username,
         "is_user": checkAuth(request),
     }
+    #return redirect(addAgency, username=username)
     return render(request, 'main/addAgency.html', context=context)
 
 
 
-def causePage(request, username=None):
+
+def activeCauses(request):
+    cause = Cause.objects.all()
+    context = {
+        "Cause": cause,
+        "is_user": checkAuth(request)
+    }
+    return render(request, 'main/activeCauses.html', context=context)
+
+
+
+
+def causePage(request, uname=None):
     title = "Cause"
+    username = re.sub(r"\s+", "", uname)
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
-    cause_info = username
     try:
-        cause_info = models.Cause.objects.get(username=username)
+        cause_info = Cause.objects.get(username=username)
+        article1 = News_Articles.objects.filter(description__contains=uname)
+        article2  = News_Articles.objects.filter(title__contains=uname)
+        articles = article1 | article2
         is_cause = True
+        context = {
+            "title": title,
+            "is_user": checkAuth(request),
+            "user": request.user,
+            "uname": uname,
+            "is_cause": is_cause,
+            "articles": articles,
+            "cause_info": cause_info,
+        }
+        return render(request, 'main/cause.html', context=context )
 
     except models.Cause.DoesNotExist:
-        is_cause = False
-    context = {
-        "title": title,
-        "is_user": checkAuth(request),
-        "user": request.user,
-        "username": username,
-        "is_cause": is_cause,
-        "cause_info": cause_info,
-    }
-    return render(request, 'main/cause.html', context=context)
+        return redirect('activeCauses')

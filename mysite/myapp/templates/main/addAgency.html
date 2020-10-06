@@ -7,7 +7,7 @@
   <div class="row justify-content-md-left align-items-start">
     <h3>Add Your Agency's Page to Your Profile</h3>
   </div>
-  <form action="{% url 'addAgency' %}" method="post">
+  <form action="{% url 'addAgency' username %}" method="post">
     {% csrf_token %}
 
     {{ form.errors }}

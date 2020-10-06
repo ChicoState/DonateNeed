@@ -31,7 +31,10 @@
     {% endfor %}
   {% endif %}
 {% endif %}
-
+{% if is_personal_agency %}
+<a href="/addAgency/{{username}}" class ="btn mb-2 btn-outline-info">Add other admin users to this agency</a>
+<a href="/pledgeSupport/{{username}}" class ="btn mb-2 btn-outline-info">Add supported causes to this agency</a>
+{% endif %}
 </div>
 </div>
 </div>

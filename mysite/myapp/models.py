@@ -27,24 +27,13 @@ class News_Articles(models.Model):
 
 
 
-class Agencies(models.Model):
-  name = models.CharField(max_length=100)
-  email = models.EmailField(max_length=50)
-  address = models.CharField(max_length=100)
-  url = models.URLField(max_length=200)
-  phone = PhoneField()
-  username = models.CharField(max_length=100, null=True)
-  picture = models.ImageField(upload_to='media/', default="defaultProfilePic.jpg", null=True, blank=True)
-  causes = models.ManyToManyField(Cause, blank=True)
-  def __str__(self):
-      return self.name
+
 
 
 
 class Profile(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   bio = models.TextField(max_length=500, blank=True)
-  agencies = models.ForeignKey(Agencies, on_delete=models.SET_NULL, blank=True, null=True)
   picture = models.ImageField(upload_to='media/', default="defaultProfilePic.jpg", null=True, blank=True)
   def __str__(self):
     return self.user.username
@@ -57,7 +46,18 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 post_save.connect(create_user_profile, sender=User)
 
-
+class Agencies(models.Model):
+  name = models.CharField(max_length=100)
+  email = models.EmailField(max_length=50)
+  address = models.CharField(max_length=100)
+  url = models.URLField(max_length=200)
+  phone = PhoneField()
+  username = models.CharField(max_length=100, null=True, blank=True, unique=True)
+  picture = models.ImageField(upload_to='media/', default="defaultProfilePic.jpg", null=True, blank=True)
+  causes = models.ManyToManyField(Cause, blank=True)
+  admin_users = models.ManyToManyField(User, blank=True)
+  def __str__(self):
+      return self.name
 
 # class Agencies_Page(models.Model):
 #   # causes = models.ManyToManyField(Cause)
@@ -72,7 +72,7 @@ class Request_In_Progress(models.Model):
   amount_fulfilled = models.DecimalField(max_digits=10, decimal_places=2, default=0)
   is_complete = models.BooleanField(default=False)
   date_requested = models.DateField(auto_now=False, auto_now_add=True)
-  #agency = models.ForeignKey(Agencies, on_delete=models.SET_NULL, blank=True, null=True)
+  agency = models.ForeignKey(Agencies, on_delete=models.SET_NULL, blank=True, null=True)
 
 
 

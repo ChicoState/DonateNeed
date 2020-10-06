@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Active Causes</title>
+    </head>
+
+<div class="container first-element">
+<br>
+  <h2>Active Causes to Donate To</h2>
+  <table>
+    <tr>
+      <th>Cause</th>
+      <th>Location</th>
+      <th></th>
+    </tr>
+    {% for causes in Cause %}
+      <tr>
+        <td>{{ causes.title }}</td>
+        <td>{{ causes.location }}</td>
+        <td><a href="/cause/{{ causes.title }}" class="btn btn-info mb-2">Visit Cause Profile</a></td>
+        <!-- <td><a href="?toggle_completed={{book.id}}">
+          {% if book.completed %}Yes{% else %}No{% endif %}
+        </a></td>
+        <td>
+          <a href="/books/book{{ book.id }}/" class = "btn mb-2 btn-outline-info">View all Reviews For this Book</a>
+          <a href="#" class = "btn mb-2 btn-outline-info" onclick="confirmDeleteModal({{book.id}})">Delete Book From Reading List</a>
+        </td> -->
+      </tr>
+    {% endfor %}
+    </table>
+</div>
+</html>
+{% endblock content %}
+
+{% block scripts %}
+
+<!-- <script type="text/javascript" src="{% static "javascript/profile.js"}">
+</script> -->
+
+{% endblock %}

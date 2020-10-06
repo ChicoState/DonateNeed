@@ -6,7 +6,9 @@
     <title>Donate Need {{ title }}</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"> -->
      <!-- integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
 
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> -->
@@ -32,6 +34,7 @@
 
         <a class="nav-item nav-link text-info"  href="{% url 'trending' %}">Trending News</a>
         <a class="nav-item nav-link text-info"  href="{% url 'agencies' %}">Agencies</a>
+        <a class="nav-item nav-link text-info"  href="{% url 'activeCauses' %}">Active Causes</a>
         <a class="nav-item nav-link text-info"  href="{% url 'about' %}">About</a>
 
         <div class="ml-auto px-auto">
@@ -58,7 +61,6 @@
               {% if user.profile.agencies.username is not None %}
               <a class="dropdown-item" href="/agencyProfile/{{ user.profile.agencies.username }}">Your Organization</a>
               {% elif user.profile.agencies.username is None %}
-              <a class="dropdown-item" href="{% url 'addAgency' %}">Add Existing Agency</a>
               {% endif %}
               <a class="dropdown-item" href="{% url 'createProfile' %}">Upload Your Info</a>
               <a class="dropdown-item" href="{% url 'agencySignUp' %}">Create Agency</a>
@@ -96,8 +98,6 @@
       <li><a href="{% url 'createProfile' %}"style="color:#FFFFFF;"><font size="-1">Create Your Profile</font></a></li>
       <li><a href="{% url 'agencySignUp' %}"style="color:#FFFFFF;"><font size="-1">Sign Up Your Agency</font></a></li>
       <li><a href="{% url 'createCause' %}"style="color:#FFFFFF;"><font size="-1">Establish a Cause</font></a></li>
-      <li><a href="{% url 'addAgency' %}"style="color:#FFFFFF;"><font size="-1">Add your agency to your profile</font></a></li>
-      <li><a href="{% url 'pledgeSupport' %}"style="color:#FFFFFF;"><font size="-1">Add supported causes to your agency</font></a></li>
     {% endif %}
   </ul>
 </footer>

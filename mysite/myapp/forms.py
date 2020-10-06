@@ -6,6 +6,7 @@ from django.forms import ModelForm
 from myapp.models import Agencies
 from myapp.models import Profile, Cause
 from django.contrib import messages
+import re, string
 
 
 
@@ -43,10 +44,10 @@ class RegistrationForm(UserCreationForm):
         return user
 
 class RegisterDonation(forms.Form):
-    
+
     class Meta:
         model = models.Request_In_Progress
-        fields = ["item", "amount_total"]
+        fields = ["item", "amount_total", "agency"]
 
     def save(self, commit=True):
         new_sugg = models.Request_In_Progress(
@@ -60,56 +61,35 @@ class RegisterDonation(forms.Form):
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
-        exclude = ['user', 'agencies']
+        exclude = ['user']
         #fields="__all__" #, "picture")
 
 
 class AddAgencyForm(ModelForm):
     class Meta:
-        model = Profile
-        fields = ['agencies']
+        model = Agencies
+        fields = ['admin_users']
 
 
 #form to use for updating data in agencies class
 class AgencyForm(ModelForm):
    class Meta:
       model = Agencies
-      exclude = ['user', 'username', 'causes']
-
-   # causes = forms.ModelMultipleChoiceField(queryset=Cause.objects.all())
-   #
-   # def __init__(self, *args, **kwargs):
-   #      if kwargs.get('instance'):
-   #          initial = kwargs.setdefault('initial', {})
-   #          initial['causes'] = [t.pk for t in kwargs['instance'].causes_set.all()]
-   #      forms.ModelForm.__init__(self, *args, **kwargs)
-   #
-   #
-   # def save(self, commit=True):
-   #      instance = forms.ModelForm.save(self, False)
-   #      old_save_m2m = self.save_m2m
-   #      def save_m2m():
-   #         old_save_m2m()
-   #         instance.causes_set.clear()
-   #         instance.causes_set.add(*self.cleaned_data['causes'])
-   #      self.save_m2m = save_m2m
-   #
-   #      if commit:
-   #          instance.save()
-   #          self.save_m2m()
-   #      return instance
-
+      exclude = ['causes']
 
    def clean(self):
          cleaned_data = super().clean()
          email = cleaned_data.get('email')
          name = cleaned_data.get('name')
+         capitalized_name = string.capwords(name)
+         uname = (re.sub(r"\s+", "", capitalized_name))
+         if Agencies.objects.filter(username=uname).exists():
+             print("true")
+             self.add_error('name', forms.ValidationError(('This agency name already exists.')))
          if name and Agencies.objects.filter(name=name).count()>1:
-             if not self.has_error('name', "name_error"):
-                 self.add_error('name', forms.ValidationError(('This agency name already exists. If this is your agency, add them to your profile in our profile editor'), code="name_error"))
+             self.add_error('name', forms.ValidationError(('This agency name already exists. If this is your agency, add them to your profile in our profile editor'), code="name_error"))
          if email and Agencies.objects.filter(email=email).exclude(name=name).exists():
-             if not self.has_error('email', "email_error"):
-                 self.add_error('email', forms.ValidationError('This agency email has already been used.', code="email_error"))
+             self.add_error('email', forms.ValidationError('This agency email has already been used.', code="email_error"))
          return cleaned_data
 
 
@@ -118,7 +98,7 @@ class AgencyForm(ModelForm):
 class PledgeSupportForm(ModelForm):
     class Meta:
         model = Agencies
-        exclude = ['user', 'username', 'name', 'email', 'address', 'url', 'phone', 'username', 'picture']
+        fields = ['causes']
     # def __init__ (self, *args, **kwargs):
     #     super(PledgeSupportForm, self).__init__(*args, **kwargs)
     #     self.fields["causes"].widget = forms.widgets.CheckboxSelectMultiple()
@@ -127,6 +107,12 @@ class PledgeSupportForm(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         causes = cleaned_data.get('causes')
+        print(causes)
+        for cause in causes:
+            print(cause)
+            if Agencies.objects.filter(causes=cause).exists():
+                self.add_error('causes', forms.ValidationError("One of the causes you selected is already included in your agency's profile"))
+                return
 
 
 
