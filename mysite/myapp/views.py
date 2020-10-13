@@ -11,7 +11,7 @@ from django.core import serializers
 
 from . import forms
 from myapp.forms import AgencyForm, ProfileForm
-from myapp.models import Profile, Cause, News_Articles, Agencies
+from myapp.models import Profile, Cause, News_Articles, Agencies, Request_Fulfilled, Request_In_Progress
 from . import models
 
 
@@ -186,6 +186,12 @@ def signUp(request):
 
 
 def agencyProfile(request, uname=None):
+        #
+        # delete = request.GET.get('delete', 0)
+        #
+        # if delete != 0
+        #     Request_In_Progress.objects.filter(id=delete).delete()
+
     title = "Agency Profile"
     print(uname)
     if checkAuth(request) == False:
@@ -193,6 +199,7 @@ def agencyProfile(request, uname=None):
 
     try:
         agency = models.Agencies.objects.get(username=uname)
+        requests = Request_In_Progress.objects.filter(agency=agency)
         instance  = models.Profile.objects.get(user=request.user)
         causes = agency.causes
 
@@ -207,6 +214,7 @@ def agencyProfile(request, uname=None):
             "is_user": checkAuth(request),
             "user": request.user,
             "username": uname,
+            "requests": requests,
             "is_agency":is_agency,
             "agency": agency,
              "causes": causes,
@@ -402,13 +410,20 @@ def pledgeSupport(request,  username=None):
 
 
 @csrf_exempt
-def donation(request):
-
+def donation(request, username):
+  agency1 = Agencies.objects.filter(username=username)
+  agency = agency1[0]
   form_instance = forms.RegisterDonation()
+  if form_instance.is_valid():
+      instance = form_instance.save(commit=False)
+      instance.agency = agency
+      instance.save()
+
 
   context = {
       "title":"Suggestion Form",
-      "form":form_instance
+      "form":form_instance,
+      "agency": agency
   }
   return render(request, "main/donation.html", context=context)
 
@@ -500,6 +515,7 @@ def causePage(request, uname=None):
         return HttpResponseRedirect("/")
     try:
         cause_info = Cause.objects.get(username=username)
+        requests = Request_In_Progress.objects.filter(cause=cause_info.id)
         article1 = News_Articles.objects.filter(description__contains=uname)
         article2  = News_Articles.objects.filter(title__contains=uname)
         articles = article1 | article2
@@ -511,9 +527,113 @@ def causePage(request, uname=None):
             "uname": uname,
             "is_cause": is_cause,
             "articles": articles,
+            "requests": requests,
             "cause_info": cause_info,
         }
         return render(request, 'main/cause.html', context=context )
 
     except models.Cause.DoesNotExist:
         return redirect('activeCauses')
+
+
+
+def activeRequests(request, username):
+    if checkAuth(request) == False:
+        return HttpResponseRedirect("/")
+    agency = Agencies.objects.filter(username=username)[0]
+    if request.user not in agency.admin_users.all():
+        return HttpResponseRedirect("/")
+
+    requests = Request_In_Progress.objects.filter(agency=agency)
+    delete = request.GET.get('delete', 0)
+    context = {
+        "agency": agency,
+        "username": username,
+        "user": request.user,
+        "is_user": checkAuth(request),
+        "requests": requests,
+    }
+    if delete != 0:
+        Request_In_Progress.objects.filter(id=delete).delete()
+
+    return render(request, 'main/activeRequests.html', context=context)
+
+
+
+def addRequests(request, username):
+    if checkAuth(request) == False:
+        return HttpResponseRedirect("/")
+    agency = Agencies.objects.filter(username=username)[0]
+    if request.user not in agency.admin_users.all():
+        return HttpResponseRedirect("/")
+    if request.method == "POST":
+        form_instance = forms.AddRequestForm(request.POST)
+        if form_instance.is_valid():
+          instance = form_instance.save(commit=False)
+          instance.agency = agency
+          instance.save()
+          return redirect('activeRequests', username=username)
+    else:
+        form_instance = forms.AddRequestForm()
+
+    context = {
+      "form":form_instance,
+      "username": username,
+      "agency": agency,
+      "is_user": checkAuth(request),
+    }
+    return render(request, 'main/addRequests.html', context=context)
+
+
+
+def submitDonations(request):
+    if checkAuth(request) == False:
+        return HttpResponseRedirect("/")
+    requests = Request_In_Progress.objects.all()
+    user = request.user
+    context = {
+        "user": user,
+        "requests": requests
+    }
+
+    return render(request, 'main/submitDonations.html', context = context)
+
+
+
+
+def finalSubmitDonation(request, id):
+    if checkAuth(request) == False:
+        return HttpResponseRedirect("/")
+    donation = Request_In_Progress.objects.filter(id=id)[0]
+
+    if request.method == "POST":
+        form_instance = forms.MakeDonation(request.POST)
+        if form_instance.is_valid():
+
+          instance = form_instance.save(commit=False)
+          instance.user = request.user
+          instance.request_in_progress = donation
+          instance.fulfilled_amount = 0
+          instance.save()
+
+          pledged = form_instance.cleaned_data['promised_amount']
+          fulfilled = donation.amount_fulfilled
+
+          donation.amount_fulfilled = pledged+fulfilled
+
+          if(donation.amount_fulfilled == donation.amount_total):
+              donation.is_complete = True
+          donation.save()
+          return redirect('submitDonations')
+    else:
+        form_instance = forms.MakeDonation()
+
+    user = request.user
+    context = {
+        "user": user,
+        "id": id,
+        "form": form_instance,
+        "donation": donation
+    }
+
+    return render(request, 'main/finalSubmitDonation.html', context = context)

@@ -43,20 +43,31 @@ class RegistrationForm(UserCreationForm):
             user.save()
         return user
 
+
 class RegisterDonation(forms.Form):
 
     class Meta:
         model = models.Request_In_Progress
         fields = ["item", "amount_total", "agency"]
+    #
+    # def save(self, commit=True):
+    #     new_sugg = models.Request_In_Progress(
+    #         item=self.cleaned_data["item"],
+    #         amount_total=self.cleaned_data["amount_total"]
+    #     )
+    #     if commit:
+    #         new_sugg.save()
+    #     return new_sugg
+class MakeDonation(ModelForm):
+    class Meta:
+        model = models.Request_Fulfilled
+        exclude = ['user', 'request_in_progress', 'fulfilled_amount']
 
-    def save(self, commit=True):
-        new_sugg = models.Request_In_Progress(
-            item=self.cleaned_data["item"],
-            amount_total=self.cleaned_data["amount_total"]
-        )
-        if commit:
-            new_sugg.save()
-        return new_sugg
+class AddRequestForm(ModelForm):
+    class Meta:
+        model = models.Request_In_Progress
+        fields = ["item", "amount_total"]
+
 
 class ProfileForm(ModelForm):
     class Meta:

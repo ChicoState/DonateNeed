@@ -68,17 +68,18 @@ class Agencies(models.Model):
 
 class Request_In_Progress(models.Model):
   item = models.CharField(max_length=250, null=True)
-  amount_total = models.DecimalField(max_digits=10, decimal_places=2)
+  amount_total = models.DecimalField(max_digits=10, decimal_places=0)
   amount_fulfilled = models.DecimalField(max_digits=10, decimal_places=2, default=0)
   is_complete = models.BooleanField(default=False)
   date_requested = models.DateField(auto_now=False, auto_now_add=True)
   agency = models.ForeignKey(Agencies, on_delete=models.SET_NULL, blank=True, null=True)
+  cause = models.ForeignKey(Cause, on_delete=models.SET_NULL, blank=True, null=True)
 
 
 
 class Request_Fulfilled(models.Model):
-  fulfilled_amount = models.DecimalField(max_digits=10, decimal_places=2)
-  promised_amount = models.DecimalField(max_digits=10, decimal_places=2)
+  fulfilled_amount = models.DecimalField(max_digits=10, decimal_places=0)
+  promised_amount = models.DecimalField(max_digits=10, decimal_places=0)
   promised_arrival = models.DateField(auto_now=False)
   user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
   request_in_progress = models.ForeignKey(Request_In_Progress, on_delete=models.CASCADE, blank=True, null=True)

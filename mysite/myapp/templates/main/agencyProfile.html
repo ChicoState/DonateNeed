@@ -38,6 +38,33 @@
 </div>
 </div>
 </div>
+{% if not requests %}
+<p>You currently have no requests</p>
+{% else %}
+<table>
+<tr>
+  <th>Item</th>
+  <th>Amount Total</th>
+  <th>Amount Fulfilled</th>
+  <th>Date Requested</th>
+  <th>Completed</th>
+  <th></th>
+</tr>
+{% for request in requests %}
+  <tr>
+    <td>{{ request.item }}</td>
+    <td>{{ request.amount_total }}</td>
+    <td>{{ request.amount_fulfilled }}</td>
+    <td>{{ request.date_requested }}</td>
+    <td>{{ request.is_complete }}</td>
+
+    <td>
+      <!-- <a href="#" class = "btn mb-2 btn-outline-info" onclick="confirmDeleteModal({{request.id}})">Delete Request</a> -->
+    </td>
+  </tr>
+{% endfor %}
+{% endif %}
+</table>
 
 
 {% endblock content %}

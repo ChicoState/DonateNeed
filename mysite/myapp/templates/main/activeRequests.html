@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<br>
+<br>
+<div class="container first-element">
+    <div class="row bg-info">
+        <div class="col-4">
+            <p>
+                {{agency}}'s Requests
+            </p>
+        </div>
+    </div>
+    <!-- {% for request in requests %}
+    <p>{{request.item}}</p>
+    {% endfor %} -->
+
+    <div class="container">
+    <div class = "col-small">
+      {% if not requests %}
+      <p>You currently have no requests</p>
+      {% else %}
+    <table>
+      <tr>
+        <th>Item</th>
+        <th>Amount Total</th>
+        <th>Amount Fulfilled</th>
+        <th>Date Requested</th>
+        <th>Completed</th>
+        <th>Cause</th>
+        <th></th>
+      </tr>
+      {% for request in requests %}
+        <tr>
+          <td>{{ request.item }}</td>
+          <td>{{ request.amount_total }}</td>
+          <td>{{ request.amount_fulfilled }}</td>
+          <td>{{ request.date_requested }}</td>
+          <td>{{ request.is_complete }}</td>
+          <td>{{ request.cause }}</td>
+
+          <td>
+            <a href="#" class = "btn mb-2 btn-outline-info" onclick="confirmDeleteModal({{request.id}})">Delete Request</a>
+          </td>
+        </tr>
+      {% endfor %}
+      {% endif %}
+    </table>
+
+    </div>
+    <a href = "{% url 'addRequests' username %}" class="btn mb-2 btn-outline-info">Add Request</a>
+
+</div>
+</div>
+
+
+<div id="deleteModal" class="modal fade" role='dialog'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Do you really want to delete this request?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <span id= 'deleteButton'></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+
+{% block scripts %}
+{% endblock %}

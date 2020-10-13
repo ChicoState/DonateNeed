@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container first-element">
+    <div class="row bg-info">
+        <div class="col-4">
+    <h1>Make a Donation</h1>
+    </div>
+    </div>
+    <div class="container">
+    <div class = "col-small">
+      {% if not requests %}
+      <p>You currently have no requests</p>
+      {% else %}
+    <table>
+      <tr>
+        <th>Item</th>
+        <th>Amount Total</th>
+        <th>Amount Fulfilled</th>
+        <th>Date Requested</th>
+        <th>Completed</th>
+        <th>Agency</th>
+        <th>Cause</th>
+        <th></th>
+      </tr>
+      {% for request in requests %}
+        <tr>
+          <td>{{ request.item }}</td>
+          <td>{{ request.amount_total }}</td>
+          <td>{{ request.amount_fulfilled }}</td>
+          <td>{{ request.date_requested }}</td>
+          <td>{{ request.is_complete }}</td>
+          <td>{{ request.agency }}</td>
+          <td>{{ request.cause }}</td>
+          <td><a href="/finalSubmitDonation/{{ request.id }}/" class = "btn mb-2 btn-outline-info">Donate Item</a></td>
+
+        </tr>
+      {% endfor %}
+      {% endif %}
+    </table>
+  </div>
+  </div>
+  </div>
+
+  {% endblock %}

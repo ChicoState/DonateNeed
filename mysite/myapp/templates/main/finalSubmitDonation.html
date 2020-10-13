@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<div class="container first-element">
+    <div class="row bg-info">
+        <div class="col-4">
+    <h1>Make a Donation</h1>
+    </div>
+    </div>
+    <br>
+    <ul class="line-separated">
+    <li>Donation Item: {{ donation.item }}</li>
+    <li>Donation Agency: {{ donation.agency }}</li>
+    <li>Donation Requested Amount: {{ donation.amount_total }}</li>
+    <li>Donation Current Fulfilled Amount: {{ donation.amount_fulfilled }}</li>
+</ul>
+
+
+
+
+
+    <form action="{% url 'finalSubmitDonation' id %}"  method="post">
+          {% csrf_token %}
+
+            {{form.as_p}}
+            <br>
+            <br>
+    <div class="col-sm-4">
+      <a href="{% url 'submitDonations' %}" class="btn mb-2 btn-outline-info">Cancel</a>
+      <input type="submit" class="btn mb-2 btn-outline-info" value = "Submit Donation"/>
+    </div>
+    </form>
+  </div>
+
+  {% endblock %}
