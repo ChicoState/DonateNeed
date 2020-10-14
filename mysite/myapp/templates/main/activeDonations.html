@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+<link rel="stylesheet" href="{% static "css/style.css" %}">
+{% block content %}
+<div class="container first-element">
+   <div class="row bg-info">
+      <div class="col-4">
+         <h1>Make a Donation</h1>
+      </div>
+   </div>
+   <div class="container">
+      <div class = "col-small">
+         {% if not requests %}
+         <p>There are no requests with the given filters.</p>
+         {% endif %}
+          <h3>Filters</h3>
+         <form method="POST">
+           Agency
+         {% csrf_token %}
+         <select name="agency_id">
+            <option value="">None</option>
+            {% for agency in agencies %}
+            <option value="{{ agency.id }}">{{ agency.name }}</option>
+            {% endfor %}
+         </select>
+         Cause
+        <form method="POST">
+        {% csrf_token %}
+        <select name="cause_id">
+           <option value="">None</option>
+           {% for cause in causes %}
+           <option value="{{ cause.id }}">{{ cause.title }}</option>
+           {% endfor %}
+           <input type="submit" value="Filter" />
+        </select>
+         <br>
+         {% if requests %}
+         <table class = "table table-bordered table-hover">
+            <tr>
+               <th>Item</th>
+               <th>Amount Total</th>
+               <th>Amount Fulfilled</th>
+               <th>Date Requested</th>
+               <th>Completed</th>
+               <th>Agency</th>
+               <th>Cause</th>
+               <th>Progress</th>
+               <th></th>
+            </tr>
+            {% for request in requests %}
+            <tr>
+               <td>{{ request.item }}</td>
+               <td>{{ request.amount_total }}</td>
+               <td>{{ request.amount_fulfilled }}</td>
+               <td>{{ request.date_requested }}</td>
+               <td>{{ request.is_complete }}</td>
+               <td><a href="/agencyProfile/{{ request.agency.username }}">{{ request.agency }}</a></td>
+               <td><a href="/cause/{{ request.cause.username }}">{{ request.cause }}</a></td>
+               <td>
+                  <div class="progress">
+                     <div class="progress-bar progress-bar-striped active" role="progressbar"
+                        aria-valuenow={{request.amount_fulfilled}} aria-valuemin="0" aria-valuemax={{request.amount_total}} style="width:{{request.percent_complete}}%">
+                        {{request.percent_complete}}%
+                     </div>
+                  </div>
+               </td>
+               <td>
+                  <a href="/finalSubmitDonation/{{ request.id }}/" class = "btn mb-2 btn-outline-info">Donate Item</a>
+               </td>
+            </tr>
+            {% endfor %}
+         </table>
+         {% endif %}
+      </div>
+   </div>
+</div>
+{% endblock %}

@@ -16,7 +16,9 @@
       <h3>{{ user_info.username }}</h3>
       <p class="title">{{ user_info.email }}</p>
       <p class="title">{{ user_info.profile.bio }}</p>
-      <p class="title">{{ user_info.profile.agencies.name }}</p>
+      {% for agency in user_agency %}
+        <p class="title">{{ agency }}</p>
+      {% endfor %}
       <p><a href="{{ user_info.email }}" class="profileCardContact">Contact</a></p>
     </div>
   <!-- </div> -->
@@ -28,11 +30,15 @@
     <br>
     {% if not is_personal_profile %}
       <h3>View Their Agency Page:</h3>
-      <a href="/agencyProfile/{{ user_info.profile.agencies.username }}" class="btn mb-2 btn-outline-info">{{ user_info.profile.agencies.name }}</a>
+      {% for agency in user_agency %}
+      <a href="/agencyProfile/{{ agency.username }}" class="btn mb-2 btn-outline-info">{{ agency }}</a>
+      {% endfor %}
     {% elif is_personal_profile %} <!-- end of not personal profile, beginning of if true-->
     {% if has_agency %}
-      <h3>View Your Agency's Page:</h3>
-      <a href="/agencyProfile/{{ user_info.profile.agencies.username }}" class="btn mb-2 btn-outline-info">{{ user_info.profile.agencies.name }}</a>
+      <h3>View Your Agency Page(s):</h3>
+      {% for agency in user_agency %}
+      <a href="/agencyProfile/{{ agency.username }}" class="btn mb-2 btn-outline-info">{{ agency }}</a>
+      {% endfor %}
     {% elif not has_agency %} <!-- end of agency, now no agency  -->
       <h3>Don't have an agency?</h3>
       <a href="{% url 'addAgency' %}" class="btn mb-2 btn-outline-info">Add Existing Agency to Profile</a>

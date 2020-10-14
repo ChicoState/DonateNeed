@@ -10,7 +10,6 @@
 			<div class="profileImage"></div>
 			<h1>{{ cause_info.title }}</h1>
 			<p class="title">{{ cause_info.location }}</p>
-			<p><a href="{{ cause_info.title }}" class="profileCardContact">Contact</a></p>
 		</div>
 		{% elif not is_cause %}  <!-- end of if account, beginning of not account  -->
 		<a href="{% url '' %}" class="btn mb-2 btn-outline-info">This cause does not exist. Return to the home page.</a>
@@ -20,16 +19,29 @@
 	<br>
 </div>
 {% if not requests %}
-<p>You currently have no requests</p>
-{% else %}
-<table>
+<p>There are no requests with the given filters.</p>
+{% endif %}
+<h3>Filters</h3>
+<form method="POST">
+ Agency
+{% csrf_token %}
+<select name="agency_id">
+	<option value="">None</option>
+	{% for agency in agencies %}
+	<option value="{{ agency.id }}">{{ agency.name }}</option>
+	{% endfor %}
+	<input type="submit" value="Filter" />
+</select>
+{% if requests %}
+<table class = "table table-bordered table-hover">
 <tr>
   <th>Item</th>
   <th>Amount Total</th>
   <th>Amount Fulfilled</th>
   <th>Date Requested</th>
   <th>Completed</th>
-  <th></th>
+	<th>Agency</th>
+	<th>Progress</th>
 </tr>
 {% for request in requests %}
   <tr>
@@ -38,10 +50,15 @@
     <td>{{ request.amount_fulfilled }}</td>
     <td>{{ request.date_requested }}</td>
     <td>{{ request.is_complete }}</td>
-
-    <td>
-      <!-- <a href="#" class = "btn mb-2 btn-outline-info" onclick="confirmDeleteModal({{request.id}})">Delete Request</a> -->
-    </td>
+		<td><a href="/agencyProfile/{{ request.agency.username }}">{{ request.agency }}</a></td>
+		<td>
+			 <div class="progress">
+					<div class="progress-bar progress-bar-striped active" role="progressbar"
+						 aria-valuenow={{request.amount_fulfilled}} aria-valuemin="0" aria-valuemax={{request.amount_total}} style="width:{{request.percent_complete}}%">
+						 {{request.percent_complete}}%
+					</div>
+			 </div>
+		</td>
   </tr>
 {% endfor %}
 {% endif %}

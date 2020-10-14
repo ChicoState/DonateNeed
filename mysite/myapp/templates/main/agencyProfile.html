@@ -1,17 +1,14 @@
 {% extends "base.html" %}
-
 {% load static %}
-
 {% block content %}
-
 <div class="container-fluid profileCard first-element">
-  <div class="row">
-    {% if not is_agency %}
+   <div class="row">
+      {% if not is_agency %}
       <a href="{% url 'agencySignUp' %}" class="btn mb-2 btn-outline-info">This organization does not exist yet. Register your organization here. Then add them to your page.</a>
-    </div>
-    {% endif %}
-  {% if is_agency %}
-    <div class="card col-5">
+   </div>
+   {% endif %}
+   {% if is_agency %}
+   <div class="card col-5">
       <div class="profileImage"></div>
       <img src="{{ agency.picture.url }}" style="width:100%">
       <h1>{{ agency.name }}</h1>
@@ -19,60 +16,108 @@
       <p class="title">{{ agency.address }}</p>
       <p class="title">{{ agency.phone }}</p>
       <p><a href="{{ agency.url}}" class="profileCardContact">Visit Agency Website</a></p>
+   </div>
+   <div class="col-5">
+      <div class="container-fluid">
+         <div align="center">
+            <div class="ct-chart" id="chart1"></div>
+            <a href="#requests">Jump to Donation Requests</a>
+            <script>
+               new Chartist.Pie('#chart1',
+               { labels: ['Completed', 'In progress'], series: [{{requests_completed}}, {{requests_in_progress}}] },
+               { labelInterpolationFnc: function(value) { return value[0] } },
+               [['screen', { chartPadding: 20, labelOffset: 60, labelDirection: 'explode',
+               labelInterpolationFnc: function(value) { return value;}}]]);
 
-    </div>
-
-
-  <div class="col-5">
-  {% if agency.causes is not None %}
-    <h3>Causes we support:</h3>
-    {% for cause in agency.causes.all %}
-    <a href="/cause/{{ cause.username }}" class ="btn mb-2 btn-outline-info">{{cause.title}}</a>
-    {% endfor %}
-  {% endif %}
-{% endif %}
-{% if is_personal_agency %}
-<a href="/addAgency/{{username}}" class ="btn mb-2 btn-outline-info">Add other admin users to this agency</a>
-<a href="/pledgeSupport/{{username}}" class ="btn mb-2 btn-outline-info">Add supported causes to this agency</a>
-{% endif %}
-</div>
+            </script>
+         </div>
+      </div>
+      {% if agency.causes is not None %}
+      <h3>Causes we support:</h3>
+      {% for cause in agency.causes.all %}
+      <a href="/cause/{{ cause.username }}" class ="btn mb-2 btn-outline-info">{{cause.title}}</a>
+      {% endfor %}
+      {% endif %}
+      {% endif %}
+   </div>
 </div>
 </div>
 {% if not requests %}
 <p>You currently have no requests</p>
 {% else %}
-<table>
-<tr>
-  <th>Item</th>
-  <th>Amount Total</th>
-  <th>Amount Fulfilled</th>
-  <th>Date Requested</th>
-  <th>Completed</th>
-  <th></th>
-</tr>
-{% for request in requests %}
-  <tr>
-    <td>{{ request.item }}</td>
-    <td>{{ request.amount_total }}</td>
-    <td>{{ request.amount_fulfilled }}</td>
-    <td>{{ request.date_requested }}</td>
-    <td>{{ request.is_complete }}</td>
-
-    <td>
-      <!-- <a href="#" class = "btn mb-2 btn-outline-info" onclick="confirmDeleteModal({{request.id}})">Delete Request</a> -->
-    </td>
-  </tr>
-{% endfor %}
-{% endif %}
-</table>
-
-
+<div class="container-fluid profileCard first-element">
+   <div id = requests>
+      <div class = "custom-control" "custom_checkbox">
+         <form method="POST">
+            {% csrf_token %}
+            {{ is_hidden.as_p }}
+         </form>
+         <!-- <input type="checkbox" name="hide" value="1" /> -->
+      </div>
+      <table class = "table table-bordered table-hover">
+         <tr>
+            <th>Item</th>
+            <th>Amount Total</th>
+            <th>Amount Fulfilled</th>
+            <th>Cause</th>
+            <th>Date Requested</th>
+            <th>Completed</th>
+            <th>Progress</th>
+            {% if is_admin %}
+            <th></th>
+            {% endif %}
+         </tr>
+         {% for request in requests %}
+         <tr>
+            <td>{{ request.item }}</td>
+            <td>{{ request.amount_total }}</td>
+            <td>{{ request.amount_fulfilled }}</td>
+            <td><a href="/cause/{{ request.cause.username }}">{{ request.cause }}</a></td>
+            <td>{{ request.date_requested }}</td>
+            <td>{{ request.is_complete }}</td>
+            <td>
+               <div class="progress">
+                  <div class="progress-bar progress-bar-striped active" role="progressbar"
+                     aria-valuenow={{request.amount_fulfilled}} aria-valuemin="0" aria-valuemax={{request.amount_total}} style="width:{{request.percent_complete}}%">
+                     {{request.percent_complete}}%
+                  </div>
+               </div>
+            </td>
+            {% if is_admin %}
+            <td>
+               <a href="#requests" class = "btn mb-2 btn-outline-info" onclick="confirmDeleteModal({{request.id}})">Delete Request</a>
+            </td>
+            {% endif %}
+         </tr>
+         {% endfor %}
+         {% endif %}
+      </table>
+   </div>
+   <a href = "{% url 'agencyRequestedDonations' username %}" class="btn mb-2 btn-outline-info">View all of {{agency}}'s Requested Donations</a>
+</div>
+{% if is_admin %}
+   <div class="card col-5">
+   <h2>Administration</h2>
+   <a href="/addAgency/{{username}}" class ="btn mb-2 btn-outline-info">Add other admin users to this agency</a>
+   <a href="/pledgeSupport/{{username}}" class ="btn mb-2 btn-outline-info">Add supported causes to this agency</a>
+   {% endif %}
+</div>
+<div id="deleteModal" class="modal fade" role='dialog'>
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+         </div>
+         <div class="modal-body">
+            <p>Do you really want to delete this request?</p>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <span id= 'deleteButton'></span>
+         </div>
+      </div>
+   </div>
+</div>
 {% endblock content %}
-
 {% block scripts %}
-
-<script type="text/javascript" src="{% static "javascript/profile.js"}">
-
-</script>
-
 {% endblock %}

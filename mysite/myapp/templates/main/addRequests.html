@@ -17,11 +17,12 @@
 
             <p>Item: </p>{{form.item}}
             <p>Requested Amount: </p>{{form.amount_total}}
+            <p>Cause: </p>{{form.cause}}
 
             <br>
             <br>
     <div class="col-sm-4">
-      <a href="{% url 'activeRequests' username %}" class="btn mb-2 btn-outline-info">Cancel</a>
+      <a href="{% url 'agencyRequestedDonations' username %}" class="btn mb-2 btn-outline-info">Cancel</a>
       <input type="submit" class="btn mb-2 btn-outline-info" value = "Add Donation Request"/>
     </div>
     </form>

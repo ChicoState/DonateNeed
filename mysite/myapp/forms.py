@@ -66,7 +66,7 @@ class MakeDonation(ModelForm):
 class AddRequestForm(ModelForm):
     class Meta:
         model = models.Request_In_Progress
-        fields = ["item", "amount_total"]
+        fields = ["item", "amount_total", "cause"]
 
 
 class ProfileForm(ModelForm):
@@ -138,3 +138,19 @@ class CauseForm(ModelForm):
         if title and models.Cause.objects.filter(title=title).count()>1:
             self.add_error('title', forms.ValidationError(('This title already exists. Please be more descriptive'), code='title_error'))
         return cleaned_data
+
+
+class HideCompletedRequestsForm(ModelForm):
+    requests_view_hide_completed = forms.BooleanField(required=False, label='Hide Completed Requests',widget=forms.CheckboxInput(attrs={'onclick': 'this.form.submit()'}))
+    class Meta:
+        model = Profile
+        fields = ['requests_view_hide_completed']
+        labels = {
+            'requests_view_hide_completed': 'Hide Completed Requests'
+        }
+
+
+class FilterAgencyForm(ModelForm):
+    class Meta:
+        model = Agencies
+        fields = ['name']

@@ -12,7 +12,7 @@
 <div class="container first-element">
 <br>
   <h2>Active Causes to Donate To</h2>
-  <table>
+  <table class = "table table-bordered table-hover">
     <tr>
       <th>Cause</th>
       <th>Location</th>
@@ -22,14 +22,7 @@
       <tr>
         <td>{{ causes.title }}</td>
         <td>{{ causes.location }}</td>
-        <td><a href="/cause/{{ causes.title }}" class="btn btn-info mb-2">Visit Cause Profile</a></td>
-        <!-- <td><a href="?toggle_completed={{book.id}}">
-          {% if book.completed %}Yes{% else %}No{% endif %}
-        </a></td>
-        <td>
-          <a href="/books/book{{ book.id }}/" class = "btn mb-2 btn-outline-info">View all Reviews For this Book</a>
-          <a href="#" class = "btn mb-2 btn-outline-info" onclick="confirmDeleteModal({{book.id}})">Delete Book From Reading List</a>
-        </td> -->
+        <td><a href="/cause/{{ causes.title }}" class="btn btn-info mb-2">Visit Cause Page For More Information</a></td>
       </tr>
     {% endfor %}
     </table>
@@ -39,7 +32,5 @@
 
 {% block scripts %}
 
-<!-- <script type="text/javascript" src="{% static "javascript/profile.js"}">
-</script> -->
 
 {% endblock %}

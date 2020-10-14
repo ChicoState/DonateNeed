@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<br>
+<br>
+<div class="container first-element">
+    <div class="row bg-info">
+        <div class="col-4">
+            <p>
+                Search Results
+            </p>
+        </div>
+    </div>
+    {% if not agencies and not causes and not users and not news_articles %}
+    No results matched your search.
+    </div>
+    {% else %}
+    Agencies
+    {% for agency in agencies %}
+        <div class="row">
+          <a href="/agencyProfile/{{ agency.username }}">{{ agency.name }}</a>
+    </div>
+    {% endfor %}
+    Users
+    {% for user in users %}
+    <div class="row">
+    <a href="/profile/{{ user.username }}">{{ user.first_name }} {{ user.last_name }}</a>
+    </div>
+    {% endfor %}
+    Causes
+    {% for cause in causes %}
+    <div class="row">
+    <a href="/cause/{{ cause.username }}">{{ cause.title }}</a>
+    </div>
+    {% endfor %}
+    News Articles
+    <div class="row">
+      {% for article in news_articles %}
+      <div class = "col-6">
+        <a href={{ article.url }}>
+          <h3>{{ article.title }}</h3>
+          <img src={{ article.picture }} style="width:100%">
+          <p>{{ article.description }}</p>
+          <p>Read more</p>
+        </a>
+      </div>
+      {% endfor %}
+      </div>
+    </div>
+{% endif %}
+
+{% endblock content %}
+
+
+{% block scripts %}
+{% endblock %}

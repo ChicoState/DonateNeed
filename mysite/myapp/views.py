@@ -5,12 +5,13 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
+from django.db.models import Q
 import re, string
 
 from django.core import serializers
 
 from . import forms
-from myapp.forms import AgencyForm, ProfileForm
+from myapp.forms import AgencyForm, ProfileForm, HideCompletedRequestsForm
 from myapp.models import Profile, Cause, News_Articles, Agencies, Request_Fulfilled, Request_In_Progress
 from . import models
 
@@ -193,13 +194,43 @@ def agencyProfile(request, uname=None):
         #     Request_In_Progress.objects.filter(id=delete).delete()
 
     title = "Agency Profile"
-    print(uname)
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
 
+
+
+
+
     try:
-        agency = models.Agencies.objects.get(username=uname)
-        requests = Request_In_Progress.objects.filter(agency=agency)
+        agency = Agencies.objects.get(username=uname)
+        requests_in_progress = Request_In_Progress.objects.filter(is_complete=True, agency=agency).count()
+        requests_completed = Request_In_Progress.objects.filter(is_complete=False, agency=agency).count()
+        if request.user not in agency.admin_users.all():
+            is_admin = False
+        else:
+            is_admin = True
+
+        if request.method == "POST":
+            profile = Profile.objects.get(user=request.user)
+            print(profile)
+            completed_form = HideCompletedRequestsForm(request.POST, instance=profile)
+            if(completed_form.is_valid()):
+                completed_form.save()
+        try:
+            profile = Profile.objects.get(user=request.user)
+            is_hidden = HideCompletedRequestsForm(instance=profile)
+        except:
+            is_hidden = HideCompletedRequestsForm()
+        hidden_checked = is_hidden['requests_view_hide_completed'].value()
+        print(hidden_checked)
+
+
+
+        if hidden_checked:
+            requests = Request_In_Progress.objects.filter(is_complete=False, agency=agency)
+        else:
+            requests = Request_In_Progress.objects.filter(agency=agency)
+
         instance  = models.Profile.objects.get(user=request.user)
         causes = agency.causes
 
@@ -216,10 +247,15 @@ def agencyProfile(request, uname=None):
             "username": uname,
             "requests": requests,
             "is_agency":is_agency,
+            "is_admin": is_admin,
+            "requests_in_progress": requests_in_progress,
+            "requests_completed": requests_completed,
+            "is_hidden": is_hidden,
             "agency": agency,
              "causes": causes,
             "is_personal_agency": is_personal_agency
         }
+        #return HttpResponseRedirect("")
         return render(request, 'main/agencyProfile.html', context=context)
 
     except models.Agencies.DoesNotExist:
@@ -277,12 +313,25 @@ def profile(request, username=None):
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
     has_agency = False
+    user_agency = []
     try:
         user_info = models.User.objects.get(username=username)
         if user_info == request.user:
             is_personal_profile = True
-            if request.user.profile.agencies is not None:
-                has_agency = True
+            user = request.user
+            profile = Profile.objects.get(user=request.user)
+            all_agencies = Agencies.objects.all()
+            for agency in all_agencies:
+                if request.user in agency.admin_users.all():
+                    has_agency = True
+                    user_agency.append(agency)
+
+            #for agency in all_agencies
+            #if Agencies.objects.filter(user__in=admin_users) is not None:
+
+            #if Agencies.admin_users.filter(user__in=admin_users) is not None:
+            #if request.user.profile.agencies is not None:
+                #has_agency = True
         else:
            is_personal_profile = False
 
@@ -292,6 +341,7 @@ def profile(request, username=None):
             "is_user": checkAuth(request),
             "user": request.user,
             "username": username,
+            "user_agency": user_agency,
             "is_an_account":is_an_account,
             "user_info": user_info,
             "has_agency": has_agency,
@@ -430,7 +480,6 @@ def donation(request, username):
 
 @csrf_exempt
 def fetch_donation(request):
-
     if request.method == "POST":
 
         body_unicode = request.body.decode('utf-8')
@@ -518,6 +567,14 @@ def causePage(request, uname=None):
         requests = Request_In_Progress.objects.filter(cause=cause_info.id)
         article1 = News_Articles.objects.filter(description__contains=uname)
         article2  = News_Articles.objects.filter(title__contains=uname)
+        agencies = Agencies.objects.filter(causes=cause_info)
+        #if request.user not in agency.admin_users.all():
+        if request.method == 'POST':
+            agency_id = request.POST.get('agency_id')
+            if agency_id is not "":
+                selected_item = get_object_or_404(Agencies, pk=request.POST.get('agency_id'))
+                requests = Request_In_Progress.objects.filter(agency=selected_item, cause=cause_info.id)
+
         articles = article1 | article2
         is_cause = True
         context = {
@@ -525,6 +582,7 @@ def causePage(request, uname=None):
             "is_user": checkAuth(request),
             "user": request.user,
             "uname": uname,
+            "agencies": agencies,
             "is_cause": is_cause,
             "articles": articles,
             "requests": requests,
@@ -537,26 +595,34 @@ def causePage(request, uname=None):
 
 
 
-def activeRequests(request, username):
+def agencyRequestedDonations(request, username=None):
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
-    agency = Agencies.objects.filter(username=username)[0]
-    if request.user not in agency.admin_users.all():
-        return HttpResponseRedirect("/")
+    if(username is None):
+        requests = Request_In_Progress.objects.all()
+        is_admin = False
+        agency = "All Agency"
+    else:
+        agency = Agencies.objects.filter(username=username)[0]
+        if request.user in agency.admin_users.all():
+            is_admin = True
+        else:
+            is_admin = False
+        requests = Request_In_Progress.objects.filter(agency=agency)
 
-    requests = Request_In_Progress.objects.filter(agency=agency)
     delete = request.GET.get('delete', 0)
     context = {
         "agency": agency,
         "username": username,
         "user": request.user,
+        "is_admin": is_admin,
         "is_user": checkAuth(request),
         "requests": requests,
     }
     if delete != 0:
         Request_In_Progress.objects.filter(id=delete).delete()
 
-    return render(request, 'main/activeRequests.html', context=context)
+    return render(request, 'main/agencyRequestedDonations.html', context=context)
 
 
 
@@ -570,9 +636,12 @@ def addRequests(request, username):
         form_instance = forms.AddRequestForm(request.POST)
         if form_instance.is_valid():
           instance = form_instance.save(commit=False)
+          cause = form_instance.cleaned_data['cause']
+          if cause not in agency.causes.all():
+              agency.causes.add(cause)
           instance.agency = agency
           instance.save()
-          return redirect('activeRequests', username=username)
+          return redirect('activeDonations')
     else:
         form_instance = forms.AddRequestForm()
 
@@ -586,22 +655,39 @@ def addRequests(request, username):
 
 
 
-def submitDonations(request):
+def activeDonations(request):
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
+
+    agencies = Agencies.objects.all()
+    causes = Cause.objects.all()
     requests = Request_In_Progress.objects.all()
+    if request.method == 'POST':
+        agency_id = request.POST.get('agency_id')
+        if agency_id is not "":
+            selected_item = get_object_or_404(Agencies, pk=request.POST.get('agency_id'))
+            requests = Request_In_Progress.objects.filter(agency=selected_item)
+        cause_id = request.POST.get('cause_id')
+        if cause_id is not "":
+            selected_cause = get_object_or_404(Agencies, pk=request.POST.get('cause_id'))
+            requests = Request_In_Progress.objects.filter(agency=selected_cause)
+
     user = request.user
     context = {
         "user": user,
+        "agencies": agencies,
+        "causes": causes,
+        "is_user": checkAuth(request),
         "requests": requests
     }
 
-    return render(request, 'main/submitDonations.html', context = context)
+    return render(request, 'main/activeDonations.html', context = context)
 
 
 
 
 def finalSubmitDonation(request, id):
+
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
     donation = Request_In_Progress.objects.filter(id=id)[0]
@@ -618,11 +704,14 @@ def finalSubmitDonation(request, id):
 
           pledged = form_instance.cleaned_data['promised_amount']
           fulfilled = donation.amount_fulfilled
+          total = donation.amount_total
 
           donation.amount_fulfilled = pledged+fulfilled
+          donation.percent_complete = ((pledged+fulfilled)/total)*100
 
           if(donation.amount_fulfilled == donation.amount_total):
               donation.is_complete = True
+              donation.percent_complete = 100
           donation.save()
           return redirect('submitDonations')
     else:
@@ -632,8 +721,38 @@ def finalSubmitDonation(request, id):
     context = {
         "user": user,
         "id": id,
+        "is_user": checkAuth(request),
         "form": form_instance,
         "donation": donation
     }
 
     return render(request, 'main/finalSubmitDonation.html', context = context)
+
+
+def search(request):
+    if request.method == 'GET' and 'q' in request.GET:
+        keyword = request.GET['q']
+    else:
+        keyword is None
+
+    if keyword is not None and keyword != '':
+        agencies = Agencies.objects.filter(Q(name__contains=keyword) | Q(username__contains=keyword))
+        causes = Cause.objects.filter(Q(title__contains=keyword) | Q(location__contains=keyword))
+        users = User.objects.filter(Q(first_name__contains = keyword) | Q(last_name__contains = keyword) | Q(username__contains = keyword))
+        news_articles = News_Articles.objects.filter(Q(title__contains = keyword) | Q(description__contains = keyword))
+
+    else:
+        print("made it")
+        agencies = None
+        causes = None
+        users = None
+        news_articles = None
+
+    context = {
+        "agencies": agencies,
+        "news_articles": news_articles,
+        "users": users,
+        "is_user": checkAuth(request),
+        "causes": causes,
+    }
+    return render(request, 'main/search.html', context=context)
