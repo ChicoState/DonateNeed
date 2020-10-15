@@ -1,43 +1,101 @@
 {% extends "base.html" %}
-
 {% load static %}
-
 {% block content %}
 <br>
 <br>
 <div class="container first-element">
-    <div class="row bg-info">
-        <div class="col-4">
-            <p>
-                Search Results
-            </p>
-        </div>
-    </div>
-    {% if not agencies and not causes and not users and not news_articles %}
-    No results matched your search.
-    </div>
-    {% else %}
-    Agencies
+  <h1><div class="text-center">Search Results</div></h1>
+   </div>
+   {% if not agencies and not causes and not users and not news_articles %}
+   No results matched your search.
+</div>
+
+{% else %}
+
+{% if agencies %}
+<br>
+
+<div class="col-sm-12">
+  <h3><div class="text-center">Agencies</div></h3>
+  <div class="card-columns">
+
     {% for agency in agencies %}
-        <div class="row">
-          <a href="/agencyProfile/{{ agency.username }}">{{ agency.name }}</a>
-    </div>
+      <div class="card">
+        <img class="card-img-top night" src="{{ agency.picture.url }}" onerror="this.style.display='none'">
+        <div class="text">
+          <h5>{{ agency.name }}</h5>
+          <p>{{ agency.address }}</p>
+          <p>{{ agency.phone }}</p>
+          <div class="text-center">
+            <a href="{{ agency.url }}" class="btn mb-2 btn-outline-info">Visit Website</a>
+          </div>
+          <a href ="/agencyProfile/{{ agency.username }}" class="stretched-link"></a>
+        </div>
+      </div>
     {% endfor %}
-    Users
+  </div>
+</div>
+
+{% endif %}
+
+
+{% if users %}
+<br>
+
+<div class="col-sm-12">
+  <h3><div class="text-center">Users</div></h3>
+    <div class="card-columns p-2">
     {% for user in users %}
-    <div class="row">
-    <a href="/profile/{{ user.username }}">{{ user.first_name }} {{ user.last_name }}</a>
+    <div class="card">
+      <img class="card-img-top night" src="{{ user.profile.picture.url }}" onerror="this.style.display='none'">
+      <div class="text">
+        <h5>{{ user.first_name }}{{ user.last_name }}</h5>
+        <p>{{ user.username }}</p>
+        <p class="title">{{ user.email }}</p>
+        <div class="text-center">
+          <a href="/profile/{{ user.username }}" class="btn mb-2 btn-outline-info">{{ user.first_name }}'s Profile</a>
+        </div>
+        <a href ="/profile/{{ user.username }}" class="stretched-link"></a>
+      </div>
     </div>
-    {% endfor %}
-    Causes
+
+
+{% endfor %}
+    </div>
+    </div>
+{% endif %}
+
+{% if causes %}
+<br>
+
+<div class="container first-element">
+<br>
+  <h3><div class="text-center">Causes</div></h3>
+  <table class = "table table-bordered table-hover">
+    <tr>
+      <th>Cause</th>
+      <th>Location</th>
+      <th></th>
+    </tr>
     {% for cause in causes %}
-    <div class="row">
-    <a href="/cause/{{ cause.username }}">{{ cause.title }}</a>
-    </div>
+      <tr>
+        <td>{{ cause.title }}</td>
+        <td>{{ cause.location }}</td>
+        <td><a href="/cause/{{ cause.title }}" class="btn btn-info mb-2">Visit Cause Page For More Information</a></td>
+      </tr>
     {% endfor %}
-    News Articles
+    </table>
+</div>
+{% endif %}
+
+{% if news_articles %}
+<br>
+
+<div id="profile">
+  <div class="container first-element">
+    <h3><div class="text-center">News Articles</div></h3>
     <div class="row">
-      {% for article in news_articles %}
+     {% for article in news_articles %}
       <div class = "col-6">
         <a href={{ article.url }}>
           <h3>{{ article.title }}</h3>
@@ -45,14 +103,15 @@
           <p>{{ article.description }}</p>
           <p>Read more</p>
         </a>
-      </div>
-      {% endfor %}
-      </div>
-    </div>
+   </div>
+   {% endfor %}
+   </div>
+   </div>
+</div>
 {% endif %}
 
+</div>
+{% endif %}
 {% endblock content %}
-
-
 {% block scripts %}
 {% endblock %}

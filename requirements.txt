@@ -6,3 +6,4 @@ pyrebase
 protobuf
 django-phone-field
 Pillow
+django-serve-shiny

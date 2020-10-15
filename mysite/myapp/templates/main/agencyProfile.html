@@ -32,6 +32,7 @@
             </script>
          </div>
       </div>
+      <br>
       {% if agency.causes is not None %}
       <h3>Causes we support:</h3>
       {% for cause in agency.causes.all %}
@@ -63,9 +64,7 @@
             <th>Date Requested</th>
             <th>Completed</th>
             <th>Progress</th>
-            {% if is_admin %}
             <th></th>
-            {% endif %}
          </tr>
          {% for request in requests %}
          <tr>
@@ -86,6 +85,10 @@
             {% if is_admin %}
             <td>
                <a href="#requests" class = "btn mb-2 btn-outline-info" onclick="confirmDeleteModal({{request.id}})">Delete Request</a>
+            </td>
+            {% else %}
+            <td>
+               <a href="/finalSubmitDonation/{{ request.id }}/" class = "btn mb-2 btn-outline-info">Donate Item</a>
             </td>
             {% endif %}
          </tr>

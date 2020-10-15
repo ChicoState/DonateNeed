@@ -152,9 +152,9 @@ def signUp(request):
             user = request.user
             context = {
                 "user":user,
+                "signedIn": True,
                 "is_user": checkAuth(request),
             }
-            # return render(request, "main/signIn.html", context = context)
             return HttpResponseRedirect("/")
 
     else:
@@ -170,36 +170,17 @@ def signUp(request):
 
 
 
-# def postsignup(request):
-#     title = "Welcome "
-#     name = request.POST.get('name')
-#   email = request.POST.get('email')
-#   passw = request.POST.get('pass')
-#
-#   context = {
-#     "title": title,
-#     "e": email,
-#     "is_user": checkAuth(request),
-#   }
-#   return render(request, "main/welcome.html", context = context)
-
-
 
 
 def agencyProfile(request, uname=None):
-        #
-        # delete = request.GET.get('delete', 0)
-        #
-        # if delete != 0
-        #     Request_In_Progress.objects.filter(id=delete).delete()
+    delete = request.GET.get('delete', 0)
+
+    if delete != 0:
+        Request_In_Progress.objects.filter(id=delete).delete()
 
     title = "Agency Profile"
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
-
-
-
-
 
     try:
         agency = Agencies.objects.get(username=uname)
@@ -212,7 +193,6 @@ def agencyProfile(request, uname=None):
 
         if request.method == "POST":
             profile = Profile.objects.get(user=request.user)
-            print(profile)
             completed_form = HideCompletedRequestsForm(request.POST, instance=profile)
             if(completed_form.is_valid()):
                 completed_form.save()
@@ -222,9 +202,6 @@ def agencyProfile(request, uname=None):
         except:
             is_hidden = HideCompletedRequestsForm()
         hidden_checked = is_hidden['requests_view_hide_completed'].value()
-        print(hidden_checked)
-
-
 
         if hidden_checked:
             requests = Request_In_Progress.objects.filter(is_complete=False, agency=agency)
@@ -235,7 +212,6 @@ def agencyProfile(request, uname=None):
         causes = agency.causes
 
         if  request.user in agency.admin_users.all():
-        #if instance.agencies == agency:
             is_personal_agency = True
         else:
             is_personal_agency = False
@@ -255,7 +231,6 @@ def agencyProfile(request, uname=None):
              "causes": causes,
             "is_personal_agency": is_personal_agency
         }
-        #return HttpResponseRedirect("")
         return render(request, 'main/agencyProfile.html', context=context)
 
     except models.Agencies.DoesNotExist:
@@ -325,13 +300,6 @@ def profile(request, username=None):
                 if request.user in agency.admin_users.all():
                     has_agency = True
                     user_agency.append(agency)
-
-            #for agency in all_agencies
-            #if Agencies.objects.filter(user__in=admin_users) is not None:
-
-            #if Agencies.admin_users.filter(user__in=admin_users) is not None:
-            #if request.user.profile.agencies is not None:
-                #has_agency = True
         else:
            is_personal_profile = False
 
@@ -350,18 +318,6 @@ def profile(request, username=None):
         return render(request, 'main/profile.html', context=context)
     except models.User.DoesNotExist:
         return HttpResponseRedirect("/")
-    #     is_an_account = False
-    # is_personal_profile = False
-    # context = {
-    #     "title": title,
-    #     "is_user": checkAuth(request),
-    #     "user": request.user,
-    #     "username": username,
-    #     "is_an_account":is_an_account,
-    #     "is_personal_profile": is_personal_profile,
-    #     "has_agency": has_agency,
-    # }
-    # return render(request, 'main/profile.html', context=context)
 
 
 
@@ -459,63 +415,44 @@ def pledgeSupport(request,  username=None):
 
 
 
-@csrf_exempt
-def donation(request, username):
-  agency1 = Agencies.objects.filter(username=username)
-  agency = agency1[0]
-  form_instance = forms.RegisterDonation()
-  if form_instance.is_valid():
-      instance = form_instance.save(commit=False)
-      instance.agency = agency
-      instance.save()
-
-
-  context = {
-      "title":"Suggestion Form",
-      "form":form_instance,
-      "agency": agency
-  }
-  return render(request, "main/donation.html", context=context)
-
-
-@csrf_exempt
-def fetch_donation(request):
-    if request.method == "POST":
-
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        additions = body['add_donations']
-        updates = body['donations']
-
-        for sub in additions:
-
-            new_donation = models.Request_In_Progress()
-            new_donation.item = sub['item']
-            new_donation.amount_total = sub['amount']
-            new_donation.agency = request.user.profile.agencies
-
-            new_donation.save()
-
-        for sub in updates:
-            next_item = models.Request_In_Progress.objects.get(id=sub['id'])
-            next_item.item = sub['item']
-            next_item.amount_total = sub['amount']
-
-            next_item.save()
-
-    donations = models.Request_In_Progress.objects.all()
-    donation_list = {"donations":[]}
-
-    for donation in donations:
-        donation_list["donations"] += [{
-        "item":donation.item,
-        "amount":donation.amount_total,
-        "id":donation.id
-        }]
-
-    print(donation_list)
-
-    return JsonResponse(donation_list)
+# @csrf_exempt
+# def fetch_donation(request):
+#     if request.method == "POST":
+#
+#         body_unicode = request.body.decode('utf-8')
+#         body = json.loads(body_unicode)
+#         additions = body['add_donations']
+#         updates = body['donations']
+#
+#         for sub in additions:
+#
+#             new_donation = models.Request_In_Progress()
+#             new_donation.item = sub['item']
+#             new_donation.amount_total = sub['amount']
+#             new_donation.agency = request.user.profile.agencies
+#
+#             new_donation.save()
+#
+#         for sub in updates:
+#             next_item = models.Request_In_Progress.objects.get(id=sub['id'])
+#             next_item.item = sub['item']
+#             next_item.amount_total = sub['amount']
+#
+#             next_item.save()
+#
+#     donations = models.Request_In_Progress.objects.all()
+#     donation_list = {"donations":[]}
+#
+#     for donation in donations:
+#         donation_list["donations"] += [{
+#         "item":donation.item,
+#         "amount":donation.amount_total,
+#         "id":donation.id
+#         }]
+#
+#     print(donation_list)
+#
+#     return JsonResponse(donation_list)
 
 
 def addAgency(request, username=None):

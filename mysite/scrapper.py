@@ -120,11 +120,9 @@ while(1):
         description = article.find('p').text
         art.description = description
 
-        
+
 
         image = article.find('img').get('org-src')
-        if image is None:
-            image = 'https://www.realmilkpaint.com/wp-content/uploads/SoftWhite_Edited_2018.jpg'
         art.picture = image
         art.save()
 
