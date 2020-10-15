@@ -498,8 +498,6 @@ def activeCauses(request):
 def causePage(request, uname=None):
     title = "Cause"
     username = re.sub(r"\s+", "", uname)
-    if checkAuth(request) == False:
-        return HttpResponseRedirect("/")
     try:
         cause_info = Cause.objects.get(username=username)
         requests = Request_In_Progress.objects.filter(cause=cause_info.id)

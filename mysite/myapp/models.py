@@ -7,11 +7,22 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
-# Create your models here.
+CAUSE_TYPES =(
+    ("hurricane", "Hurricanes and Tropical Storms"),
+    ("earthquake", "Earthquakes"),
+    ("fire", "Fires"),
+    ("flood", "Floods"),
+    ("tornado", "Tornadoes"),
+    ("tsunami", "Tsunamies"),
+    ("winter_storm", "Winter and Ice Storms"),
+
+)
+
 class Cause(models.Model):
   title = models.CharField(max_length=100)
   location = models.CharField(max_length=100)
   username = models.CharField(max_length=100, null=True)
+  type_of_cause = models.CharField(max_length=100, choices=CAUSE_TYPES, default=None)
   # requests_in_progress = models.ManyToManyField(models.Request_In_Progress)
   def __str__(self):
     return self.title
