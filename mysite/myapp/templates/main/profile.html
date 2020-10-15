@@ -40,9 +40,7 @@
       <a href="/agencyProfile/{{ agency.username }}" class="btn mb-2 btn-outline-info">{{ agency }}</a>
       {% endfor %}
     {% elif not has_agency %} <!-- end of agency, now no agency  -->
-      <h3>Don't have an agency?</h3>
-      <a href="{% url 'addAgency' %}" class="btn mb-2 btn-outline-info">Add Existing Agency to Profile</a>
-      <h4>Or create yours here:</h4>
+      <h3>Don't have an agency? Create yours here:</h3>
       <a href="{% url 'agencySignUp' %}" class="btn mb-2 btn-outline-info">Upload Your Agency's Info</a>
     {% endif %} <!-- end of has_agency -->
     {% endif %} <!-- end of if is_personal_profile -->

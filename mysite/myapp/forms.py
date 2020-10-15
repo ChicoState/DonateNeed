@@ -72,7 +72,7 @@ class AddRequestForm(ModelForm):
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
-        exclude = ['user']
+        exclude = ['user', 'requests_view_hide_completed']
         #fields="__all__" #, "picture")
 
 

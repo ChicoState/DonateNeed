@@ -18,6 +18,7 @@
       <p><a href="{{ agency.url}}" class="profileCardContact">Visit Agency Website</a></p>
    </div>
    <div class="col-5">
+     {% if requests %}
       <div class="container-fluid">
          <div align="center">
             <div class="ct-chart" id="chart1"></div>
@@ -32,8 +33,9 @@
             </script>
          </div>
       </div>
+      {% endif %}
       <br>
-      {% if agency.causes is not None %}
+      {% if agency.causes.all %}
       <h3>Causes we support:</h3>
       {% for cause in agency.causes.all %}
       <a href="/cause/{{ cause.username }}" class ="btn mb-2 btn-outline-info">{{cause.title}}</a>

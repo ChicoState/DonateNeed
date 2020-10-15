@@ -400,6 +400,7 @@ def pledgeSupport(request,  username=None):
                 "is_agency": True,
                 "user": request.user,
                 "agency": agency,
+                "is_user": checkAuth(request),
                 "causes": causes,
                 "is_personal_agency": True
             }
@@ -650,7 +651,14 @@ def finalSubmitDonation(request, id):
               donation.is_complete = True
               donation.percent_complete = 100
           donation.save()
-          return redirect('submitDonations')
+          context = {
+            "user": request.user,
+            "id": id,
+            "is_user": checkAuth(request),
+            "form": form_instance,
+            "donation": donation
+          }
+          return render(request, 'main/activeDonations.html', context=context)
     else:
         form_instance = forms.MakeDonation()
 
