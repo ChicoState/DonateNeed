@@ -19,7 +19,7 @@ class Cause(models.Model):
 
 class News_Articles(models.Model):
   picture = models.URLField(max_length=100, null=True, blank=True)
-  url = models.URLField(max_length=100)
+  url = models.URLField(max_length=100, unique=True)
   title = models.CharField(max_length=100, null=True)
   description = models.CharField(max_length=1000, null=True)
   # cause = models.ManyToManyField(Cause, on_delete=models.SET_NULL, blank=True, null=True)
