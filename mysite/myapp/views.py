@@ -7,6 +7,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
 from django.db.models import Q
 import re, string
+import geoip2.database
+import geopy.distance
+from geopy.geocoders import Nominatim
+
+
 
 from django.core import serializers
 
@@ -34,6 +39,39 @@ def home(request):
     articles = models.News_Articles.objects.all().order_by('-picture')
     articles = articles[:4]
     Agenciess = models.Agencies.objects.all()[:6]
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    #try:
+
+    reader = geoip2.database.Reader('../GeoLite2-City_20201013/GeoLite2-City.mmdb')
+    ip = '24.94.15.83'
+    response = reader.city(ip)
+
+    # print(response.country.iso_code)
+    # print(response.country.name)
+    # print(response.country.names['zh-CN'])
+    # print(response.subdivisions.most_specific.name)
+    # print(response.subdivisions.most_specific.iso_code)
+    # print(response.city.name)
+    # print(response.postal.code)
+    # print(response.location.latitude)
+    # print(response.location.longitude)
+    location1 = (response.location.latitude, response.location.longitude)
+
+    geolocator = Nominatim(user_agent="my_user_agent")
+    loc = geolocator.geocode("Cleveland, OH", exactly_one=False)[0]
+
+    location2 = (loc.latitude, loc.longitude)
+    distance = geopy.distance.distance(location1, location2).miles
+    print(distance)
+    reader.close()
+    # except:
+    #     pass
+
     context = {
         "user" : request.user,
         "title": title,

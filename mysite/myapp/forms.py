@@ -3,7 +3,7 @@ from django.core.validators import validate_slug
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from myapp.models import Agencies, CAUSE_TYPES
+from myapp.models import Agencies
 from myapp.models import Profile, Cause
 from django.contrib import messages
 import re, string
