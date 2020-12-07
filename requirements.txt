@@ -7,3 +7,9 @@ protobuf
 django-phone-field
 Pillow
 django-serve-shiny
+geoip2
+martor
+gunicorn
+geopy
+django-cities-light
+rpy2

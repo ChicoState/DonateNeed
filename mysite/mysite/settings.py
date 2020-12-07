@@ -2,6 +2,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '33el*v@@)zi57r_q_1nrjta^tq6n&8hw(v1w(=)aiw#oe1p9dz'
 
@@ -19,7 +20,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cities_light',
-    #'serve_shiny',
+    'dal',
+    'dal_select2',
+    'serve_shiny',
+    'django_extensions',
 
     'phone_field',
     'myapp',
@@ -89,5 +93,18 @@ MEDIA_URL = '/media/'
 
 
 CITIES_LIGHT_TRANSLATION_LANGUAGES = ['en']
-CITIES_LIGHT_INCLUDE_COUNTRIES = ['FR']
+CITIES_LIGHT_INCLUDE_COUNTRIES = ['US']
 CITIES_LIGHT_INCLUDE_CITY_TYPES = ['PPL', 'PPLA', 'PPLA2', 'PPLA3', 'PPLA4', 'PPLC', 'PPLF', 'PPLG', 'PPLL', 'PPLR', 'PPLS', 'STLMT',]
+
+
+SHINY_SERVER_DIRECTORY = [BASE_DIR]#[os.path.join(BASE_DIR, "Capstone"),] #        This is the file path where Shiny-Server is configured to serve apps from
+
+SHINY_TEMPLATE_FILE = [os.path.join(BASE_DIR, "Capstone/app.R"),] #          This is either a string with the full path to a Shiny app template
+	                  #      or a list of strings with just the file names of Shiny templates.
+
+#SHINY_TEMPLATE_DIRECTORY = [] #      This setting is required if your Shiny app is multiple files and SHINY_TEMPLATE_FILE was
+				#set as a list of file names.
+
+#SHINY_CONTEXT =    []#            A dictionary to use as context for Shiny apps
+
+SHINY_SERVER_URL = [BASE_DIR]#[os.path.join(BASE_DIR, "Capstone"),]#             The root URL of the Shiny-Server

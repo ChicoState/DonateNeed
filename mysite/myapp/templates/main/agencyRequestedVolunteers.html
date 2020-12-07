@@ -9,7 +9,7 @@
     <div class="row bg-info">
         <div class="col-4">
             <p>
-                {{agency}}'s Requests
+                {{agency}}'s Volunteer Requests
             </p>
         </div>
     </div>
@@ -20,18 +20,14 @@
     <div class="container">
     <div class = "col-small">
       {% if not requests %}
-      <p>You currently have no requests</p>
+      <p>You currently have no volunteer requests</p>
       {% else %}
     <table class = "table table-bordered table-hover">
       <tr>
-        <th>Item</th>
-        <th>Amount Total</th>
-        <th>Amount Fulfilled</th>
-        <th>Date Requested</th>
-        <th>Completed</th>
+        <th>Number of Requested Volunteers</th>
+        <th>Date</th>
+        <th>Location</th>
         <th>Cause</th>
-        <th>Progress</th>
-        <th></th>
         {% if not is_admin %}
           <th></th>
         {% endif %}
@@ -39,27 +35,20 @@
       </tr>
       {% for request in requests %}
         <tr>
-          <td>{{ request.item }}</td>
-          <td>{{ request.amount_total }}</td>
-          <td>{{ request.amount_fulfilled }}</td>
-          <td>{{ request.date_requested }}</td>
-          <td>{{ request.is_complete }}</td>
+          <td>{{ request.number_of_volunteers }}</td>
+          <td>{{ request.date_needed }}</td>
+          <td>{{ request.location }}</td>
           <td>{{ request.cause }}</td>
-          <td>
-            <div class="progress">
-               <div class="progress-bar progress-bar-striped active" role="progressbar"
-                  aria-valuenow={{request.amount_fulfilled}} aria-valuemin="0" aria-valuemax={{request.amount_total}} style="width:{{request.percent_complete}}%">
-                  {{request.percent_complete}}%
-               </div>
-            </div>
-          </td>
           {% if is_admin %}
           <td>
             <a href="#" class = "btn mb-2 btn-outline-info" onclick="confirmDeleteModal({{request.id}})">Delete Request</a>
           </td>
+
           {% else %}
-          <td><a href="/finalSubmitDonation/{{ request.id }}/" class = "btn mb-2 btn-outline-info">Donate Item</a></td>
+          <td><a href="/PledgeToVolunteer/{{ request.id }}/" class = "btn mb-2 btn-outline-info">Pledge To Volunteer</a></td>
           {% endif %}
+
+
         </tr>
       {% endfor %}
       {% endif %}
@@ -67,7 +56,7 @@
 
     </div>
     {% if is_admin %}
-    <a href = "{% url 'addRequests' username %}" class="btn mb-2 btn-outline-info">Add Request</a>
+    <a href = "{% url 'addVolunteerRequest' username %}" class="btn mb-2 btn-outline-info">Add Volunteer Request</a>
     {% endif %}
 
 </div>

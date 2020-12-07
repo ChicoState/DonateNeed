@@ -43,6 +43,39 @@
       <h3>Don't have an agency? Create yours here:</h3>
       <a href="{% url 'agencySignUp' %}" class="btn mb-2 btn-outline-info">Upload Your Agency's Info</a>
     {% endif %} <!-- end of has_agency -->
+
+    {% if has_event %}
+      <h3>Your Volunteering Events: </h3>
+
+      <table class = "table table-bordered table-hover">
+         <tr>
+           <th>Number of Requested Volunteers</th>
+           <th>Date</th>
+           <th>Location</th>
+           <th>Agency</th>
+           <th>Cause</th>
+           <th>Progress toward Volunteer Goal</th>
+           <th></th>
+         </tr>
+         {% for event in user_events %}
+         <tr>
+            <td>{{ event.number_of_volunteers }}</td>
+            <td>{{ event.date_needed }}</td>
+            <td>{{ event.location }}</td>
+            <td><a href="/agencyProfile/{{ request.agency.username }}">{{ event.agency }}</a></td>
+            <td><a href="/cause/{{ request.cause.username }}">{{ event.cause }}</a></td>
+            <td>
+               <div class="progress">
+                  <div class="progress-bar progress-bar-striped active" role="progressbar"
+                     aria-valuenow={{event.amount_fulfilled}} aria-valuemin="0" aria-valuemax={{event.number_of_volunteers}} style="width:{{event.percent_complete}}%">
+                     {{event.percent_complete}}%
+                  </div>
+               </div>
+            </td>
+            {% endfor %}
+            </table>
+
+    {% endif %} <!-- end of if has_event -->
     {% endif %} <!-- end of if is_personal_profile -->
 
     {% elif not is_an_account %}  <!-- end of if account, beginning of not account  -->

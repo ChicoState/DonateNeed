@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container first-element">
+    <div class="row bg-info">
+        <div class="col-4">
+    <h1>Add a Volunteer Request</h1>
+    </div>
+    </div>
+    <br>
+
+    <form action="{% url 'addVolunteerRequest' username %}"  method="post">
+          {% csrf_token %}
+            <p>Number of Volunteers Needed: </p>{{form.number_of_volunteers}}
+            <p>Date of Event: </p>{{form.date_needed}}
+            <p>City: </p>{{form.location}}
+            <p>Address: </p>{{form.address}}
+            <p>Cause: </p>{{form.cause}}
+
+            <br>
+            <br>
+    <div class="col-sm-4">
+      <a href="{% url 'agencyRequestedVolunteers' username %}" class="btn mb-2 btn-outline-info">Cancel</a>
+      <input type="submit" class="btn mb-2 btn-outline-info" value = "Add Volunteer Request"/>
+    </div>
+    </form>
+  </div>
+
+  {% endblock %}

@@ -5,7 +5,7 @@ from django.core.files import File
 os.environ["DJANGO_SETTINGS_MODULE"] = 'mysite.settings'
 django.setup()
 from myapp import models
-import cssutils
+#import cssutils
 
 import urllib.request
 from urllib.request import urlopen

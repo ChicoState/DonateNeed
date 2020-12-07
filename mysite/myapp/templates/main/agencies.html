@@ -10,8 +10,19 @@
 
 <div class="container first-element">
 <br>
-  <h2>Disaster Relief Agencies Near You</h2>
+  <h2>Disaster Relief Agencies</h2>
+  <br>
   <div class="col-sm-12">
+    <form method="POST">
+     Filter by City
+    {% csrf_token %}
+    <select name="city_id">
+    	<option value="">None</option>
+    	{% for city in cities %}
+    	<option value="{{ city.id }}">{{ city }}</option>
+    	{% endfor %}
+    	<input type="submit" value="Filter" />
+    </select>
     <div class="card-columns p-2">
       {% for agency in agencies %}
       <div class="card">
@@ -30,8 +41,13 @@
       </div>
       {% endfor %}
     </div>
+    <a href="{% url 'agencySignUp' %}"style="color:#FFFFFF;" class="btn btn-info mb-2">Is your agency not listed? Sign up your agency here</a>
   </div>
 </div>
 
 
 {% endblock content %}
+
+
+{% block scripts %}
+{% endblock %}

@@ -43,69 +43,140 @@
       {% endif %}
       {% endif %}
    </div>
-</div>
-</div>
-{% if not requests %}
-<p>You currently have no requests</p>
-{% else %}
-<div class="container-fluid profileCard first-element">
-   <div id = requests>
-      <div class = "custom-control" "custom_checkbox">
-         <form method="POST">
-            {% csrf_token %}
-            {{ is_hidden.as_p }}
-         </form>
-         <!-- <input type="checkbox" name="hide" value="1" /> -->
-      </div>
-      <table class = "table table-bordered table-hover">
-         <tr>
-            <th>Item</th>
-            <th>Amount Total</th>
-            <th>Amount Fulfilled</th>
-            <th>Cause</th>
-            <th>Date Requested</th>
-            <th>Completed</th>
-            <th>Progress</th>
-            <th></th>
-         </tr>
-         {% for request in requests %}
-         <tr>
-            <td>{{ request.item }}</td>
-            <td>{{ request.amount_total }}</td>
-            <td>{{ request.amount_fulfilled }}</td>
-            <td><a href="/cause/{{ request.cause.username }}">{{ request.cause }}</a></td>
-            <td>{{ request.date_requested }}</td>
-            <td>{{ request.is_complete }}</td>
-            <td>
-               <div class="progress">
-                  <div class="progress-bar progress-bar-striped active" role="progressbar"
-                     aria-valuenow={{request.amount_fulfilled}} aria-valuemin="0" aria-valuemax={{request.amount_total}} style="width:{{request.percent_complete}}%">
-                     {{request.percent_complete}}%
-                  </div>
-               </div>
-            </td>
-            {% if is_admin %}
-            <td>
-               <a href="#requests" class = "btn mb-2 btn-outline-info" onclick="confirmDeleteModal({{request.id}})">Delete Request</a>
-            </td>
-            {% else %}
-            <td>
-               <a href="/finalSubmitDonation/{{ request.id }}/" class = "btn mb-2 btn-outline-info">Donate Item</a>
-            </td>
-            {% endif %}
-         </tr>
-         {% endfor %}
-         {% endif %}
-      </table>
    </div>
-   <a href = "{% url 'agencyRequestedDonations' username %}" class="btn mb-2 btn-outline-info">View all of {{agency}}'s Requested Donations</a>
+
+
+{% if not volunteer_only %}
+<div class="container-fluid profileCard">
+  {% if not requests %}
+  <p>{{agency}} currently has no requests for donations</p>
+  </div>
+  {% else %}
+
+     <div id = requests>
+        <div class = "custom-control" "custom_checkbox">
+           <form method="POST">
+              {% csrf_token %}
+              {{ is_hidden.as_p }}
+           </form>
+           <!-- <input type="checkbox" name="hide" value="1" /> -->
+        </div>
+        <table class = "table table-bordered table-hover">
+           <tr>
+              <th>Item</th>
+              <th>Amount Total</th>
+              <th>Amount Fulfilled</th>
+              <th>Cause</th>
+              <th>Date Requested</th>
+              <th>Completed</th>
+              <th>Progress</th>
+              <th></th>
+           </tr>
+           {% for request in requests %}
+           <tr>
+              <td>{{ request.item }}</td>
+              <td>{{ request.amount_total }}</td>
+              <td>{{ request.amount_fulfilled }}</td>
+              <td><a href="/cause/{{ request.cause.username }}">{{ request.cause }}</a></td>
+              <td>{{ request.date_requested }}</td>
+              <td>{{ request.is_complete }}</td>
+              <td>
+                 <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar"
+                       aria-valuenow={{request.amount_fulfilled}} aria-valuemin="0" aria-valuemax={{request.amount_total}} style="width:{{request.percent_complete}}%">
+                       {{request.percent_complete}}%
+                    </div>
+                 </div>
+              </td>
+              {% if is_admin %}
+              <td>
+                 <a href="#requests" class = "btn mb-2 btn-outline-info" onclick="confirmDeleteModal({{request.id}})">Delete Request</a>
+              </td>
+              {% else %}
+              <td>
+                 <a href="/finalSubmitDonation/{{ request.id }}/" class = "btn mb-2 btn-outline-info">Donate Item</a>
+              </td>
+              {% endif %}
+           </tr>
+           {% endfor %}
+
+        </table>
+     </div>
+     <a href = "{% url 'agencyRequestedDonations' username %}" class="btn mb-2 btn-outline-info">View all of {{agency}}'s Requested Donations</a>
+
+  {% endif %}
+  {% if is_admin %}
+  <a href = "{% url 'addRequests' username %}" class="btn mb-2 btn-outline-info">Add Request</a>
+  {% endif %}
+
+ {% endif %}
 </div>
+
+
+<div class="container-fluid profileCard">
+ {% if not volunteering_request %}
+ <p>{{agency}} currently has no requests for volunteers</p>
+ </div>
+ {% else %}
+ <table class = "table table-bordered table-hover">
+    <tr>
+      <th>Number of Requested Volunteers</th>
+      <th>Date</th>
+      <th>Location</th>
+      <th>Agency</th>
+      <th>Cause</th>
+      <th>Progress toward Volunteer Goal</th>
+      <th></th>
+    </tr>
+    {% for request in volunteering_request %}
+    <tr>
+       <td>{{ request.number_of_volunteers }}</td>
+       <td>{{ request.date_needed }}</td>
+       <td>{{ request.location }}</td>
+       <td><a href="/agencyProfile/{{ request.agency.username }}">{{ request.agency }}</a></td>
+       <td><a href="/cause/{{ request.cause.username }}">{{ request.cause }}</a></td>
+       <td>
+          <div class="progress">
+             <div class="progress-bar progress-bar-striped active" role="progressbar"
+                aria-valuenow={{request.amount_fulfilled}} aria-valuemin="0" aria-valuemax={{request.number_of_volunteers}} style="width:{{request.percent_complete}}%">
+                {{request.percent_complete}}%
+             </div>
+          </div>
+       </td>
+       {% if is_admin %}
+       <td>
+          <a href="#requests" class = "btn mb-2 btn-outline-info" onclick="confirmDeleteModal({{request.id}})">Delete Request</a>
+       </td>
+       {% else %}
+         <td><a href="/PledgeToVolunteer/{{ request.id }}/" class = "btn mb-2 btn-outline-info">Pledge to Volunteer</a></td>
+         {% endif %}
+
+    </tr>
+    {% endfor %}
+
+  </table>
+
+
+ <a href = "{% url 'agencyRequestedVolunteers' username %}" class="btn mb-2 btn-outline-info">View all of {{agency}}'s Requests for Volunteers</a>
+
+{% endif %}
+
+</div>
+
+
+
+
+
+
+
 {% if is_admin %}
-   <div class="card col-5">
+<!-- <div class="container-fluid justify-content-center"> -->
+   <div class="card col-5 mx-auto">
    <h2>Administration</h2>
    <a href="/addAgency/{{username}}" class ="btn mb-2 btn-outline-info">Add other admin users to this agency</a>
    <a href="/pledgeSupport/{{username}}" class ="btn mb-2 btn-outline-info">Add supported causes to this agency</a>
    {% endif %}
+</div>
 </div>
 <div id="deleteModal" class="modal fade" role='dialog'>
    <div class="modal-dialog">

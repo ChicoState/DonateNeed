@@ -6,18 +6,28 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
 from django.db.models import Q
+from cities_light.models import Country, City
 import re, string
 import geoip2.database
 import geopy.distance
 from geopy.geocoders import Nominatim
 
-
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn import preprocessing
+le = preprocessing.LabelEncoder()
+from sklearn.metrics import r2_score
+import seaborn as sns
+from imblearn.over_sampling import SMOTE
 
 from django.core import serializers
 
 from . import forms
-from myapp.forms import AgencyForm, ProfileForm, HideCompletedRequestsForm
-from myapp.models import Profile, Cause, News_Articles, Agencies, Request_Fulfilled, Request_In_Progress
+from myapp.forms import AgencyForm, ProfileForm, HideCompletedRequestsForm, AddVolunteerRequestForm
+from myapp.models import Profile, Cause, News_Articles, Agencies, Request_Fulfilled, Request_In_Progress, Volunteering
 from . import models
 
 
@@ -35,6 +45,94 @@ def checkAuth(request):
 
 # Create your views here.
 def home(request):
+    # df = pd.DataFrame(list(Request_In_Progress.objects.all().values()))
+    # filt = Request_In_Progress.objects.all().values_list('cause_id', flat=True)
+    # df2 = pd.DataFrame(list(Cause.objects.all().filter(id__in = filt)))
+
+    df = pd.DataFrame(list(Cause.objects.all().filter(type_of_cause="fire").values()))
+    cause = Cause.objects.all().filter(type_of_cause='fire')
+    for l in cause:
+        print(l.location.population)
+    #.values('cs', flat=True)
+    #df2 = pd.DataFrame(list(cause.cs.all()))
+    data = []
+    #print(df2)
+    #df3 = pd.DataFrame(list(cause))
+    for i in cause:
+        k = i.cs.all()
+        for j in k:
+            data.append(j.id)
+
+
+
+
+    df2 = pd.DataFrame(list(Request_In_Progress.objects.all().filter(id__in = data).values()))
+    print(cause)
+    #l().filter('cs', flat=True)))
+    print(df2)
+
+    cause1 = Cause.objects.all()
+    #cs = Cause.objects.all().filter(id__in=filt)
+
+    #cause = models.Cause.objects.all().filter(id__in=cause)
+    #.values_list('')
+
+    #print(cause.type_of_cause)
+    #cause = list(cause.cause_id.type_of_cause)
+    #df2 = pd.DataFrame(list(cause))
+    # print("df first: ")
+    # print(df)
+    # print(df2)
+    #
+    # X = df[['type_of_cause']]
+    # y = df[['cause_id']]
+    # #
+    # # sns.countplot(x='item',data=X)
+    # # plt.title('Items Requested')
+    # # plt.show()
+    # #
+    # # X = A.loc[:,A.columns != 'cause_id']
+    # # y = A.loc[:,A.columns == 'cause_id']
+    # X.item = le.fit_transform(X.item)
+    # print(X.item)
+    #
+    # from imblearn.over_sampling import SMOTE
+    #
+    # # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+    # #
+    # # smt = SMOTE(random_state=0)
+    # # data_X,data_y=smt.fit_sample(X_train, y_train)
+    #
+    # # sns.countplot(x='cause_id',data=data_y)
+    # # plt.title("Cause ID's")
+    # # plt.show()
+    # #
+    #
+    #
+    #
+    #
+    #
+    # X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.3, random_state=0)
+    # #
+    # # # Fit or Train the Model
+    # lr_model = LogisticRegression()
+    # lr_model.fit(X_train,y_train)
+    #
+    # score = lr_model.score(X_train,y_train)
+    # print(f"Accuracy with train data : {score:0.2f}")
+    #
+    # # Evaluate Model using test data
+    # y_pred =lr_model.predict(X_test)
+    #
+    # # Find out accuracy with test data
+    # r2score = r2_score(y_test,y_pred)
+    # print(f"Accuracy with test data :  {r2score:0.2f}")
+    #
+    # # Pickle model
+    # pd.to_pickle(lr_model,'lr_model.pickle')
+
+
+
     title = "Home "
     articles = models.News_Articles.objects.all().order_by('-picture')
     articles = articles[:4]
@@ -66,6 +164,9 @@ def home(request):
     loc = geolocator.geocode("Cleveland, OH", exactly_one=False)[0]
 
     location2 = (loc.latitude, loc.longitude)
+
+    print(City.objects.filter(latitude=46.97537))
+
     distance = geopy.distance.distance(location1, location2).miles
     print(distance)
     reader.close()
@@ -86,11 +187,33 @@ def home(request):
 
 
 def agencies(request):
+    # # Unpickle model
+    # model = pd.read_pickle('lr_model.pickle')
+    #
+    # # Take input from user
+    # gre = int(input("Enter Item    : "))
+    # tof = int(input("Enter Amount Total  : "))
+    #
+    # # Predict chances
+    # result = model.predict([[gre,tof,cgpa]])  # input must be 2D array
+    # print(f"Chances are : {result[0] * 100:.2f}%")
+
+
     title = "Agencies "
     Agenciess = models.Agencies.objects.all()
+    agency_cities = Agencies.objects.values_list('city', flat=True)
+    print("here are the cities: ")
+    print(agency_cities)
+    cities = City.objects.all().filter(id__in = agency_cities)
+    if request.method == 'POST':
+        city_id = request.POST.get('city_id')
+        if city_id is not "":
+            selected_item = get_object_or_404(City, pk=request.POST.get('city_id'))
+            Agenciess = Agencies.objects.filter(city=selected_item)
 
     context = {
         "title": title,
+        "cities": cities,
         "agencies": Agenciess,
         "ranger": range(0, 3),
         "is_user": checkAuth(request),
@@ -224,10 +347,12 @@ def agencyProfile(request, uname=None):
         agency = Agencies.objects.get(username=uname)
         requests_in_progress = Request_In_Progress.objects.filter(is_complete=True, agency=agency).count()
         requests_completed = Request_In_Progress.objects.filter(is_complete=False, agency=agency).count()
+        volunteering_request = Volunteering.objects.filter(agency=agency)
         if request.user not in agency.admin_users.all():
             is_admin = False
         else:
             is_admin = True
+
 
         if request.method == "POST":
             profile = Profile.objects.get(user=request.user)
@@ -254,8 +379,14 @@ def agencyProfile(request, uname=None):
         else:
             is_personal_agency = False
         is_agency = True
+
+        if agency.only_volunteer:
+            volunteer_only = True
+        else:
+            volunteer_only = False
         context = {
             "title": title,
+            "volunteer_only": volunteer_only,
             "is_user": checkAuth(request),
             "user": request.user,
             "username": uname,
@@ -264,6 +395,7 @@ def agencyProfile(request, uname=None):
             "is_admin": is_admin,
             "requests_in_progress": requests_in_progress,
             "requests_completed": requests_completed,
+            "volunteering_request": volunteering_request,
             "is_hidden": is_hidden,
             "agency": agency,
              "causes": causes,
@@ -307,7 +439,8 @@ def agencySignUp(request):
             instance.username = uname
             instance.save()
             instance.admin_users.add(request.user)
-            return redirect("main/agencySignUp.html")
+            return redirect('agencyProfile', uname=uname)
+            #return redirect("main/agencySignUp.html")
     else:
         form_instance = forms.AgencyForm()
     context = {
@@ -327,6 +460,8 @@ def profile(request, username=None):
         return HttpResponseRedirect("/")
     has_agency = False
     user_agency = []
+    has_event = False
+    user_events = []
     try:
         user_info = models.User.objects.get(username=username)
         if user_info == request.user:
@@ -338,6 +473,11 @@ def profile(request, username=None):
                 if request.user in agency.admin_users.all():
                     has_agency = True
                     user_agency.append(agency)
+            user_volunteering = Volunteering.objects.all()
+            for v in user_volunteering:
+                if request.user in v.volunteers.all():
+                    has_event = True
+                    user_events.append(v)
         else:
            is_personal_profile = False
 
@@ -347,6 +487,8 @@ def profile(request, username=None):
             "is_user": checkAuth(request),
             "user": request.user,
             "username": username,
+            "has_event": has_event,
+            "user_events": user_events,
             "user_agency": user_agency,
             "is_an_account":is_an_account,
             "user_info": user_info,
@@ -454,46 +596,6 @@ def pledgeSupport(request,  username=None):
 
 
 
-# @csrf_exempt
-# def fetch_donation(request):
-#     if request.method == "POST":
-#
-#         body_unicode = request.body.decode('utf-8')
-#         body = json.loads(body_unicode)
-#         additions = body['add_donations']
-#         updates = body['donations']
-#
-#         for sub in additions:
-#
-#             new_donation = models.Request_In_Progress()
-#             new_donation.item = sub['item']
-#             new_donation.amount_total = sub['amount']
-#             new_donation.agency = request.user.profile.agencies
-#
-#             new_donation.save()
-#
-#         for sub in updates:
-#             next_item = models.Request_In_Progress.objects.get(id=sub['id'])
-#             next_item.item = sub['item']
-#             next_item.amount_total = sub['amount']
-#
-#             next_item.save()
-#
-#     donations = models.Request_In_Progress.objects.all()
-#     donation_list = {"donations":[]}
-#
-#     for donation in donations:
-#         donation_list["donations"] += [{
-#         "item":donation.item,
-#         "amount":donation.amount_total,
-#         "id":donation.id
-#         }]
-#
-#     print(donation_list)
-#
-#     return JsonResponse(donation_list)
-
-
 def addAgency(request, username=None):
     agency = Agencies.objects.get(username=username)
     if checkAuth(request) == False:
@@ -523,9 +625,38 @@ def addAgency(request, username=None):
 
 
 def activeCauses(request):
+    reader = geoip2.database.Reader('../GeoLite2-City_20201013/GeoLite2-City.mmdb')
+    ip = '24.94.15.83'
+    response = reader.city(ip)
+    print(response.city.geoname_id)
+
+    location1 = (response.location.latitude, response.location.longitude)
+
+    geolocator = Nominatim(user_agent="my_user_agent")
+    loc = geolocator.geocode("Chico, CA", exactly_one=False)[0]
+
+    location2 = (loc.latitude, loc.longitude)
+
+
+    distance = geopy.distance.distance(location1, location2).miles
+    print(distance)
+    reader.close()
+
     cause = Cause.objects.all()
+    cause_cities = Cause.objects.values_list('location', flat=True)
+    print("here are the cities: ")
+    print(cause_cities)
+    cities = City.objects.all().filter(id__in = cause_cities)
+    if request.method == 'POST':
+        city_id = request.POST.get('city_id')
+        if city_id is not "":
+            selected_item = get_object_or_404(City, pk=request.POST.get('city_id'))
+            cause = Cause.objects.filter(location=selected_item)
+
+
     context = {
         "Cause": cause,
+        "cities": cities,
         "is_user": checkAuth(request)
     }
     return render(request, 'main/activeCauses.html', context=context)
@@ -629,6 +760,71 @@ def addRequests(request, username):
 
 
 
+def agencyRequestedVolunteers(request, username=None):
+    if checkAuth(request) == False:
+        return HttpResponseRedirect("/")
+    if(username is None):
+        requests = Volunteering.objects.all()
+        is_admin = False
+        agency = "All Agency"
+    else:
+        agency = Agencies.objects.filter(username=username)[0]
+        if request.user in agency.admin_users.all():
+            is_admin = True
+        else:
+            is_admin = False
+        requests = Volunteering.objects.filter(agency=agency)
+
+    delete = request.GET.get('delete', 0)
+    context = {
+        "agency": agency,
+        "username": username,
+        "user": request.user,
+        "is_admin": is_admin,
+        "is_user": checkAuth(request),
+        "requests": requests,
+    }
+    if delete != 0:
+        Volunteering.objects.filter(id=delete).delete()
+
+    return render(request, 'main/agencyRequestedVolunteers.html', context=context)
+
+
+def addVolunteerRequest(request, username):
+    if checkAuth(request) == False:
+        return HttpResponseRedirect("/")
+    agency = Agencies.objects.filter(username=username)[0]
+    if request.user not in agency.admin_users.all():
+        return HttpResponseRedirect("/")
+    if request.method == "POST":
+        form_instance = AddVolunteerRequestForm(request.POST)
+        if form_instance.is_valid():
+          instance = form_instance.save(commit=False)
+          cause = form_instance.cleaned_data['cause']
+          if cause not in agency.causes.all():
+              agency.causes.add(cause)
+          instance.agency = agency
+          instance.save()
+          context = {
+            "form":form_instance,
+            "username": username,
+            "agency": agency,
+            "is_user": checkAuth(request),
+          }
+          return redirect('activeVolunteerRequests')
+    else:
+        form_instance = AddVolunteerRequestForm()
+
+    context = {
+      "form":form_instance,
+      "username": username,
+      "agency": agency,
+      "is_user": checkAuth(request),
+    }
+    return render(request, 'main/addVolunteerRequest.html', context=context)
+
+
+
 def activeDonations(request):
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
@@ -638,13 +834,21 @@ def activeDonations(request):
     requests = Request_In_Progress.objects.all()
     if request.method == 'POST':
         agency_id = request.POST.get('agency_id')
-        if agency_id is not "":
-            selected_item = get_object_or_404(Agencies, pk=request.POST.get('agency_id'))
-            requests = Request_In_Progress.objects.filter(agency=selected_item)
         cause_id = request.POST.get('cause_id')
-        if cause_id is not "":
-            selected_cause = get_object_or_404(Agencies, pk=request.POST.get('cause_id'))
-            requests = Request_In_Progress.objects.filter(agency=selected_cause)
+        if agency_id is not "":
+            if cause_id is not "":
+                selected_item = get_object_or_404(Agencies, pk=request.POST.get('agency_id'))
+                selected_cause = get_object_or_404(Cause, pk=request.POST.get('cause_id'))
+                requests = Request_In_Progress.objects.filter(agency=selected_item, cause=selected_cause)
+            else:
+                selected_item = get_object_or_404(Agencies, pk=request.POST.get('agency_id'))
+                requests = Request_In_Progress.objects.filter(agency=selected_item)
+
+        elif cause_id is not "":
+            selected_cause = get_object_or_404(Cause, pk=request.POST.get('cause_id'))
+            requests = Request_In_Progress.objects.filter(cause=selected_cause)
+
+
 
     user = request.user
     context = {
@@ -656,6 +860,43 @@ def activeDonations(request):
     }
 
     return render(request, 'main/activeDonations.html', context = context)
+
+
+
+
+def activeVolunteerRequests(request):
+    if checkAuth(request) == False:
+        return HttpResponseRedirect("/")
+
+    agencies = Agencies.objects.all()
+    causes = Cause.objects.all()
+    requests = Volunteering.objects.all()
+    if request.method == 'POST':
+        agency_id = request.POST.get('agency_id')
+        cause_id = request.POST.get('cause_id')
+        if agency_id is not "":
+            if cause_id is not "":
+                selected_item = get_object_or_404(Agencies, pk=request.POST.get('agency_id'))
+                selected_cause = get_object_or_404(Cause, pk=request.POST.get('cause_id'))
+                requests = Volunteering.objects.filter(agency=selected_item, cause=selected_cause)
+            else:
+                selected_item = get_object_or_404(Agencies, pk=request.POST.get('agency_id'))
+                requests = Volunteering.objects.filter(agency=selected_item)
+
+        elif cause_id is not "":
+            selected_cause = get_object_or_404(Cause, pk=request.POST.get('cause_id'))
+            requests = Volunteering.objects.filter(cause=selected_cause)
+
+    user = request.user
+    context = {
+        "user": user,
+        "agencies": agencies,
+        "causes": causes,
+        "is_user": checkAuth(request),
+        "requests": requests
+    }
+
+    return render(request, 'main/activeVolunteerRequests.html', context = context)
 
 
 
@@ -710,6 +951,32 @@ def finalSubmitDonation(request, id):
     return render(request, 'main/finalSubmitDonation.html', context = context)
 
 
+
+
+def PledgeToVolunteer(request, id):
+    if checkAuth(request) == False:
+        return HttpResponseRedirect("/")
+    VolunteerPledge = Volunteering.objects.filter(id=id)[0]
+    user = request.user
+    if request.user not in VolunteerPledge.volunteers.all():
+        VolunteerPledge.volunteers.add(request.user)
+        VolunteerPledge.amount_fulfilled += 1;
+        VolunteerPledge.percent_complete = (VolunteerPledge.amount_fulfilled/VolunteerPledge.number_of_volunteers)
+        VolunteerPledge.save()
+
+    context = {
+        "user": user,
+        "id": id,
+        "is_user": checkAuth(request),
+        "volunteer": VolunteerPledge
+    }
+
+    return render(request, 'main/PledgeToVolunteer.html', context = context)
+
+
+
+
+
 def search(request):
     if request.method == 'GET' and 'q' in request.GET:
         keyword = request.GET['q']
@@ -718,12 +985,11 @@ def search(request):
 
     if keyword is not None and keyword != '':
         agencies = Agencies.objects.filter(Q(name__contains=keyword) | Q(username__contains=keyword))
-        causes = Cause.objects.filter(Q(title__contains=keyword) | Q(location__contains=keyword))
+        causes = Cause.objects.filter(Q(title__contains=keyword))
         users = User.objects.filter(Q(first_name__contains = keyword) | Q(last_name__contains = keyword) | Q(username__contains = keyword))
         news_articles = News_Articles.objects.filter(Q(title__contains = keyword) | Q(description__contains = keyword))
 
     else:
-        print("made it")
         agencies = None
         causes = None
         users = None
@@ -737,3 +1003,11 @@ def search(request):
         "causes": causes,
     }
     return render(request, 'main/search.html', context=context)
+
+
+
+def volunteering(request):
+    context = {
+        "is_user": checkAuth(request),
+    }
+    return render(request, 'main/volunteering.html', context=context)

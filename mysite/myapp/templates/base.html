@@ -38,7 +38,7 @@
         <a class="nav-item nav-link text-info"  href="{% url 'trending' %}">Trending News</a>
         <a class="nav-item nav-link text-info"  href="{% url 'agencies' %}">Agencies</a>
         <a class="nav-item nav-link text-info"  href="{% url 'activeCauses' %}">Active Causes</a>
-        <a class="nav-item nav-link text-info"  href="{% url 'about' %}">About</a>
+        <a class="nav-item nav-link text-info"  href="{% url 'activeVolunteerRequests' %}">Volunteering</a>
 
         <div class="ml-auto px-auto">
 
@@ -69,11 +69,6 @@
               <a class="dropdown-item" href="{% url 'createProfile' %}">Update Your Profile</a>
               <a class="dropdown-item" href="{% url 'agencySignUp' %}">Create Agency</a>
 
-              <div class="dropdown-divider"></div>
-
-              <div class="dropdown-footer">
-                <i class="glyphicon glyphicon-cog">Settings</i>
-              </div>
             </div>
 
 
@@ -93,10 +88,10 @@
   <p>Donate Need</p>
   <ul>
     <li><a href="{% url 'trending' %}"style="color:#FFFFFF;"><font size="-1">Trending News</font></a></li>
-    <li><a href="{% url 'agencies' %}"style="color:#FFFFFF;"><font size="-1">Agencies Near You</font></a></li>
+    <li><a href="{% url 'agencies' %}"style="color:#FFFFFF;"><font size="-1">Agencies Archive</font></a></li>
     <li><a href="{% url 'about' %}"style="color:#FFFFFF;"><font size="-1">About Us</font></a></li>
     {% if not is_user %}
-      <li><a href="{% url 'signUp' %}"style="color:#FFFFFF;"><font size="-1">Sign Up </font></a></li>
+      <li><a href="{% url 'signUp' %}"style="color:#FFFFFF;"><font size="-1">Sign Up</font></a></li>
     {% endif %}
   </ul>
     {% if is_user %}

@@ -62,11 +62,20 @@ class MakeDonation(ModelForm):
         model = models.Request_Fulfilled
         exclude = ['user', 'request_in_progress', 'fulfilled_amount']
 
+class MakeDonation(ModelForm):
+    class Meta:
+        model = models.Request_Fulfilled
+        exclude = ['user', 'request_in_progress', 'fulfilled_amount']
+
 class AddRequestForm(ModelForm):
     class Meta:
         model = models.Request_In_Progress
         fields = ["item", "amount_total", "cause"]
 
+class AddVolunteerRequestForm(ModelForm):
+    class Meta:
+        model = models.Volunteering
+        exclude = ["agency", "amount_fulfilled", "percent_complete"]
 
 class ProfileForm(ModelForm):
     class Meta:
@@ -147,6 +156,7 @@ class HideCompletedRequestsForm(ModelForm):
         labels = {
             'requests_view_hide_completed': 'Hide Completed Requests'
         }
+
 
 
 class FilterAgencyForm(ModelForm):

@@ -19,8 +19,9 @@
 	<br>
 </div>
 {% if not requests %}
-<p>There are no requests with the given filters.</p>
+<p>There are currently no open requests or requests with the selected filter.</p>
 {% endif %}
+{% if requests %}
 <h3>Filters</h3>
 <form method="POST">
  Agency
@@ -32,7 +33,6 @@
 	{% endfor %}
 	<input type="submit" value="Filter" />
 </select>
-{% if requests %}
 <table class = "table table-bordered table-hover">
 <tr>
   <th>Item</th>
@@ -42,6 +42,7 @@
   <th>Completed</th>
 	<th>Agency</th>
 	<th>Progress</th>
+	<th></th>
 </tr>
 {% for request in requests %}
   <tr>
@@ -58,6 +59,9 @@
 						 {{request.percent_complete}}%
 					</div>
 			 </div>
+		</td>
+		<td>
+			 <a href="/finalSubmitDonation/{{ request.id }}/" class = "btn mb-2 btn-outline-info">Donate Item</a>
 		</td>
   </tr>
 {% endfor %}
