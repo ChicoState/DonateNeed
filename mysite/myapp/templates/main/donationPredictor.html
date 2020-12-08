@@ -19,6 +19,15 @@
 	{% for cause_type in cause_types %}
 	<option value="{{ cause_type }}">{{ cause_type }}</option>
 	{% endfor %}
+</select>
+<form method="POST">
+ City
+{% csrf_token %}
+<select name="city_id">
+	<option value="">None</option>
+	{% for city in cities %}
+	<option value="{{ city }}">{{ city }}</option>
+	{% endfor %}
 	<input type="submit" value="Filter" />
 </select>
 

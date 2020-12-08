@@ -1013,48 +1013,71 @@ def search(request):
 
 def donationPredictor(request):
     if request.method == 'POST':
+        city_id = request.POST.get('city_id')
         type_of_cause = request.POST.get('cause_type_id')
 
+        if city_id:
+            city = City.objects.filter(display_name=city_id).values_list('population', flat=True)
+            print(city)
+            if not type_of_cause:
+                df8 = pd.DataFrame()
 
-        df = pd.DataFrame(list(Cause.objects.all().filter(type_of_cause=type_of_cause).values()))
+        if type_of_cause:
+            df = pd.DataFrame(list(Cause.objects.all().filter(type_of_cause=type_of_cause).values()))
 
-        #for i in df.iterrows():
-        cause_ids = (df['id'])
-        cause_location_ids = (df['location_id'])
-        df1 = pd.DataFrame(list(City.objects.all().filter(id__in=cause_location_ids).values()))
-        print("here's the new dataframe with city info to join on:")
-        print(df1)
+            #for i in df.iterrows():
+            cause_ids = (df['id'])
+            cause_location_ids = (df['location_id'])
+            df1 = pd.DataFrame(list(City.objects.all().filter(id__in=cause_location_ids).values()))
+            print("here's the new dataframe with city info to join on:")
+            print(df1)
 
-        df3 = pd.merge(df, df1, left_on='location_id', right_on='id')
-        print("here's the joined dataframe:")
-        print(df3)
+            df3 = pd.merge(df, df1, left_on='location_id', right_on='id')
+            print("here's the joined dataframe:")
+            print(df3)
 
-        df4 = pd.DataFrame(list(Request_In_Progress.objects.all().filter(cause__in=cause_ids).values()))
-        print("df4 to merge: ")
-        print(df4)
+            requests = Request_In_Progress.objects.all().filter(cause__in=cause_ids).values()
+            volunteers = Volunteering.objects.all().filter(cause__in=cause_ids).values()
+            if requests:
+                if volunteers:
+                    df4 = pd.DataFrame(list(requests))
+                    df5 = pd.merge(df4, df3, left_on='cause_id', right_on='id_x')
+                    df5.columns = ['quantity' if x=='amount_total' else x for x in df5.columns]
 
-        df5 = pd.merge(df4, df3, left_on='cause_id', right_on='id_x')
-        df5.columns = ['quantity' if x=='amount_total' else x for x in df5.columns]
-        print("final df!: ")
-        print(df5)
+                    df6 = pd.DataFrame(list(volunteers))
+                    df6.columns = ['quantity' if x=='number_of_volunteers' else x for x in df6.columns]
+                    df6['item']='Volunteers'
+                    df7 = pd.merge(df6, df3, left_on='cause_id', right_on='id_x')
+
+                    df8 = pd.concat([df5, df7])
+                else:
+                    df4 = pd.DataFrame(list(requests))
+                    df8 = pd.merge(df4, df3, left_on='cause_id', right_on='id_x')
+                    df8.columns = ['quantity' if x=='amount_total' else x for x in df8.columns]
+
+            elif volunteers:
+                    df6 = pd.DataFrame(list(volunteers))
+                    df6.columns = ['quantity' if x=='number_of_volunteers' else x for x in df6.columns]
+                    df6['item']='Volunteers'
+                    df8 = pd.merge(df6, df3, left_on='cause_id', right_on='id_x')
 
 
-        df6 = pd.DataFrame(list(Volunteering.objects.all().filter(cause__in=cause_ids).values()))
-        df6.columns = ['quantity' if x=='number_of_volunteers' else x for x in df6.columns]
-        df6['item']='Volunteers'
-        df7 = pd.merge(df6, df3, left_on='cause_id', right_on='id_x')
-        print("Actual last df: ")
-        print(df7)
 
-        df8 = pd.concat([df5, df7])
-        print(df8)
+            else:
+                df8 = pd.DataFrame()
+
+            if not df8.empty:
+                print("not emtp")
+
     else:
         df8 = pd.DataFrame()
 
     cause_types = Cause.objects.values_list('type_of_cause', flat=True).distinct()
+    cities = City.objects.values_list('display_name', flat=True)
     context = {
         "is_user": checkAuth(request),
         "cause_types": cause_types,
+        "cities": cities,
         "df": df8,
     }
     return render(request, "main/donationPredictor.html", context=context)
