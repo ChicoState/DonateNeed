@@ -70,7 +70,7 @@ class MakeDonation(ModelForm):
 class AddRequestForm(ModelForm):
     class Meta:
         model = models.Request_In_Progress
-        fields = ["item", "amount_total", "cause"]
+        fields = ["item", "amount_total", "cause", "size"]
 
 class AddVolunteerRequestForm(ModelForm):
     class Meta:

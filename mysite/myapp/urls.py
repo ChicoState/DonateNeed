@@ -13,7 +13,6 @@ from .models import Cause
 urlpatterns = [
   url(r'^$', views.home, name='home'),
   url(r'^agencies$', views.agencies, name='agencies'),
-  url(r'^volunteering$', views.volunteering, name='volunteering'),
   url(r'^trending$', views.trending, name='trending'),
   url(r'^about$', views.about, name='about'),
   url('login/', auth_views.LoginView.as_view(), name='login'),
@@ -36,6 +35,7 @@ urlpatterns = [
   url(r'^activeCauses/', views.activeCauses, name='activeCauses'),
   url(r'^cause/(?P<uname>.+)', views.causePage, name='causePage'),
   url(r'^activeDonations/', views.activeDonations, name='activeDonations'),
+  url(r'^donationPredictor/', views.donationPredictor, name='donationPredictor'),
   url(r'^activeVolunteerRequests/', views.activeVolunteerRequests, name='activeVolunteerRequests'),
   url(r'^search/', views.search, name='search'),
   path('serve_shiny/', include('serve_shiny.urls')),

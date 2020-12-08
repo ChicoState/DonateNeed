@@ -29,8 +29,17 @@
            {% for cause in causes %}
            <option value="{{ cause.id }}">{{ cause.title }}</option>
            {% endfor %}
+         </select>
+         Filter by City
+        {% csrf_token %}
+        <select name="city_id">
+          <option value="">None</option>
+          {% for city in cities %}
+          <option value="{{ city.id }}">{{ city }}</option>
+          {% endfor %}
            <input type="submit" value="Filter" />
         </select>
+
          <br>
          <br>
          {% if requests %}

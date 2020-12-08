@@ -49,29 +49,7 @@ def home(request):
     # filt = Request_In_Progress.objects.all().values_list('cause_id', flat=True)
     # df2 = pd.DataFrame(list(Cause.objects.all().filter(id__in = filt)))
 
-    df = pd.DataFrame(list(Cause.objects.all().filter(type_of_cause="fire").values()))
-    cause = Cause.objects.all().filter(type_of_cause='fire')
-    for l in cause:
-        print(l.location.population)
-    #.values('cs', flat=True)
-    #df2 = pd.DataFrame(list(cause.cs.all()))
-    data = []
-    #print(df2)
-    #df3 = pd.DataFrame(list(cause))
-    for i in cause:
-        k = i.cs.all()
-        for j in k:
-            data.append(j.id)
 
-
-
-
-    df2 = pd.DataFrame(list(Request_In_Progress.objects.all().filter(id__in = data).values()))
-    print(cause)
-    #l().filter('cs', flat=True)))
-    print(df2)
-
-    cause1 = Cause.objects.all()
     #cs = Cause.objects.all().filter(id__in=filt)
 
     #cause = models.Cause.objects.all().filter(id__in=cause)
@@ -832,6 +810,8 @@ def activeDonations(request):
     agencies = Agencies.objects.all()
     causes = Cause.objects.all()
     requests = Request_In_Progress.objects.all()
+
+
     if request.method == 'POST':
         agency_id = request.POST.get('agency_id')
         cause_id = request.POST.get('cause_id')
@@ -868,30 +848,55 @@ def activeVolunteerRequests(request):
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
 
+
     agencies = Agencies.objects.all()
     causes = Cause.objects.all()
     requests = Volunteering.objects.all()
+
+
+    request_cities = Volunteering.objects.values_list('location', flat=True)
+    cities = City.objects.all().filter(id__in = request_cities)
+
     if request.method == 'POST':
         agency_id = request.POST.get('agency_id')
         cause_id = request.POST.get('cause_id')
+        city_id = request.POST.get('city_id')
         if agency_id is not "":
             if cause_id is not "":
+                if city_id is not "":
+                    selected_item = get_object_or_404(Agencies, pk=request.POST.get('agency_id'))
+                    selected_cause = get_object_or_404(Cause, pk=request.POST.get('cause_id'))
+                    selected_location = get_object_or_404(City, pk=request.POST.get('city_id'))
+                    requests = Volunteering.objects.filter(agency=selected_item, cause=selected_cause, location=selected_location)
+                else:
+                    selected_item = get_object_or_404(Agencies, pk=request.POST.get('agency_id'))
+                    selected_cause = get_object_or_404(Cause, pk=request.POST.get('cause_id'))
+                    requests = Volunteering.objects.filter(agency=selected_item, cause=selected_cause)
+            elif city_id is not "":
+                selected_location = get_object_or_404(City, pk=request.POST.get('city_id'))
                 selected_item = get_object_or_404(Agencies, pk=request.POST.get('agency_id'))
-                selected_cause = get_object_or_404(Cause, pk=request.POST.get('cause_id'))
-                requests = Volunteering.objects.filter(agency=selected_item, cause=selected_cause)
+                requests = Volunteering.objects.filter(agency=selected_item, location=selected_location)
             else:
                 selected_item = get_object_or_404(Agencies, pk=request.POST.get('agency_id'))
                 requests = Volunteering.objects.filter(agency=selected_item)
-
         elif cause_id is not "":
-            selected_cause = get_object_or_404(Cause, pk=request.POST.get('cause_id'))
-            requests = Volunteering.objects.filter(cause=selected_cause)
+            if city_id is not "":
+                selected_cause = get_object_or_404(Cause, pk=request.POST.get('cause_id'))
+                selected_location = get_object_or_404(City, pk=request.POST.get('city_id'))
+                requests = Volunteering.objects.filter(cause=selected_cause, location=selected_location)
+            else:
+                selected_cause = get_object_or_404(Cause, pk=request.POST.get('cause_id'))
+                requests = Volunteering.objects.filter(cause=selected_cause)
+        elif city_id is not "":
+                selected_location = get_object_or_404(City, pk=request.POST.get('city_id'))
+                requests = Volunteering.objects.filter(location=selected_location)
 
     user = request.user
     context = {
         "user": user,
         "agencies": agencies,
         "causes": causes,
+        "cities": cities,
         "is_user": checkAuth(request),
         "requests": requests
     }
@@ -1006,8 +1011,50 @@ def search(request):
 
 
 
-def volunteering(request):
+def donationPredictor(request):
+    if request.method == 'POST':
+        type_of_cause = request.POST.get('cause_type_id')
+
+
+        df = pd.DataFrame(list(Cause.objects.all().filter(type_of_cause=type_of_cause).values()))
+
+        #for i in df.iterrows():
+        cause_ids = (df['id'])
+        cause_location_ids = (df['location_id'])
+        df1 = pd.DataFrame(list(City.objects.all().filter(id__in=cause_location_ids).values()))
+        print("here's the new dataframe with city info to join on:")
+        print(df1)
+
+        df3 = pd.merge(df, df1, left_on='location_id', right_on='id')
+        print("here's the joined dataframe:")
+        print(df3)
+
+        df4 = pd.DataFrame(list(Request_In_Progress.objects.all().filter(cause__in=cause_ids).values()))
+        print("df4 to merge: ")
+        print(df4)
+
+        df5 = pd.merge(df4, df3, left_on='cause_id', right_on='id_x')
+        df5.columns = ['quantity' if x=='amount_total' else x for x in df5.columns]
+        print("final df!: ")
+        print(df5)
+
+
+        df6 = pd.DataFrame(list(Volunteering.objects.all().filter(cause__in=cause_ids).values()))
+        df6.columns = ['quantity' if x=='number_of_volunteers' else x for x in df6.columns]
+        df6['item']='Volunteers'
+        df7 = pd.merge(df6, df3, left_on='cause_id', right_on='id_x')
+        print("Actual last df: ")
+        print(df7)
+
+        df8 = pd.concat([df5, df7])
+        print(df8)
+    else:
+        df8 = pd.DataFrame()
+
+    cause_types = Cause.objects.values_list('type_of_cause', flat=True).distinct()
     context = {
         "is_user": checkAuth(request),
+        "cause_types": cause_types,
+        "df": df8,
     }
-    return render(request, 'main/volunteering.html', context=context)
+    return render(request, "main/donationPredictor.html", context=context)

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container first-element">
+	<br>
+		<h2>Donation Predictor</h2>
+		<br>
+</div>
+{% if df.empty %}
+<p>There are currently no open requests or requests with the selected filter.</p>
+{% endif %}
+<h3>Filters</h3>
+<form method="POST">
+ Type of Cause
+{% csrf_token %}
+<select name="cause_type_id">
+	<option value="">None</option>
+	{% for cause_type in cause_types %}
+	<option value="{{ cause_type }}">{{ cause_type }}</option>
+	{% endfor %}
+	<input type="submit" value="Filter" />
+</select>
+
+{% endblock content %}
+{% block scripts %}
+<script type="text/javascript" src="{% static "javascript/profile.js"}">
+</script>
+{% endblock %}

@@ -16,6 +16,7 @@ CAUSE_TYPES =(
     ("tornado", "Tornadoes"),
     ("tsunami", "Tsunamies"),
     ("winter_storm", "Winter and Ice Storms"),
+    ("general", "General Organization Request")
 
 )
 
@@ -79,7 +80,7 @@ class Agencies(models.Model):
 class Volunteering(models.Model):
     number_of_volunteers = models.DecimalField(max_digits=10, decimal_places=0)
     date_needed = models.DateField(auto_now=False, auto_now_add=True)
-    location = models.ForeignKey(City, on_delete=models.PROTECT)
+    location = models.ForeignKey(City, on_delete=models.PROTECT, blank=True, null=True)
     agency = models.ForeignKey(Agencies, on_delete=models.SET_NULL, blank=True, null=True)
     cause = models.ForeignKey(Cause, on_delete=models.SET_NULL, blank=True, null=True, related_name='cs2')
     address = models.CharField(max_length=100, blank=True, null=True)
@@ -87,10 +88,25 @@ class Volunteering(models.Model):
     percent_complete = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     volunteers = models.ManyToManyField(User, blank=True, related_name="volunteer")
 
+SIZES =(
+    ("xxxs", "XXXS"),
+    ("xxs", "XXS"),
+    ("xs", "XS"),
+    ("s", "S"),
+    ("m", "M"),
+    ("l", "L"),
+    ("xl", "XL"),
+    ("xxl", "2X"),
+    ("xxxl", "3X"),
+    ("xxxxl", "4X"),
+
+)
+
 
 class Request_In_Progress(models.Model):
   item = models.CharField(max_length=250, null=True)
   amount_total = models.DecimalField(max_digits=10, decimal_places=0)
+  size = models.CharField(max_length=100, choices=SIZES, default=None)
   amount_fulfilled = models.DecimalField(max_digits=10, decimal_places=2, default=0)
   is_complete = models.BooleanField(default=False)
   date_requested = models.DateField(auto_now=False, auto_now_add=True)
