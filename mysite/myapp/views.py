@@ -11,6 +11,7 @@ import re, string
 import geoip2.database
 import geopy.distance
 from geopy.geocoders import Nominatim
+from datetime import datetime
 
 import numpy as np
 import pandas as pd
@@ -27,7 +28,7 @@ from django.core import serializers
 
 from . import forms
 from myapp.forms import AgencyForm, ProfileForm, HideCompletedRequestsForm, AddVolunteerRequestForm
-from myapp.models import Profile, Cause, News_Articles, Agencies, Request_Fulfilled, Request_In_Progress, Volunteering
+from myapp.models import Profile, Cause, News_Articles, Agencies, Request_Fulfilled, Request_In_Progress, Volunteering, Social_Media_Post, Agency_Social_Media_Post
 from . import models
 
 
@@ -321,6 +322,17 @@ def agencyProfile(request, uname=None):
     title = "Agency Profile"
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
+    agency = Agencies.objects.get(username=uname)
+    try:
+        posts = Agency_Social_Media_Post.objects.filter(author=agency).order_by('-date_posted')
+        print(posts)
+        if posts:
+            has_posts = True
+            print("here")
+        else:
+            has_posts=False
+    except:
+        has_posts = False
 
     try:
         agency = Agencies.objects.get(username=uname)
@@ -369,6 +381,8 @@ def agencyProfile(request, uname=None):
             "is_user": checkAuth(request),
             "user": request.user,
             "username": uname,
+            "has_posts": has_posts,
+            "posts": posts,
             "requests": requests,
             "is_agency":is_agency,
             "is_admin": is_admin,
@@ -389,6 +403,8 @@ def agencyProfile(request, uname=None):
         "title": title,
         "is_user": checkAuth(request),
         "user": request.user,
+        "has_posts": has_posts,
+        "posts": posts,
         "is_agency": is_agency,
         "is_personal_agency": is_personal_agency,
         "username": uname,
@@ -437,6 +453,9 @@ def profile(request, username=None):
     title = "Profile"
     if checkAuth(request) == False:
         return HttpResponseRedirect("/")
+
+    has_posts = False
+    posts = []
     has_agency = False
     user_agency = []
     has_event = False
@@ -447,6 +466,8 @@ def profile(request, username=None):
             is_personal_profile = True
             user = request.user
             profile = Profile.objects.get(user=request.user)
+            print(profile.number_of_donations)
+            print(profile.number_of_volunteering_participations)
             all_agencies = Agencies.objects.all()
             for agency in all_agencies:
                 if request.user in agency.admin_users.all():
@@ -457,6 +478,13 @@ def profile(request, username=None):
                 if request.user in v.volunteers.all():
                     has_event = True
                     user_events.append(v)
+            try:
+                posts = Social_Media_Post.objects.filter(author=request.user).order_by('-date_posted')
+                if posts:
+                    has_posts = True
+            except:
+                has_posts = False
+
         else:
            is_personal_profile = False
 
@@ -465,6 +493,8 @@ def profile(request, username=None):
             "title": title,
             "is_user": checkAuth(request),
             "user": request.user,
+            "has_posts": has_posts,
+            "posts": posts,
             "username": username,
             "has_event": has_event,
             "user_events": user_events,
@@ -553,7 +583,20 @@ def pledgeSupport(request,  username=None):
             ids = request.POST.get('causes')
             for id in ids:
                 agency.causes.add(id)
+
+                cs = Cause.objects.filter(id=id)[0]
+                txt = agency.name + " pledged their support for "+ cs.title + " on " + str(datetime.now())
+                agency_url = agency.username
+                agency_name = agency.name
+                cause_url = cs.username
+                cause_name = cs.title
+                type="agency pledge"
+                Agency_Social_Media_Post.objects.create(author=agency, text=txt, agency_profile=agency_url, agency_name=agency_name, cause_profile=cause_url, cause_name=cause_name, type=type)
+
+
             causes = agency.causes.all()
+
+
             context = {
                 "username": username,
                 "is_agency": True,
@@ -724,6 +767,19 @@ def addRequests(request, username):
           if cause not in agency.causes.all():
               agency.causes.add(cause)
           instance.agency = agency
+
+
+          amt = str(form_instance.cleaned_data['amount_total'])
+          txt = agency.name + " requested " + amt + " " + form_instance.cleaned_data['item'] + " on " + str(datetime.now()) + " for " + cause.title
+          agency_url = agency.username
+          agency_name = agency.name
+          cause_url = cause.username
+          cause_name = cause.title
+          type="agency add request"
+          Agency_Social_Media_Post.objects.create(author=agency, text=txt, agency_profile=agency_url, agency_name=agency_name, cause_profile=cause_url, cause_name=cause_name, type=type)
+
+
+
           instance.save()
           return redirect('activeDonations')
     else:
@@ -783,6 +839,17 @@ def addVolunteerRequest(request, username):
           if cause not in agency.causes.all():
               agency.causes.add(cause)
           instance.agency = agency
+
+          amt = str(form_instance.cleaned_data['number_of_volunteers'])
+          txt = agency.name + " requested " + amt + " volunteers on " + str(datetime.now()) + " for " + cause.title
+          agency_url = agency.username
+          agency_name = agency.name
+          cause_url = cause.username
+          cause_name = cause.title
+          type="agency add volunteer request"
+          Agency_Social_Media_Post.objects.create(author=agency, text=txt, agency_profile=agency_url, agency_name=agency_name, cause_profile=cause_url, cause_name=cause_name, type=type)
+
+
           instance.save()
           context = {
             "form":form_instance,
@@ -810,7 +877,7 @@ def activeDonations(request):
 
     agencies = Agencies.objects.all()
     causes = Cause.objects.all()
-    requests = Request_In_Progress.objects.all()
+    requests = Request_In_Progress.objects.filter(is_complete=False)
 
 
     if request.method == 'POST':
@@ -820,14 +887,14 @@ def activeDonations(request):
             if cause_id is not "":
                 selected_item = get_object_or_404(Agencies, pk=request.POST.get('agency_id'))
                 selected_cause = get_object_or_404(Cause, pk=request.POST.get('cause_id'))
-                requests = Request_In_Progress.objects.filter(agency=selected_item, cause=selected_cause)
+                requests = Request_In_Progress.objects.filter(agency=selected_item, cause=selected_cause, is_complete=False)
             else:
                 selected_item = get_object_or_404(Agencies, pk=request.POST.get('agency_id'))
-                requests = Request_In_Progress.objects.filter(agency=selected_item)
+                requests = Request_In_Progress.objects.filter(agency=selected_item, is_complete=False)
 
         elif cause_id is not "":
             selected_cause = get_object_or_404(Cause, pk=request.POST.get('cause_id'))
-            requests = Request_In_Progress.objects.filter(cause=selected_cause)
+            requests = Request_In_Progress.objects.filter(cause=selected_cause, is_complete=False)
 
 
 
@@ -917,6 +984,13 @@ def finalSubmitDonation(request, id):
         form_instance = forms.MakeDonation(request.POST)
         if form_instance.is_valid():
 
+          prof = Profile.objects.filter(user=request.user)[0]
+          prof.number_of_donations+=1
+          prof.save()
+
+
+
+
           instance = form_instance.save(commit=False)
           instance.user = request.user
           instance.request_in_progress = donation
@@ -930,9 +1004,30 @@ def finalSubmitDonation(request, id):
           donation.amount_fulfilled = pledged+fulfilled
           donation.percent_complete = ((pledged+fulfilled)/total)*100
 
+          user = request.user
+
+          txt = user.first_name + user.last_name + "pledged to donate "+  str(pledged) + " " + donation.item +" for " + donation.agency.name + "'s help with " + donation.cause.title + " on" + str(datetime.now())
+          agency_url=donation.agency.username
+          agency_name=donation.agency.name
+          cause_url = donation.cause.username
+          cause_name = donation.cause.title
+          date_p = datetime.now()
+          type="donation"
+          Social_Media_Post.objects.create(author=request.user, text=txt, agency_profile=agency_url, agency_name=agency_name, date_posted=date_p, cause_profile=cause_url, cause_name=cause_name, type=type)
+
+
           if(donation.amount_fulfilled == donation.amount_total):
               donation.is_complete = True
               donation.percent_complete = 100
+
+
+              txt = donation.agency.name + " successfully fulfilled their request for " + str(donation.amount_total) +  " " + donation.item + " on " + str(datetime.now()) + " for " + donation.cause.title
+
+              type="agency complete donation"
+              Agency_Social_Media_Post.objects.create(author=donation.agency, text=txt, agency_profile=agency_url, agency_name=agency_name, cause_profile=cause_url, cause_name=cause_name, type=type)
+
+
+
           donation.save()
           context = {
             "user": request.user,
@@ -965,9 +1060,36 @@ def PledgeToVolunteer(request, id):
     VolunteerPledge = Volunteering.objects.filter(id=id)[0]
     user = request.user
     if request.user not in VolunteerPledge.volunteers.all():
+        prof = Profile.objects.filter(user=request.user)[0]
+        prof.number_of_volunteering_participations+=1
+        prof.save()
+
         VolunteerPledge.volunteers.add(request.user)
         VolunteerPledge.amount_fulfilled += 1;
-        VolunteerPledge.percent_complete = (VolunteerPledge.amount_fulfilled/VolunteerPledge.number_of_volunteers)
+        VolunteerPledge.percent_complete += (1/VolunteerPledge.number_of_volunteers)
+
+        txt = user.first_name + user.last_name + "pledged to attend "+ VolunteerPledge.agency.name + "'s volunteering event for " + VolunteerPledge.cause.title + " on"
+        agency_url=VolunteerPledge.agency.username
+        agency_name=VolunteerPledge.agency.name
+        cause_url = VolunteerPledge.cause.username
+        cause_name = VolunteerPledge.cause.title
+        date_p = VolunteerPledge.date_needed
+        type="volunteer"
+        Social_Media_Post.objects.create(author=request.user, text=txt, agency_profile=agency_url, agency_name=agency_name, date_posted=date_p, cause_profile=cause_url, cause_name=cause_name, type=type)
+
+
+
+        if(VolunteerPledge.amount_fulfilled == VolunteerPledge.number_of_volunteers):
+          #donation.is_complete = True
+           VolunteerPledge.percent_complete = 100
+
+
+           txt = VolunteerPledge.agency.name + " successfully fulfilled their request for " + str(VolunteerPledge.number_of_volunteers) +  " volunteers on " + str(datetime.now()) + " for " + VolunteerPledge.cause.title
+
+           type="agency complete volunteer"
+           Agency_Social_Media_Post.objects.create(author=VolunteerPledge.agency, text=txt, agency_profile=agency_url, agency_name=agency_name, cause_profile=cause_url, cause_name=cause_name, type=type)
+
+
         VolunteerPledge.save()
 
     context = {

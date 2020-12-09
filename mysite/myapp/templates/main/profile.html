@@ -75,7 +75,29 @@
             {% endfor %}
             </table>
 
-    {% endif %} <!-- end of if has_event -->
+    {% endif %}
+
+    {% if has_posts %}
+
+
+      {% for post in posts %}
+        {% if post.type == "volunteer" %}
+        <p><a href="/profile/{{post.author}}"><img src="{{ user_info.profile.picture.url }}", class="avatar"></a>{{post.author}} pledged to attend <a href="/agencyProfile/{{ post.agency_profile }}">{{ post.agency_name }}'s'</a> volunteering event for <a href="/cause/{{ post.cause_profile }}">{{ post.cause_name }}</a> happening on {{post.date_posted}}</p>
+
+        {% else %}
+        <p><a href="/profile/{{post.author}}"><img src="{{ user_info.profile.picture.url }}", class="avatar"></a>{{post.author}} donated to help <a href="/agencyProfile/{{ post.agency_profile }}">{{ post.agency_name }}</a> on {{post.date_posted}}</p>
+
+        {% endif %}
+      {% endfor %}
+
+    {% endif %}
+
+
+
+
+
+
+
     {% endif %} <!-- end of if is_personal_profile -->
 
     {% elif not is_an_account %}  <!-- end of if account, beginning of not account  -->
@@ -91,12 +113,6 @@
 </div>
 
 
-{% endblock content %}
 
-{% block scripts %}
-
-<script type="text/javascript" src="{% static "javascript/profile.js"}">
-
-</script>
 
 {% endblock %}

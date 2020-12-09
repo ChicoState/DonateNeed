@@ -38,26 +38,6 @@ class News_Articles(models.Model):
   # cause = models.ManyToManyField(Cause, on_delete=models.SET_NULL, blank=True, null=True)
 
 
-
-
-
-class Profile(models.Model):
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
-  city = models.ForeignKey(City, on_delete=models.PROTECT, null=True, blank=True)
-  bio = models.TextField(max_length=500, blank=True)
-  picture = models.ImageField(upload_to='media/', default="defaultProfilePic.jpg", null=True, blank=True)
-  requests_view_hide_completed = models.BooleanField(default=False)
-  def __str__(self):
-    return self.user.username
-
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-post_save.connect(create_user_profile, sender=User)
-
 class Agencies(models.Model):
   name = models.CharField(max_length=100)
   email = models.EmailField(max_length=50)
@@ -72,6 +52,31 @@ class Agencies(models.Model):
   only_volunteer = models.BooleanField(default=False)
   def __str__(self):
       return self.name
+
+
+class Profile(models.Model):
+  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  city = models.ForeignKey(City, on_delete=models.PROTECT, null=True, blank=True)
+  bio = models.TextField(max_length=500, blank=True)
+  picture = models.ImageField(upload_to='media/', default="defaultProfilePic.jpg", null=True, blank=True)
+  requests_view_hide_completed = models.BooleanField(default=False)
+  number_of_donations = models.DecimalField(max_digits=1000000000000, decimal_places=0, default=0)
+  number_of_volunteering_participations = models.DecimalField(max_digits=1000000000000, decimal_places=0, default=0)
+  followers = models.ManyToManyField("self", blank=True)
+  following = models.ManyToManyField("self", blank=True)
+  agencies_following = models.ManyToManyField(Agencies, blank=True, related_name="user_followers")
+  def __str__(self):
+    return self.user.username
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+post_save.connect(create_user_profile, sender=User)
+
+
 
 # class Agencies_Page(models.Model):
 #   # causes = models.ManyToManyField(Cause)
@@ -106,7 +111,7 @@ SIZES =(
 class Request_In_Progress(models.Model):
   item = models.CharField(max_length=250, null=True)
   amount_total = models.DecimalField(max_digits=10, decimal_places=0)
-  size = models.CharField(max_length=100, choices=SIZES, default=None)
+  size = models.CharField(max_length=100, choices=SIZES, blank=True)
   amount_fulfilled = models.DecimalField(max_digits=10, decimal_places=2, default=0)
   is_complete = models.BooleanField(default=False)
   date_requested = models.DateField(auto_now=False, auto_now_add=True)
@@ -124,3 +129,27 @@ class Request_Fulfilled(models.Model):
   user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
   request_in_progress = models.ForeignKey(Request_In_Progress, on_delete=models.CASCADE, blank=True, null=True)
   date = models.DateField(auto_now=True)
+
+
+
+class Social_Media_Post(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.CharField(max_length=10000, null=True)
+    agency_profile = models.CharField(max_length=10000, null=True)
+    agency_name = models.CharField(max_length=10000, null=True)
+    date_posted = models.DateField(auto_now=False)
+    type = models.CharField(max_length=20, default=None)
+    cause_profile = models.CharField(max_length=10000, null=True)
+    cause_name = models.CharField(max_length=10000, null=True)
+
+
+class Agency_Social_Media_Post(models.Model):
+    author = models.ForeignKey(Agencies, on_delete=models.CASCADE)
+    text = models.CharField(max_length=10000, null=True)
+    date_posted = models.DateField(auto_now=True)
+    link = models.CharField(max_length=200, null=True)
+    cause_profile = models.CharField(max_length=10000, null=True)
+    cause_name = models.CharField(max_length=10000, null=True)
+    agency_profile = models.CharField(max_length=10000, null=True)
+    agency_name = models.CharField(max_length=10000, null=True)
+    type = models.CharField(max_length=20, default=None)

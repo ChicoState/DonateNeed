@@ -116,7 +116,6 @@
 <div class="container-fluid profileCard">
  {% if not volunteering_request %}
  <p>{{agency}} currently has no requests for volunteers</p>
- </div>
  {% else %}
  <table class = "table table-bordered table-hover">
     <tr>
@@ -159,6 +158,26 @@
 
  <a href = "{% url 'agencyRequestedVolunteers' username %}" class="btn mb-2 btn-outline-info">View all of {{agency}}'s Requests for Volunteers</a>
 
+ {% if has_posts %}
+
+   {% for post in posts %}
+     {% if post.type == "agency pledge" %}
+     <p><a href="/agencyProfile/{{agency.username}}"><img src="{{agency.picture.url }}", class="avatar"></a> <a href="/agencyProfile/{{ post.agency_profile }}">{{ post.agency_name }}</a> pledged their support for <a href="/cause/{{ post.cause_profile }}">{{ post.cause_name }}</a> on {{post.date_posted}}</p>
+
+     {% elif post.type == "agency add request" %}
+     <p><a href="/agencyProfile/{{agency.username}}"><img src="{{agency.picture.url }}", class="avatar"></a> <a href="/agencyProfile/{{ post.agency_profile }}">{{ post.agency_name }}</a> made a request for <a href = "{% url 'agencyRequestedDonations' username %}">donations</a> to support <a href="/cause/{{ post.cause_profile }}">{{ post.cause_name }}</a> on {{post.date_posted}}</p>
+     {% elif post.type == "agency add volunteer request" %}
+     <p><a href="/agencyProfile/{{agency.username}}"><img src="{{agency.picture.url }}", class="avatar"></a> <a href="/agencyProfile/{{ post.agency_profile }}">{{ post.agency_name }}</a> made a request for <a href = "{% url 'agencyRequestedVolunteers' username %}">volunteers</a> to support <a href="/cause/{{ post.cause_profile }}">{{ post.cause_name }}</a> on {{post.date_posted}}</p>
+     {% elif post.type == "agency complete donation" %}
+     <p><a href="/agencyProfile/{{agency.username}}"><img src="{{agency.picture.url }}", class="avatar"></a> <a href="/agencyProfile/{{ post.agency_profile }}">{{ post.agency_name }}</a> successfully fulfilled one of their donation requests to support <a href="/cause/{{ post.cause_profile }}">{{ post.cause_name }}</a> on {{post.date_posted}}</p>
+     {% elif post.type == "agency complete volunteer" %}
+     <p><a href="/agencyProfile/{{agency.username}}"><img src="{{agency.picture.url }}", class="avatar"></a> <a href="/agencyProfile/{{ post.agency_profile }}">{{ post.agency_name }}</a> successfully fulfilled one of their volunteer requests to support <a href="/cause/{{ post.cause_profile }}">{{ post.cause_name }}</a> on {{post.date_posted}}</p>
+
+     {% endif %}
+   {% endfor %}
+
+ {% endif %}
+
 {% endif %}
 
 </div>
@@ -194,6 +213,4 @@
       </div>
    </div>
 </div>
-{% endblock content %}
-{% block scripts %}
 {% endblock %}

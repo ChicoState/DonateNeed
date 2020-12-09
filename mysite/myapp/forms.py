@@ -80,7 +80,7 @@ class AddVolunteerRequestForm(ModelForm):
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
-        exclude = ['user', 'requests_view_hide_completed']
+        exclude = ['user', 'requests_view_hide_completed', 'number_of_donations', 'number_of_volunteering_participations']
         #fields="__all__" #, "picture")
 
 
@@ -130,9 +130,7 @@ class PledgeSupportForm(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         causes = cleaned_data.get('causes')
-        print(causes)
         for cause in causes:
-            print(cause)
             if Agencies.objects.filter(causes=cause).exists():
                 self.add_error('causes', forms.ValidationError("One of the causes you selected is already included in your agency's profile"))
                 return
