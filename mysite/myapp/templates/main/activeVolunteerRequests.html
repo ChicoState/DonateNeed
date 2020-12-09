@@ -12,6 +12,7 @@
          {% if not requests %}
          <p>There are no requests with the given filters.</p>
          {% endif %}
+
          <form method="POST">
            Filter by Agency
          {% csrf_token %}
@@ -22,7 +23,6 @@
             {% endfor %}
          </select>
          Filter by Cause
-        <form method="POST">
         {% csrf_token %}
         <select name="cause_id">
            <option value="">None</option>
@@ -39,6 +39,7 @@
           {% endfor %}
            <input type="submit" value="Filter" />
         </select>
+          </form>
 
          <br>
          <br>
@@ -76,5 +77,6 @@
       </div>
    </div>
 </div>
+
 
 {% endblock %}

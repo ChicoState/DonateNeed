@@ -176,15 +176,16 @@ def agencies(request):
     # result = model.predict([[gre,tof,cgpa]])  # input must be 2D array
     # print(f"Chances are : {result[0] * 100:.2f}%")
 
-
     title = "Agencies "
     Agenciess = models.Agencies.objects.all()
     agency_cities = Agencies.objects.values_list('city', flat=True)
     print("here are the cities: ")
     print(agency_cities)
     cities = City.objects.all().filter(id__in = agency_cities)
+
     if request.method == 'POST':
-        city_id = request.POST.get('city_id')
+
+        city_id = request.POST['city_id']
         if city_id is not "":
             selected_item = get_object_or_404(City, pk=request.POST.get('city_id'))
             Agenciess = Agencies.objects.filter(city=selected_item)
@@ -984,7 +985,8 @@ def PledgeToVolunteer(request, id):
 
 def search(request):
     if request.method == 'GET' and 'q' in request.GET:
-        keyword = request.GET['q']
+        keyword = request.GET.get("q")
+        print(keyword)
     else:
         keyword is None
 
@@ -1068,6 +1070,9 @@ def donationPredictor(request):
 
             if not df8.empty:
                 print("not emtp")
+        if not city_id:
+            if not type_of_cause:
+                df8 = pd.DataFrame()
 
     else:
         df8 = pd.DataFrame()

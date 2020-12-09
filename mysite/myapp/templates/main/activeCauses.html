@@ -13,13 +13,7 @@
 <br>
   <h2>Active Causes to Donate To</h2>
 
-    <div class = "custom-control" "custom_checkbox">
-       <form method="POST">
-          {% csrf_token %}
-          {{ is_hidden.as_p }}
-       </form>
-       <!-- <input type="checkbox" name="hide" value="1" /> -->
-    </div>
+
   <form method="POST">
    Filter by City
   {% csrf_token %}
@@ -30,6 +24,7 @@
     {% endfor %}
     <input type="submit" value="Filter" />
   </select>
+  </form>
   <br>
   <br>
   <table class = "table table-bordered table-hover">
@@ -46,12 +41,8 @@
       </tr>
     {% endfor %}
     </table>
-    <a href="{% url 'createCause' %}"style="color:#FFFFFF;" class="btn btn-info mb-2">Establish a Cause</a>
+    <a href="{% url 'createCause' %}" class="btn mb-2 btn-outline-info">Establish a Cause</a>
 </div>
 </html>
-{% endblock content %}
-
-{% block scripts %}
-
 
 {% endblock %}

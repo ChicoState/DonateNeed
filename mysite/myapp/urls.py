@@ -37,7 +37,7 @@ urlpatterns = [
   url(r'^activeDonations/', views.activeDonations, name='activeDonations'),
   url(r'^donationPredictor/', views.donationPredictor, name='donationPredictor'),
   url(r'^activeVolunteerRequests/', views.activeVolunteerRequests, name='activeVolunteerRequests'),
-  url(r'^search/', views.search, name='search'),
+  url(r'^search', views.search, name='search'),
   path('serve_shiny/', include('serve_shiny.urls')),
   url(r'^finalSubmitDonation/(?P<id>.+)/', views.finalSubmitDonation, name='finalSubmitDonation'),
   url(r'^PledgeToVolunteer/(?P<id>.+)/', views.PledgeToVolunteer, name='PledgeToVolunteer'),

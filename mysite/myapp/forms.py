@@ -89,6 +89,10 @@ class AddAgencyForm(ModelForm):
         model = Agencies
         fields = ['admin_users']
 
+# class SelectCityForm(ModelForm):
+#     class Meta:
+#         model = City
+#         fields = ['city_id']
 
 #form to use for updating data in agencies class
 class AgencyForm(ModelForm):

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% load static %}
-
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% block content %}
 <!-- <form class="form-inline first-element">
    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -12,7 +12,8 @@
 <br>
   <h2>Disaster Relief Agencies</h2>
   <br>
-  <div class="col-sm-12">
+  <div class="container">
+     <div class = "col-small">
     <form method="POST">
      Filter by City
     {% csrf_token %}
@@ -21,8 +22,10 @@
     	{% for city in cities %}
     	<option value="{{ city.id }}">{{ city }}</option>
     	{% endfor %}
+
     	<input type="submit" value="Filter" />
-    </select>
+        </select>
+    </form>
     <div class="card-columns p-2">
       {% for agency in agencies %}
       <div class="card">
@@ -31,23 +34,22 @@
           <h5>{{ agency.name }}</h5>
           <p>{{ agency.address }}</p>
           <p>{{ agency.phone }}</p>
-          <div class="text-center">
-            <a href="{{ agency.url }}" class="btn btn-info mb-2">Visit Website</a>
-          </div>
           {% if is_user %}
             <a href="/agencyProfile/{{ agency.username }}" class="stretched-link"></a>
           {% endif %}
+          <div class="text-center">
+            <a href="{{ agency.url }}" class="btn btn-info mb-2 lol">Visit Website</a>
+          </div>
+
         </div>
       </div>
       {% endfor %}
     </div>
-    <a href="{% url 'agencySignUp' %}"style="color:#FFFFFF;" class="btn btn-info mb-2">Is your agency not listed? Sign up your agency here</a>
+    <a href="{% url 'agencySignUp' %}" class="btn mb-2 btn-outline-info">Is your agency not listed? Sign up your agency here</a>
   </div>
+</div>
 </div>
 
 
-{% endblock content %}
 
-
-{% block scripts %}
 {% endblock %}

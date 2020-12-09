@@ -20,7 +20,6 @@
 	<option value="{{ cause_type }}">{{ cause_type }}</option>
 	{% endfor %}
 </select>
-<form method="POST">
  City
 {% csrf_token %}
 <select name="city_id">
@@ -30,9 +29,6 @@
 	{% endfor %}
 	<input type="submit" value="Filter" />
 </select>
+</form>
 
-{% endblock content %}
-{% block scripts %}
-<script type="text/javascript" src="{% static "javascript/profile.js"}">
-</script>
 {% endblock %}

@@ -22,8 +22,6 @@
             {% endfor %}
          </select>
          Filter by Cause
-        <form method="POST">
-        {% csrf_token %}
         <select name="cause_id">
            <option value="">None</option>
            {% for cause in causes %}
@@ -31,6 +29,7 @@
            {% endfor %}
            <input type="submit" value="Filter" />
         </select>
+        </form>
          <br>
          <br>
          {% if requests %}
